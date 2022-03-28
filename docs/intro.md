@@ -2,46 +2,32 @@
 sidebar_position: 1
 ---
 
-# Tutorial Intro
+# How to get your app integrated on Zapper
 
-Let's discover **Docusaurus in less than 5 minutes**.
+In April 2022, Zapper moved to open source all of the integrations we had done interally over the prior 2 years. We did this for 2 reasons:
+- There are so many apps launching, we could not keep up with integrations, particularly the smaller protocols. We were turning into a bottleneck
+- Developers were offering to integrate their apps on our behalf. Some were giving us such precise instructions, that they could clearly do the integration themselves. We just didn't have a way to allow them to do so
+- We wanted to allow the Zapper community to contribute to the Zapper experience
 
-## Getting Started
+<!--TODO link to right thing-->
+To that end, we've moved all of our code for integration apps into an [open-source repository on GitHub][https://xxx], and began allowing anyone to submit a pull request to add an integration.
 
-Get started by **creating a new site**.
+To that end, if you want to integrate your app / protocol, **see our step by step guide below**.
 
-Or **try Docusaurus immediately** with **[docusaurus.new](https://docusaurus.new)**.
+## Getting Started with a new integration
 
-### What you'll need
+The basic flow of getting your app listed on Zapper is the follow steps:
+1. Fork the Adapters repo (button towards the top right of the repo page).
+2. Add a new folder with the same name as the project to projects/.
+3. Write an integration for your app, using Zapper’s provided tooling adapters
+<!--TODO link to right thing-->
+4. Make a Pull Request with the changes on your fork, to the[main Zapper repo][https:repo], with a brief explanation of what you changed.
+5. Wait for someone to either comment on or merge your Pull Request. There is no need to ask for someone to check your PR as they are monitored regularly.
 
-- [Node.js](https://nodejs.org/en/download/) version 14 or above:
-  - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
 
-## Generate a new site
-
-Generate a new Docusaurus site using the **classic template**.
-
-The classic template will automatically be added to your project after you run the command:
-
-```bash
-npm init docusaurus@latest my-website classic
-```
-
-You can type this command into Command Prompt, Powershell, Terminal, or any other integrated terminal of your code editor.
-
-The command also installs all necessary dependencies you need to run Docusaurus.
-
-## Start your site
-
-Run the development server:
-
-```bash
-cd my-website
-npm run start
-```
-
-The `cd` command changes the directory you're working with. In order to work with your newly created Docusaurus site, you'll need to navigate the terminal there.
-
-The `npm run start` command builds your website locally and serves it through a development server, ready for you to view at http://localhost:3000/.
-
-Open `docs/intro.md` (this page) and edit some lines: the site **reloads automatically** and displays your changes.
+### What you'll need to write an integration
+<!--TODO add relevant links-->
+- Basic knowledge of git
+- Basic knowledge of typescript
+- Knowledge of Ethers
+- Nest.js knowledge
