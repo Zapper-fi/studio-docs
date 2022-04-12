@@ -31,3 +31,4 @@ The basic flow of getting your app listed on Zapper is the follow steps:
 - Basic knowledge of typescript
 - Knowledge of Ethers
 - Nest.js knowledge
+
