@@ -2,33 +2,36 @@
 sidebar_position: 1
 ---
 
-# How to get your app integrated on Zapper
+# Introduction
 
-In April 2022, Zapper moved to open source all of the integrations we had done interally over the prior 2 years. We did this for 2 reasons:
-- There are so many apps launching, we could not keep up with integrations, particularly the smaller protocols. We were turning into a bottleneck
-- Developers were offering to integrate their apps on our behalf. Some were giving us such precise instructions, that they could clearly do the integration themselves. We just didn't have a way to allow them to do so
-- We wanted to allow the Zapper community to contribute to the Zapper experience
+## What is this?
 
-<!--TODO link to right thing-->
-To that end, we've moved all of our code for integration apps into an [open-source repository on GitHub][https://xxx], and began allowing anyone to submit a pull request to add an integration.
+In April 2022, Zapper began to open source all of the integrations we had done interally over the prior 2 years. We did this for 2 reasons:
 
-To that end, if you want to integrate your app / protocol, **see our step by step guide below**.
+- The Web3 ecosystem is growing faster than we can keep up, particularly the long-tail of smaller protocols. We were turning into a bottleneck.
+- Developers of Web3 applications are much more knowledgeable about their own protocols, and were offering to integrate their apps on our behalf.
+- Our community at Zapper.fi is full of developers who want to contribute to the Zapper experience!
 
-## Getting Started with a new integration
+To that end, we bootstrapped an [open-source repository on GitHub][https://github.com/Zapper-fi/studio] for integrating third party applications into Zapper, and began allowing anyone to submit a pull request to add an integration. 
+
+If you want to integrate your app / protocol, you're in the right place!
+
+## Contributing
 
 The basic flow of getting your app listed on Zapper is the follow steps:
-1. Fork the Adapters repo (button towards the top right of the repo page).
-2. Add a new folder with the same name as the project to projects/.
-3. Write an integration for your app, using Zapper’s provided tooling adapters
-<!--TODO link to right thing-->
-4. Make a Pull Request with the changes on your fork, to the[main Zapper repo][https:repo], with a brief explanation of what you changed.
-5. Wait for someone to either comment on or merge your Pull Request. There is no need to ask for someone to check your PR as they are monitored regularly.
 
+1. Fork the Studio repo to your personal namespace.
+1. Write your integration, using Zapper's provided SDK and the guides in this documentation.
+1. Make a Pull Request with your changes from the fork to the original repository.
+1. Wait for someone from our team to review, merge, and release your changes.
 
-### What you'll need to write an integration
-<!--TODO add relevant links-->
-- Basic knowledge of git
-- Basic knowledge of typescript
-- Knowledge of Ethers
-- Nest.js knowledge
+For more details on our contributing, review, and release process, visit our `CONTRIBUTING.md` guidelines [here](https://github.com/Zapper-fi/studio/blob/main/.github/CONTRIBUTING.md).
 
+## Precursors
+
+Before getting started, you should have basic knowledge of the following developer tooling:
+
+- [Git](https://www.atlassian.com/git/tutorials/what-is-git)
+- [TypeScript](https://www.freecodecamp.org/news/learn-typescript-basics/)
+- [Ethers.js](https://docs.ethers.io/v5/)
+- [Nest.js](https://docs.nestjs.com/)
