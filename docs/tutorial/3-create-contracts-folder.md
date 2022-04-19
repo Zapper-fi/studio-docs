@@ -2,9 +2,9 @@
 sidebar_position: 3
 ---
 
-# Create the Contracts folder
+# Add the Smart Contracts interface
 
-After you've created the definitions file, create a new folder called **Contracts**
+After you've created the definitions file, add the contracts ABIs to the folder called **Contracts**
 
 ## ABIs
 
