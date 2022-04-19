@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# Getting Started
+# Generate your app
 
 In this guide, we are going to integrate [Pickle Finance](https://pickle.finance/) as a Zapper application from scratch.
 
