@@ -3,6 +3,16 @@
   align-items: center;
   padding: 2rem 0;
   width: 100%;
+
+  h3 {
+    color: var(--text-color);
+    font-weight: 500;
+  }
+
+  p {
+    color: var(--text-color-alt); 
+    font-size: var(--h5);
+  }
 }
 
 .featureSvg {

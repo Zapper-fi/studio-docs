@@ -3,22 +3,19 @@ import clsx from "clsx";
 import Layout from "@theme/Layout";
 import Link from "@docusaurus/Link";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
-import styles from "./index.module.css";
+import styles from "./index.module.scss";
 import HomepageFeatures from "@site/src/components/HomepageFeatures";
 
 function HomepageHeader() {
   const { siteConfig } = useDocusaurusContext();
   return (
-    <header className={clsx(styles.heroBanner)}>
+    <header className={clsx("hero hero--primary", styles.heroBanner)}>
       <div className="container">
-        <h1 className="hero__title">{siteConfig.title}</h1>
-        <p className="hero__subtitle">{siteConfig.tagline}</p>
+        <h1 className={styles.title}>{siteConfig.title}</h1>
+        <h3 className={styles.subtitle}>{siteConfig.tagline}</h3>
         <div className={styles.buttons}>
-          <Link
-            className="button button--secondary button--lg"
-            to="/docs/intro"
-          >
-            Learn how to integrate with Zapper️
+          <Link className={styles.button} to="/docs/intro">
+            Learn More
           </Link>
         </div>
       </div>

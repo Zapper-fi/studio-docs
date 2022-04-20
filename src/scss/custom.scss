@@ -1,0 +1,166 @@
+@font-face {
+    font-family: "Avenir Next";
+    src: url(/static/fonts/AvenirNext-Bold.ttf) format("truetype");
+    font-weight: 600;
+  }
+  
+  @font-face {
+    font-family: "Avenir Next";
+    src: url(/static/fonts/AvenirNext-Bold-Italic.ttf) format("truetype");
+    font-weight: 600;
+    font-style: italic;
+  }
+  
+  @font-face {
+    font-family: "Avenir Next";
+    src: url(/static/fonts/AvenirNext-DemiBold.ttf) format("truetype");
+    font-weight: 500;
+  }
+  
+  @font-face {
+    font-family: "Avenir Next";
+    src: url(/static/fonts/AvenirNext-DemiBold-Italic.ttf) format("truetype");
+    font-weight: 500;
+    font-style: italic;
+  }
+  
+  @font-face {
+    font-family: "Avenir Next";
+    src: url(/static/fonts/AvenirNext-Medium.ttf) format("truetype");
+    font-weight: 400;
+  }
+  
+  @font-face {
+    font-family: "Avenir Next";
+    src: url(/static/fonts/AvenirNext-Medium-Italic.ttf) format("truetype");
+    font-weight: 400;
+    font-style: italic;
+  }
+  
+  @font-face {
+    font-family: "Avenir Next";
+    src: url(/static/fonts/AvenirNext-Regular.ttf) format("truetype");
+    font-weight: 300;
+  }
+  
+  @font-face {
+    font-family: "Avenir Next";
+    src: url(/static/fonts/AvenirNext-Italic.ttf) format("truetype");
+    font-weight: 300;
+    font-style: italic;
+  }
+  
+  
+  /**
+   * Any CSS included here will be global. The classic template
+   * bundles Infima by default. Infima is a CSS framework designed to
+   * work well for content-centric websites.
+  
+  
+  /* You can override the default Infima variables here. */
+  :root {
+    --ifm-color-primary: #784ffe;
+    --ifm-text-color-primary: #002237;
+    --ifm-text-color-alt: #657795;
+    --ifm-color-primary-dark: #784ffe;
+    --ifm-color-primary-darker: #784ffe;
+    --ifm-color-primary-darkest: #784ffe;
+    --ifm-color-primary-light: #784ffe;
+    --ifm-color-primary-lighter: #784ffe;
+    --ifm-color-primary-lightest: #784ffe;
+
+    /** Zapper Theme **/
+    --radius: 16px;
+    --sm: 8px;
+    --md: 12px;
+    --lg: 16px;
+    --xlg: 24px;
+
+    --h1: 36px;
+    --h2: 30px;
+    --h3: 24px;
+    --h4: 20px;
+    --h5: 18px;
+
+    --p: 16px;
+    --p2: 14px;
+
+    --theme: #784ffe; 
+    --text-color: #002237;
+    --text-color-alt: #657795;
+  }
+  
+  /* For readability concerns, you should choose a lighter palette in dark mode. */
+  [data-theme='dark'] {
+    --ifm-color-primary: #784ffe;
+    --ifm-text-color-primary: white;
+    --ifm-text-color-alt: #9cabbb;
+    --ifm-color-primary-dark: #784ffe;
+    --ifm-color-primary-darker: #784ffe;
+    --ifm-color-primary-darkest: #784ffe;
+    --ifm-color-primary-light: #784ffe;
+    --ifm-color-primary-lighter: #784ffe;
+    --ifm-color-primary-lightest: #784ffe;
+
+    /** Zapper Theme for Dark Mode**/
+    --text-color: white;
+    --text-color-alt: #c7d2da;
+  }
+  
+  .docusaurus-highlight-code-line {
+    background-color: rgba(0, 0, 0, 0.1);
+    display: block;
+    margin: 0 calc(-1 * var(--ifm-pre-padding));
+    padding: 0 var(--ifm-pre-padding);
+  }
+  
+  [data-theme='dark'] .docusaurus-highlight-code-line {
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+  
+  body, h1, h2, h3, h4, h5, p {
+    font-family: "Avenir Next", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1 {
+    font-size: var(--h1);
+    font-weight: 600;
+  }
+
+  h2 {
+    font-size: var(--h2);
+    font-weight: 500;
+    color: var(--text-color);
+  }
+
+  h3 {
+    font-size: var(--h3);
+    font-weight: 500;
+  }
+
+  h4 {
+    font-size: var(--h4);
+    font-weight: 500;
+  }
+
+  h5 {
+    font-size: var(--h5);
+    font-weight: 500;
+  }
+
+  p {
+    font-size: var(--p);
+  }
+
+  .navbar {
+    &__logo {
+      margin-right: var(--md);
+    }
+    &__brand {
+      font-size: var(--h4);
+      font-weight: 600;
+    }
+  }
+  
