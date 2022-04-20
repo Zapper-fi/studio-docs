@@ -14,6 +14,10 @@ For example, at the time of writing (April 2022), you could deposit your **CVX/E
 
 Similarly, opportunities for aggregating yield exist on other chains as well. On **Polygon**, you can deposit your **QI/MATIC** pool tokens from **QuickSwap** in the same way.
 
+## Familiarize with the contributing guidelines and code of conduct
+
+In order to maintain a high level of quality in our codebase and promote healthy discussions, please first read the [Contributing Guidelines](https://github.com/Zapper-fi/studio/blob/main/CONTRIBUTING.md) and the [Code of Conduct](https://github.com/Zapper-fi/studio/blob/main/CODE_OF_CONDUCT.md).
+
 ## Fork the Zapper.fi Studio Repo
 
 Visit the [Zapper Studio](https://github.com/Zapper-fi/studio) GitHub repository, then click the **Fork** button at the top-right.
