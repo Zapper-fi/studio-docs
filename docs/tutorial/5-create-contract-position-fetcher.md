@@ -19,7 +19,7 @@ As a little rule of thumb, you likely won't be able to manually add these positi
 
 In the Zapper API, a `ContractPositionFetcher` class dynamically lists a single group of contract positions. Groups of contract positions share common properties, such as APYs for **SushiSwap** farms, or collateralization limits for **Alchemix** alchemists. As such, we declare unique strategy classes for each contract position group that we want to index in Zapper.
 
-## Fill out the token fetcher
+## Implement the contract position fetcher
 
 In the previous section, we already generated the boilerplate having correctly configured the `groups` in our app definition file.
 

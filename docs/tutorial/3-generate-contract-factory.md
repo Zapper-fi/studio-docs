@@ -16,10 +16,14 @@ For the **Pickle Finnace** app, we'll need the ABI for the **Jar** tokens that w
 
 Once copied, we'll save the JSON in `src/pickle/contracts/abi/pickle-jar.json`.
 
+We'll need the same for [any Pickle farm on Etherscan](https://etherscan.io/address/0xf5bd1a4894a6ac1d786c7820bc1f36b1535147f6). Save the ABI from here to `src/pickle/contracts/abi/pickle-gauge.json`.
+
 ## Generate the contract factory class
 
 In your terminal, run `yarn studio generate:contract-factory pickle`. This command will generate TypeChain interfaces for all contract ABIs you have in the `src/pickle/contracts/abi` directory, and generate our injectable `PickleContractFactory` convenience class in `src/pickle/contracts/index.ts`.
 
-![Copy the ABI](../../static/img/tutorial/generate-contract-factory.png)
+![Generate Factory](../../static/img/tutorial/generate-contract-factory.png)
+
+If you add more ABIs in the future, simply save the JSON in the `abis` directory like in the previous step, and re-run the CLI script to regenerate the contract factory and types.
 
 We're done here! In the next section, we'll use this contract to list out Pickle jar tokens in our application.

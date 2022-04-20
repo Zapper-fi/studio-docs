@@ -25,7 +25,7 @@ Our codegen utilities will automatically generate the boilerplate for these fetc
 
 You'll notice that in each of your supported networks, the codegen utility has generated a jar token fetcher, a farm contract position fetcher, and a balance fetcher. We'll go into these individual files over the course of this tutorial.
 
-## Fill out the token fetcher
+## Implement the token fetcher
 
 Let's open `src/apps/pickle/ethereum/pickle.jar.token-fetcher.ts`. The skeleton has been assembled for you, and you'll now need to fill in the contents of the `getPositions` method in the `EthereumPickleJarTokenFetcher`.
 
