@@ -10,7 +10,7 @@ const config = {
   tagline: "Zapper Externalized App Integrations",
   url: "https://studio.zapper.fi",
   baseUrl: "/",
-  onBrokenLinks: "throw",
+  onBrokenLinks: "warn",
   onBrokenMarkdownLinks: "warn",
   favicon: "img/favicon.ico",
   organizationName: "Zapper-fi",
