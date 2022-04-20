@@ -1,5 +1,6 @@
 {
-    "label": "Data APIs",
-    "position": 3
-  }
+  "label": "Data APIs",
+  "position": 3,
+  "className": "hide"
+}
   
