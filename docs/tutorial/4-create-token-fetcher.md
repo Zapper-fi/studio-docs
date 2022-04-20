@@ -1,5 +1,5 @@
 ---
-sidebar_position: 3
+sidebar_position: 4
 ---
 
 # Create a token fetcher
@@ -311,7 +311,7 @@ export class EthereumPickleJarTokenFetcher implements PositionFetcher<AppTokenPo
 }
 ```
 
-We're almost there! Now we just need to tell Zapper how to render this token on our application.
+We're almost there! Now we just need to tell Zapper how to render this token in our application.
 
 ## Resolve display properties
 
@@ -551,3 +551,7 @@ Visit `http://localhost:5001/apps/pickle/tokens?groupIds[]=jar&network=ethereum`
   }
 ]
 ```
+
+This implementation works well, but it is a little naive. We have helper classes to simplify building vault tokens. Helpers make implementations easier and more consistent. You can see how a helper could be used for a vault in [Recipes](../recipes/intro.md).
+
+In the next section, we'll look into enumerating **farms** in the same way, with the difference being that farm positions are not tokenized.
