@@ -18,7 +18,7 @@ If you are hitting the rate limit on the Public Key, you should request a privat
 
 These private API keys still have a rate limit, but it is significantly higher than the public API key's. If the rate limit is not sufficient, you may also request a higher rate limit for your API key by via the same ZenDesk ticket link.
 
-<-->
+<!--TODO insert image-->
 
 ## Data Endpoints
 
