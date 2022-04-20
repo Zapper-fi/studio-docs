@@ -34,4 +34,4 @@ Before getting started, you should have basic knowledge of the following develop
 - [Git](https://www.atlassian.com/git/tutorials/what-is-git)
 - [TypeScript](https://www.freecodecamp.org/news/learn-typescript-basics/)
 - [Ethers.js](https://docs.ethers.io/v5/)
-- [Nest.js](https://docs.nestjs.com/)
+- [NestJS](https://docs.nestjs.com/)
