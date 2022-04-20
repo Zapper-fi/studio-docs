@@ -65,9 +65,9 @@ Tokens are investment positions that are represented by a token standard like `E
 
 ### Contract Positions
 
-Contract Positions are investment positions that are _not_ represented by a token standard. It is often these positions that are more difficult to track by simple wallet applications, and this is especially where Zapper shines at decoding these positions from blockchain data. These positions may be used to represent:
+Contract Positions are investment positions that are _not_ represented by a token standard. It is often these positions that are more difficult to track by simple wallet applications, and this is especially where Zapper shines, decoding these positions from blockchain data and showing it to the user in a straightforward manner in their portfolio. These positions may be used to represent:
 
-- Farming positions in **SushiSwap** Master Chef staking contracts
+- Farming pool token positions in **SushiSwap** Master Chef staking contracts
 - Bonds in **Olympus** or other protocols that aim to own their liquidity
 - Leveraged positions in isolated markets like **Abracadabra** cauldrons or **Alchemix** alchemists
 - Claimable airdrops across the Web3 ecosystem!

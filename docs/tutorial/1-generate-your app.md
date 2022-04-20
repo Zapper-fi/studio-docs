@@ -10,9 +10,9 @@ In this guide, we are going to integrate [Pickle Finance](https://pickle.finance
 
 **Pickle** is cross-chain a yield aggregator application that uses **vaults** to auto-compound yield of your underlying tokens.
 
-For example, at the time of writing, you could deposit your **CVX/ETH** pool tokens from **Curve** into a Pickle Jar on Ethereum Mainnet. The jar employs a strategy to deposit these tokens into the **Convex** yield farm, periodically harvest the yield, and buy/stake more pool tokens. As a result, the compounded APY becomes almost **35%**!
+For example, at the time of writing (April 2022), you could deposit your **CVX/ETH** pool tokens from **Curve** into a Pickle Jar on Ethereum Mainnet. The jar employs a strategy to deposit these tokens into the **Convex** yield farm, periodically harvest the yield, and then buy/stake more pool tokens with the yield. As a result, the compounded APY becomes almost **35%**!
 
-Similarly, opportunities for aggregating yield exist on other chains as well. On **Polygon**, you can deposit your **QI/MATIC** tokens from **QuickSwap** in the same way.
+Similarly, opportunities for aggregating yield exist on other chains as well. On **Polygon**, you can deposit your **QI/MATIC** pool tokens from **QuickSwap** in the same way.
 
 ## Fork the Zapper.fi Studio Repo
 

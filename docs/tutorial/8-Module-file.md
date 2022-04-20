@@ -15,7 +15,7 @@ First, we'll import all relevant modules we've defined thus far, for each networ
 
 <!--TODO better explain above and what we are doing -->
 <!--NOTE I removed pickle modules for Arbitrum and Ethereum, as we are not writing for those networks-->
-```
+```ts
 import { Module } from '@nestjs/common';
 
 import { CurveAppModule } from '~apps-v3/curve/curve.module';
@@ -37,7 +37,7 @@ import { PolygonPickleBalanceFetcher } from './polygon/pickle.balance-fetcher';
 
 Next, we'll register these modules with our application
 
-```
+```ts
 import { Module } from '@nestjs/common';
 
 import { CurveAppModule } from '~apps-v3/curve/curve.module';

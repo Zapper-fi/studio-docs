@@ -10,7 +10,7 @@ First, create a file called pickle.balance-fetcher.ts
 In this file, we again will important relevant packages
 <!--TODO explain further -->
 
-```
+```ts
 import { Inject } from '@nestjs/common';
 import { Network } from '@zapper-fi/types/networks';
 
@@ -32,7 +32,7 @@ Next, we'll again define our export class
 <!--get rid of helpers -->
 
 
-```
+```ts
 import { Inject } from '@nestjs/common';
 import { Network } from '@zapper-fi/types/networks';
 
@@ -64,7 +64,7 @@ define getJarBalances first, to get our tokenized positions
 <!--TODO explain further -->
 <!--get rid of helpers -->
 
-```
+```ts
   private async getJarBalances(address: string) {
     return await this.tokenBalanceHelper.getTokenBalances({
       network: Network.POLYGON_MAINNET,
@@ -79,7 +79,7 @@ Next, we'll define how to get balances for our non-tokenized farm positions on P
 <!--TODO explain further -->
 <!--get rid of helpers -->
 
-```
+```ts
 import { Inject } from '@nestjs/common';
 import { Network } from '@zapper-fi/types/networks';
 
@@ -156,7 +156,7 @@ export class PolygonPickleBalanceFetcher implements BalanceFetcherV3 {
 Lastly, we will build response for these balances
 <!--TODO explain further -->
 
-```
+```ts
 import { Inject } from '@nestjs/common';
 import { Network } from '@zapper-fi/types/networks';
 

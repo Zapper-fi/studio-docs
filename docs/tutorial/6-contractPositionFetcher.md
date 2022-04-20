@@ -11,7 +11,7 @@ The first thing we'll do is import relevant packages for the tokenFetcher
 <!--TODO explain packages -->
 <!--TODO remove helper from code -->
 
-``` 
+``` ts
 import { Inject } from '@nestjs/common';
 import { Network } from '@zapper-fi/types/networks';
 
@@ -34,7 +34,7 @@ import { PICKLE_DEFINITION } from '../pickle.definition';
 Next, we will register the positionFetcher with our application
 <!--explain what we are registering -->
 <!--TODO remove helper from code -->
-``` 
+``` ts
 import { Inject } from '@nestjs/common';
 import { Network } from '@zapper-fi/types/networks';
 
@@ -63,7 +63,7 @@ import { PICKLE_DEFINITION } from '../pickle.definition';
 
 Next, we will add in the export class <!--TODO explain this -->
 <!--TODO remove helper from code -->
-``` 
+``` ts
 import { Inject } from '@nestjs/common';
 import { Network } from '@zapper-fi/types/networks';
 
@@ -102,7 +102,7 @@ export class PolygonPickleFarmContractPositionFetcher implements PositionFetcher
 
 Lastly, we will define how the tokenFetcher should get positions, xxxx
 <!--TODO remove helper from code -->
-``` 
+```ts
 import { Inject } from '@nestjs/common';
 import { Network } from '@zapper-fi/types/networks';
 
