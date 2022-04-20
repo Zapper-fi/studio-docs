@@ -10,7 +10,7 @@ As mentioned in the previous section, **Tokens** are investment positions that a
 
 - Liquidity pool positions in a decentralized exchange like **Uniswap**, **SushiSwap**, or **Curve**
 - Autocompounding "vaults" like in a yield aggregator like **Pickle** or **Yearn**
-- Supply and borrow positions in a lending protocol like **Aave**
+- Supply and borrow positions in a lending app like **Aave**
 - Or even more obscure primitives like options in **Opyn** or lottery tickets in **PoolTogether**
 
 ## What is a token fetcher?

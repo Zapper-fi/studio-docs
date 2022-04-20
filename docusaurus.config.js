@@ -7,7 +7,7 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: "Zapper Studio",
-  tagline: "Zapper Open Source App Integrations",
+  tagline: "Zapper Externalized App Integrations",
   url: "https://studio.zapper.fi",
   baseUrl: "/",
   onBrokenLinks: "throw",

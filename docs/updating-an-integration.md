@@ -10,7 +10,7 @@ Apps are constantly generating new capabilities for their users to take advantag
 
 <!--TODO add details -->
 
-## What if I don't see the app I'm looking for in the open source github repository?
+## What if I don't see the app I'm looking for in the github repository?
 
 <!--TODO add details -->
 
