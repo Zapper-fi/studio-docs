@@ -6,8 +6,9 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: "Zapper Studio",
-  tagline: "Zapper Externalized App Integrations",
+  title: "Build on Zapper",
+  plugins: ['docusaurus-plugin-sass'],
+  tagline: " We're opening up integrations to the community. No more waiting on us. Integrate your App with Zapper today.",
   url: "https://studio.zapper.fi",
   baseUrl: "/",
   onBrokenLinks: "warn",
@@ -27,7 +28,7 @@ const config = {
             "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/",
         },
         theme: {
-          customCss: require.resolve("./src/css/custom.css"),
+          customCss: require.resolve("./src/scss/custom.scss"),
         },
       }),
     ],
