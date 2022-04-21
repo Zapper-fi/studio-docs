@@ -19,7 +19,7 @@ In the Zapper API, a `TokenFetcher` class dynamically lists a single group of to
 
 ## Generate boilerplate for your app
 
-Our codegen utilities will automatically generate the boilerplate for these fetchers. Once your `groups` in your definition file have been configured correctly (see the previous lessons in this tutorial), run `yarn studio codegen-app pickle`.
+Our codegen utilities will automatically generate the boilerplate for these fetchers. Once your `groups` in your definition file have been configured correctly (see the previous lessons in this tutorial), run `pnpm studio codegen-app pickle`.
 
 ![Codegen App](../../static/img/tutorial/codegen-app.png)
 
@@ -109,7 +109,7 @@ We can now run our **Pickle** application integration and start manually testing
 ENABLED_APPS=pickle
 ```
 
-Now, we can run the Studio development server in the terminal with `yarn dev`. If it started successfully, you can now open `http://localhost:5001/apps/pickle/tokens?groupIds[]=jar&network=ethereum` in your browser. You should see a list of addresses returned, and if you open any of these addresses in Etherscan, you'll see that they're all Pickle jar tokens. Hooray 🎉!
+Now, we can run the Studio development server in the terminal with `pnpm dev`. If it started successfully, you can now open `http://localhost:5001/apps/pickle/tokens?groupIds[]=jar&network=ethereum` in your browser. You should see a list of addresses returned, and if you open any of these addresses in Etherscan, you'll see that they're all Pickle jar tokens. Hooray 🎉!
 
 ## Resolve standard ERC20 token properties
 
