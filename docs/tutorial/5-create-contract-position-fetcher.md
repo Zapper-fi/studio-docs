@@ -9,7 +9,7 @@ sidebar_position: 5
 As mentioned in the previous section, **Contract Positions** are investment positions that are _not_ represented by a token standard. It is often these positions that are more difficult to track by simple wallet applications, and this is especially where Zapper shines at decoding these positions from blockchain data. These positions may be used to represent:
 
 - Farming positions in **SushiSwap** Master Chef staking contracts
-- Bonds in **Olympus** or other protocols that aim to own their liquidity
+- Bonds in **Olympus** or other apps that aim to own their liquidity
 - Leveraged positions in isolated markets like **Abracadabra** cauldrons or **Alchemix** alchemists
 - Claimable airdrops across the Web3 ecosystem!
 

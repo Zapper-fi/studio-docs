@@ -6,7 +6,7 @@ sidebar_position: 7
 
 ## What is TVL?
 
-**TVL** stands for _total value locked_. It is the total amount of staked cryptocurrency within a protocol that is actively earning interest, being used as collateral, and so on. Let's take a look at a few examples:
+**TVL** stands for _total value locked_. It is the total amount of staked cryptocurrency within an app that is actively earning interest, being used as collateral, and so on. Let's take a look at a few examples:
 
 - The TVL in **Uniswap V2** is the total amount of trading liquidity across all of its liquidity pools
 - The TVL in **Aave V2** is the total amount of supplied collateral across the Aave V2 market
