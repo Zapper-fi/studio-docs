@@ -14,9 +14,9 @@ For the **Pickle Finnace** app, we'll need the ABI for the **Jar** tokens that w
 
 ![Copy the ABI](../../static/img/tutorial/copy-abi.png)
 
-Once copied, we'll save the JSON in `src/pickle/contracts/abi/pickle-jar.json`.
+Once copied, we'll save the JSON in `src/apps/pickle/contracts/abi/pickle-jar.json`.
 
-We'll need the same for [any Pickle farm on Etherscan](https://etherscan.io/address/0xf5bd1a4894a6ac1d786c7820bc1f36b1535147f6). Save the ABI from here to `src/pickle/contracts/abi/pickle-gauge.json`.
+We'll need the same for [any Pickle farm on Etherscan](https://etherscan.io/address/0xf5bd1a4894a6ac1d786c7820bc1f36b1535147f6). Save the ABI from here to `src/apps/pickle/contracts/abi/pickle-gauge.json`.
 
 ## Generate the contract factory class
 
