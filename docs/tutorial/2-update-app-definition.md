@@ -78,9 +78,13 @@ As a little rule of thumb, you likely won't be able to manually add these positi
 
 In this guide, we will integrate Pickle **Jars** and **Farms**.
 
-Jar deposits are represented by an ERC20 token that _wraps_ the underlying token being deposited. Farms, however, are _not_ represented by a token. Let's update the `groups` entry in our app definition to express these positions:
+Jar deposits are represented by an ERC20 token that _wraps_ the underlying token being deposited. Farms, however, are _not_ represented by a token. Let's import the `GroupType` object and update the `groups` entry in our app definition to express these positions:
 
 ```ts
+// Import the GroupType in order to leverage it in our definition
+import { GroupType } from '~app/app.interface';
+
+//...
 export const PICKLE_DEFINITION = {
   // ...
   groups: {
