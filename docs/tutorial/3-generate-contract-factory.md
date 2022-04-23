@@ -20,7 +20,7 @@ We'll need the same for [any Pickle farm on Etherscan](https://etherscan.io/addr
 
 ## Generate the contract factory class
 
-In your terminal, run `pnpm studio generate:contract-factory pickle`. This command will generate TypeChain interfaces for all contract ABIs you have in the `src/pickle/contracts/abi` directory, and generate our injectable `PickleContractFactory` convenience class in `src/pickle/contracts/index.ts`.
+In your terminal, run `pnpm studio generate:contract-factory pickle`. This command will generate TypeChain interfaces for all contract ABIs you have in the `src/apps/pickle/contracts/abi` directory, and generate our injectable `PickleContractFactory` convenience class in `src/apps/pickle/contracts/index.ts`.
 
 ![Generate Factory](../../static/img/tutorial/generate-contract-factory.png)
 
