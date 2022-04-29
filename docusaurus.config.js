@@ -7,8 +7,21 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: "Build on Zapper",
-  plugins: ['docusaurus-plugin-sass'],
-  tagline: " We're opening up integrations to the community. No more waiting on us. Integrate your App with Zapper today.",
+  plugins: [
+    "docusaurus-plugin-sass",
+    [
+      "docusaurus-plugin-remote-content",
+      {
+        // options here
+        name: "studio-changelog",
+        sourceBaseUrl: "https://raw.githubusercontent.com/Zapper-fi/studio/main/",
+        outDir: "docs", // the base directory to output to.
+        documents: ["CHANGELOG.md"], // the file names to download
+      },
+    ],
+  ],
+  tagline:
+    " We're opening up integrations to the community. No more waiting on us. Integrate your App with Zapper today.",
   url: "https://studio.zapper.fi",
   baseUrl: "/",
   onBrokenLinks: "warn",
