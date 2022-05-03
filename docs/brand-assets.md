@@ -1,17 +1,18 @@
-# Brand Assets
+# Zapper Brand Assets
 
 ## Download
 
-Get the all of the Zapper assets as svgs at the download below. 
+[Get the all of the Zapper assets as svgs in the zip file below.](./../static/img/assets/zapper_brand_assets.zip)
 
-{% file src="../.gitbook/assets/zapper\_brand\_assets \(2\).zip" caption="Zapper Brand Assets" %}
+
+
 
 ### Brand Examples
 
-![Zapper Official Logo](../.gitbook/assets/group-24-5-.png)
+![Zapper Official Logo](../static/img/assets/group-24-5-.png)
 
-![API integration logo - Gray](../.gitbook/assets/power-zap-gray.svg)
+![API integration logo - Gray](../static/img/assets/power-zap-gray.svg)
 
-![API integration logo - Black](../.gitbook/assets/power-zap-black.svg)
+![API integration logo - Black](../static/img/assets/power-zap-black.svg)
 
-![API integration logo - Purple](../.gitbook/assets/power-zap-purple.svg)
+![API integration logo - Purple](../static/img/assets/power-zap-purple.svg)

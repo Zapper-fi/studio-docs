@@ -4,10 +4,9 @@ sidebar_position: 3
 
 # Smart Contracts
 
-[**Zap**](https://learn.zapper.fi/articles/what-is-a-zap)** **contracts** **make it easy for anyone to interact with complex DeFi protocols.
+[**Zap contracts**](https://learn.zapper.fi/articles/what-is-a-zap) make it easy for anyone to interact with complex DeFi protocols.
 
-{% tabs %}
-{% tab title="Ethereum" %}
+## Ethereum
 These contracts are currently deployed on Ethereum mainnet and are used by [Zapper.fi](https://zapper.fi) and other DeFi projects. The recommended way to interact with these contracts is via the [Transactions API](../zapper-api/api-guides/#transactions-api).
 
 | Contract                   | Address                                                                                                                    | Version |
@@ -37,9 +36,8 @@ These contracts are currently deployed on Ethereum mainnet and are used by [Zapp
 | Compound Add/Remove        | [0xe5e8506a590766d738d80affc6b5e538c4b92f82](https://etherscan.io/address/0xe5e8506a590766d738d80affc6b5e538c4b92f82)      | 1.0     |
 | Aave Add/Remove            | [0x2801a71605b5E25816235C7f3Cb779F4c9dD60Ee](https://etherscan.io/address/0x2801a71605b5e25816235c7f3cb779f4c9dd60ee)      | 1.0.2   |
 | Alpha Homora Earn          | [0x8a0a04f0bed364ccba553b79b01072dcf4ee153b](https://etherscan.io/address/0x8a0a04f0bed364ccba553b79b01072dcf4ee153b)      | 1.0     |
-{% endtab %}
 
-{% tab title="Polygon" %}
+## Polygon
 These contracts are currently deployed on Polygon (Matic) and are used by [Zapper.fi](https://zapper.fi) and other DeFi projects. The recommended way to interact with these contracts is via the [Transactions API](../zapper-api/api-guides/#transactions-api).
 
 | Contract         | Address                                                                                                                                               | Version |
@@ -49,22 +47,18 @@ These contracts are currently deployed on Polygon (Matic) and are used by [Zappe
 | Quickswap Add    | [0xF231be40d73a9E73d859955344A4fF74f448dF34](https://explorer-mainnet.maticvigil.com/address/0xF231be40d73a9E73d859955344A4fF74f448dF34/transactions) | 2.0     |
 | Quickswap Remove | [0x6d608C51C198c728C0A00bfDFA8fef5D57fF4424](https://polygonscan.com/address/0x6d608c51c198c728c0a00bfdfa8fef5d57ff4424)                              | 2.0     |
 | Aave Add         | [0x8DfDea6A4818d2AA7463edB9A8841cB0c04255aF](https://polygonscan.com/address/0x8dfdea6a4818d2aa7463edb9a8841cb0c04255af)                              | 1.0.2   |
-{% endtab %}
 
-{% tab title="BSC" %}
+## Binance Smart Chain
 These contracts are currently deployed on BSC (Binance Smart Chain) and are used by [Zapper.fi](https://zapper.fi) and other DeFi projects. The recommended way to interact with these contracts is via the [Transactions API](../zapper-api/api-guides/#transactions-api).
 
 | Contract           | Address                                                                                                              | Version |
 | ------------------ | -------------------------------------------------------------------------------------------------------------------- | ------- |
 | PancakeSwap Add    | [0x25d9Fa3DA06422EC5306A85545f0F30646D30eCd](https://bscscan.com/address/0x25d9fa3da06422ec5306a85545f0f30646d30ecd) | 3.1     |
 | PancakeSwap Remove | [0x4bF331Aa2BfB0869315fB81a350d109F4839f81b](https://bscscan.com/address/0x4bF331Aa2BfB0869315fB81a350d109F4839f81b) | 3.0     |
-{% endtab %}
 
-{% tab title="Avalanche" %}
+## Avalanche
 | Contract              | Address                                                                                                                                            | Version |
 | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
 | TraderJoe Add         | [0x8308a1A404dB3cB3075618B1651671bC4E15F9d5](https://cchain.explorer.avax.network/address/0x8308a1A404dB3cB3075618B1651671bC4E15F9d5/transactions) | 1.0     |
 | TraderJoe Remove      | [0x60b7072e83C2965ae5F190427Dc1EEdf477A1588](https://cchain.explorer.avax.network/address/0x60b7072e83C2965ae5F190427Dc1EEdf477A1588/transactions) | 1.0     |
 | Wonderland Add/Remove | [0x19df95E50310852CCD16d2BadbF73419eb837c1b](https://cchain.explorer.avax.network/address/0x19df95E50310852CCD16d2BadbF73419eb837c1b/transactions) | 1.0     |
-{% endtab %}
-{% endtabs %}
