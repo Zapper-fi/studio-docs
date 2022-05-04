@@ -36,11 +36,11 @@ export default function Home(): JSX.Element {
         <div
           className="container"
           style={{
-            padding: "36px 0",
+            padding: "16px 0",
             borderTop: "2px solid var(--ifm-footer-background-color)",
           }}
         >
-          <h6>
+          <h6 style={{ margin: 0 }}>
             Looking to request for an integration instead?{" "}
             <a
               href="https://zapper.canny.io/"
