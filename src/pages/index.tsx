@@ -33,6 +33,25 @@ export default function Home(): JSX.Element {
       <HomepageHeader />
       <main>
         <HomepageFeatures />
+        <div
+          className="container"
+          style={{
+            padding: "16px 0",
+            borderTop: "2px solid var(--ifm-footer-background-color)",
+          }}
+        >
+          <h6 style={{ margin: 0 }}>
+            Looking to request for an integration instead?{" "}
+            <a
+              href="https://zapper.canny.io/"
+              className="text-link"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Head to Canny to upvote
+            </a>
+          </h6>
+        </div>
       </main>
     </Layout>
   );

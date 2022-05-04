@@ -14,7 +14,8 @@ const config = {
       {
         // options here
         name: "studio-changelog",
-        sourceBaseUrl: "https://raw.githubusercontent.com/Zapper-fi/studio/main/",
+        sourceBaseUrl:
+          "https://raw.githubusercontent.com/Zapper-fi/studio/main/",
         outDir: "docs", // the base directory to output to.
         documents: ["CHANGELOG.md"], // the file names to download
       },
@@ -74,8 +75,16 @@ const config = {
             title: "Docs",
             items: [
               {
-                label: "Tutorial",
+                label: "API Documentation",
+                to: "/docs/apis/getting-started",
+              },
+              {
+                label: "App Integration Tutorial",
                 to: "/docs/intro",
+              },
+              {
+                label: "Brand Assets",
+                to: "/docs/brand-assets",
               },
             ],
           },
@@ -97,7 +106,7 @@ const config = {
             items: [
               {
                 label: "GitHub",
-                href: "https://github.com/Zapper-fi",
+                href: "https://github.com/Zapper-fi/studio",
               },
             ],
           },
