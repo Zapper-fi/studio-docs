@@ -25,7 +25,7 @@ const FeatureList: FeatureItem[] = [
     ),
   },
   {
-    title: "Recipes and helpers",
+    title: "Recipes and Helpers",
     Svg: require("@site/static/img/undraw_docusaurus_react.svg").default,
     description: (
       <>
