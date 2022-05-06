@@ -6,7 +6,7 @@ sidebar_position: 1
 
 ## What is this?
 
-In May 2022, [Zapper](https://zapper.fi) began the process of exposing all of the app / protocol integrations we had done interally over the prior 2 years. Why?
+In May 2022, [Zapper](https://zapper.fi) began the process of exposing all of the app / protocol integrations we had done internally over the prior 2 years. Why?
 
 - The Web3 ecosystem is growing **faster than we can keep up**, particularly the long-tail of smaller apps. We were turning into a bottleneck.
 - Developers of Web3 applications are much **more knowledgeable about their own apps**, and were offering to integrate their apps on our behalf.
