@@ -34,5 +34,5 @@ This API returns a transaction object which includes all of the contextual data 
 :::tip
 To learn and see all of Zapper's public API endpoints, check out the [Swagger UI](https://api.zapper.fi/api/static/index.html#/) page. 
 
-For any API-related inquiries, please reach out in the [#build-on-zapper channel](https://discord.com/channels/647279669388771329/650654989202489354) in the [Zapper Discord](https://zapper.fi/discord).
+For any API-related inquiries, please reach out in the [#api-buildooorrs channel](https://discord.com/channels/647279669388771329/650654989202489354) in the [Zapper Discord](https://zapper.fi/discord).
 :::

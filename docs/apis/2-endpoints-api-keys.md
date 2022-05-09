@@ -27,5 +27,5 @@ You can test the available endpoints on Swagger by entering an API key (public o
 ![Enter API key into the authorize section](../../static/img/assets/swagger-auth.png)
 
 :::info
-For any API related inquiries, please reach out in the [#build-on-zapper channel](https://discord.com/channels/647279669388771329/650654989202489354) in the [Zapper Discord](https://zapper.fi/discord).
+For any API related inquiries, please reach out in the [#api-buildooorrs channel](https://discord.com/channels/647279669388771329/650654989202489354) in the [Zapper Discord](https://zapper.fi/discord).
 :::
