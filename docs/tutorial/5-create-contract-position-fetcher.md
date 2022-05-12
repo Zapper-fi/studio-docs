@@ -19,9 +19,13 @@ As a little rule of thumb, you likely won't be able to manually add these positi
 
 In the Zapper API, a `ContractPositionFetcher` class dynamically lists a single group of contract positions. Groups of contract positions share common properties, such as APYs for **SushiSwap** farms, or collateralization limits for **Alchemix** alchemists. As such, we declare unique strategy classes for each contract position group that we want to index in Zapper.
 
-## Implement the contract position fetcher
+## Generate a contract position fetcher
 
-In the previous section, we already generated the boilerplate having correctly configured the `groups` in our app definition file.
+Our codegen utilities will automatically generate the boilerplate for a contract position fetcher. Run `pnpm studio create-contract-position-fetcher pickle`. When prompted for the group, select `farm`, and when prompted for the network, select `ethereum`.
+
+![Create Contract Position Fetcher](../../static/img/tutorial/create-contract-position-fetcher.png)
+
+## Implement the contract position fetcher
 
 Let's open `src/apps/pickle/ethereum/pickle.farm.contract-position-fetcher.ts`. The skeleton has been assembled for you, and you'll now need to fill in the contents of the `getPositions` method in the `EthereumPickleFarmContractPositionFetcher`.
 

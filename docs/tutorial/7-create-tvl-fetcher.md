@@ -20,9 +20,15 @@ In the Zapper API, a `TVLFetcher` class is an adapter that retrieves the TVL of 
 
 If you're implementing a `TVLFetcher` in Zapper, you might have good success looking at implementations in the impressive library built out by the [DefiLlama Team](https://github.com/DefiLlama/DefiLlama-Adapters). 
 
+## Generate a TVL fetcher
+
+Our codegen utilities will automatically generate the boilerplate for a TVL fetcher. Run `pnpm studio create-tvl-fetcher pickle`. When prompted for the network, select `ethereum`.
+
+![Create TVL Fetcher](../../static/img/tutorial/create-balance-fetcher.png)
+
 ## Implement the TVL fetcher
 
-Let's create a new file in `src/apps/pickle/ethereum/pickle.tvl-fetcher.ts`, and let's populate it with some boilerplate:
+Let's open `src/apps/pickle/ethereum/pickle.tvl-fetcher.ts`. The skeleton has been assembled for you, and you'll need to fill in the contents of the `getTvl` method in the `EthereumPickleTvlFetcher` class.
 
 ```ts
 import { Inject } from '@nestjs/common';
