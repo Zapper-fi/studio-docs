@@ -78,9 +78,11 @@ As a little rule of thumb, you likely won't be able to manually add these positi
 
 In this guide, we will integrate Pickle **Jars** and **Farms**.
 
-Jar deposits are represented by an ERC20 token that _wraps_ the underlying token being deposited. Farms, however, are _not_ represented by a token. Let's import the `GroupType` object and update the `groups` entry in our app definition to express these positions.
+Jar deposits are represented by an ERC20 token that _wraps_ the underlying token being deposited. Farms, however, are _not_ represented by a token. 
 
-Additionally, let's add a label to these groups.
+Our CLI allows us to quickly add groups to an existing app. Run `yarn studio create-group pickle`, and follow the prompts. For Jar tokens, we'll configure the ID to `jar`, the label to `Jars`, and the type to `token`. For farms, we'll configure the ID to `farm`, the label to `Farms`, and the type to `contract-position`.
+
+You will see the `groups` entry in our app definition updated to express these positions.
 
 ```ts
 // Import the GroupType in order to leverage it in our definition
@@ -90,8 +92,17 @@ import { GroupType } from '~app/app.interface';
 export const PICKLE_DEFINITION = {
   // ...
   groups: {
-    jar: { id: 'jar', type: GroupType.TOKEN, label: 'Jars' },
-    farm: { id: 'farm', type: GroupType.POSITION, label: 'Farms' },
+    jar: {
+      id: 'jar',
+      type: GroupType.TOKEN,
+      label: 'Jars',
+    },
+
+    farm: {
+      id: 'farm',
+      type: GroupType.POSITION,
+      label: 'Farms',
+    },
   },
   // ...
 };

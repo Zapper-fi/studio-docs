@@ -17,13 +17,11 @@ As mentioned in the previous section, **Tokens** are investment positions that a
 
 In the Zapper API, a `TokenFetcher` class dynamically lists a single group of tokens. Groups of tokens share common properties, such as APYs for **Pickle** vault tokens, or fees for **Uniswap** pool tokens. As such, we declare unique strategy classes for each token group that we want to index in Zapper.
 
-## Generate boilerplate for your app
+## Generate a token fetcher
 
-Our codegen utilities will automatically generate the boilerplate for these fetchers. Once your `groups` in your definition file have been configured correctly (see the previous lessons in this tutorial), run `pnpm studio codegen-app pickle`.
+Our codegen utilities will automatically generate the boilerplate for a token fetcher. Run `pnpm studio create-token-fetcher pickle`. When prompted for the group, select `jar`, and when prompted for the network, select `ethereum`.
 
-![Codegen App](../../static/img/tutorial/codegen-app.png)
-
-You'll notice that in each of your supported networks, the codegen utility has generated a jar token fetcher, a farm contract position fetcher, and a balance fetcher. We'll go into these individual files over the course of this tutorial.
+![Create Token Fetcher](../../static/img/tutorial/create-token-fetcher.png)
 
 ## Implement the token fetcher
 

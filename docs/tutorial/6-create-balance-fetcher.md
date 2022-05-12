@@ -17,9 +17,13 @@ Easy! We'll build a `BalanceFetcher` that will give Pickle balances for any addr
 
 In the Zapper API, a `BalanceFetcher` class returns balances for the tokens and contract positions (indexed from `TokenFetcher` and `ContractPositionFetcher` classes) of an application.
 
-## Implement the balance fetcher
+## Generate a contract position fetcher
 
-In the previous sections, we already generated the boilerplate for our balance fetchers.
+Our codegen utilities will automatically generate the boilerplate for a balance fetcher. Run `pnpm studio create-balance-fetcher pickle`. When prompted for the network, select `ethereum`.
+
+![Create Contract Position Fetcher](../../static/img/tutorial/create-balance-fetcher.png)
+
+## Implement the balance fetcher
 
 Let's open `src/apps/pickle/ethereum/pickle.balance-fetcher.ts`. The skeleton has been assembled for you, and you'll need to fill in the contents of the `getBalances` method in the `EthereumPickleBalanceFetcher` class.
 
