@@ -14,7 +14,7 @@ const FeatureList: FeatureItem[] = [
     Svg: require("@site/static/img/undraw_docusaurus_mountain.svg").default,
     description: (
     <>
-      Over 1,000,0000 users manage their portfolio with Zapper each month, 
+      Over 1M users manage their portfolio with Zapper each month, 
       and they want to see all their balances in one place. By integrating your app, users will be able to monitor and update their portfolio in Zapper
     </>
     ),
@@ -24,8 +24,8 @@ const FeatureList: FeatureItem[] = [
     Svg: require("@site/static/img/undraw_docusaurus_tree.svg").default,
     description: (
       <>
-         Zapper drives discovery, through our investment discovery pages, app discovery, 
-         looking at other users’ portfolios and through apps using Zapper’s balance data via API
+         Zapper drives app discovery, through our pages focused on investing, apps, and tokens, 
+         through apps that build on our APIs, and through users looking up wallets on Zapper. Integrate with Zapper to get discovered
       </>
     ),
   },
