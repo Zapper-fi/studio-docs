@@ -8,9 +8,9 @@ In DeFi, a **Vault Token** represents an _auto-compounding_ tokenized position. 
 
 Instead, protocols like **Yearn** build **Vault Tokens** to lump users' funds together, deposit them into a yield-bearing strategy, and periodically harvest the rewards. The harvested rewards are sold to buy more of the deposited token, resulting in the user's deposit increasing over time.
 
-## Using the `SingleVaultTokenHelper`
+## Using the `VaultTokenHelper`
 
-The `SingleVaultTokenHelper` helper class can be used to build an `AppToken` for a vault token group. In this example, we'll look at `xJOE`, which is a vault token that progressively gives the holder an increasing amount of `JOE` token over time.
+The `VaultTokenHelper` helper class can be used to build a list of `AppToken` objects for a vault token group. In this example, we'll look at `xJOE`, which is a vault token that progressively gives the holder an increasing amount of `JOE` token over time.
 
 First, let's generate a new token fetcher with `yarn studio create-token-fetcher trader-joe`. When prompted for a group, select `Create New`, then enter `x-joe` as the ID and `xJOE` as the label. When prompted for a network, select `avalanche`.
 
@@ -45,13 +45,13 @@ export class AvalancheTraderJoeXJoeTokenFetcher implements PositionFetcher<AppTo
 }
 ```
 
+## Reference the helper class through the AppToolkit
+
 We'll use the `VaultTokenHelper` helper class registered in our `AppToolkit` to quickly build the vault tokens. We'll call the `getTokens` method on this helper class, and pass in the generated **Ethers** contract interface for the xJOE token.
 
 ```ts
 @Register.TokenPositionFetcher({ appId, groupId, network })
 export class AvalancheTraderJoeXJoeTokenFetcher implements PositionFetcher<AppTokenPosition> {
-  // ...
-
   async getPositions() {
     return this.appToolkit.helpers.vaultTokenHelper.getTokens<TraderJoeXJoe>({
       // ...
@@ -60,13 +60,13 @@ export class AvalancheTraderJoeXJoeTokenFetcher implements PositionFetcher<AppTo
 }
 ```
 
-we'll specify our `appId`, `groupId`, and `network` identifiers. These should match the values specified in the `@Register.TokenPositionFetcher` decorator.
+## Add `appId`, `groupId`, and `network` parameters
+
+We'll specify our `appId`, `groupId`, and `network` identifiers. These should match the values specified in the `@Register.TokenPositionFetcher` decorator.
 
 ```ts
 @Register.TokenPositionFetcher({ appId, groupId, network })
 export class AvalancheTraderJoeXJoeTokenFetcher implements PositionFetcher<AppTokenPosition> {
-  // ...
-
   async getPositions() {
     return this.appToolkit.helpers.vaultTokenHelper.getTokens<TraderJoeXJoe>({
       appId: TRADER_JOE_DEFINITION.id,
@@ -77,6 +77,8 @@ export class AvalancheTraderJoeXJoeTokenFetcher implements PositionFetcher<AppTo
   }
 }
 ```
+
+## Add `resolveContract` parameter
 
 We'll use the `resolveContract` method as a factory that returns an instance of the `TraderJoeXJoe` contract for a given address and network.
 
@@ -96,6 +98,8 @@ export class AvalancheTraderJoeXJoeTokenFetcher implements PositionFetcher<AppTo
   }
 }
 ```
+
+## Add `resolveVaultAddresses` parameter
 
 We'll use the `resolveVaultAddresses` method as a factory that returns the addresses of the vault tokens that should be part of this group. In the case of `xJOE`, we only have one token. In other cases, you may have many more, and they may be resolved from outside sources like APIs, or smart contracts that serve as an address registry.
 
@@ -117,6 +121,8 @@ export class AvalancheTraderJoeXJoeTokenFetcher implements PositionFetcher<AppTo
 }
 ```
 
+## Add `resolveUnderlyingTokenAddress` parameter
+
 We'll use the `resolveUnderlyingTokenAddress` method as a way to indicate how to retrieve the underlying token for the vault token(s). In the case of `xJOE`, we'll call the `joe()` method on the contract instance.
 
 ```ts
@@ -137,6 +143,8 @@ export class AvalancheTraderJoeXJoeTokenFetcher implements PositionFetcher<AppTo
   }
 }
 ```
+
+## Add `resolveReserve` parameter
 
 We'll use `resolveReserve` to determine the amount of the underlying token that is in this vault. Sometimes, the contract will expose a convenience method to retrieve this balance. Often, the underlying token balance is even held by a different smart contract. In the case of `xJOE`, we'll need to use an `ERC20` Ethers contract instance to retrieve the balance using `balanceOf`. 
 
@@ -164,7 +172,9 @@ export class AvalancheTraderJoeXJoeTokenFetcher implements PositionFetcher<AppTo
 }
 ```
 
-Lastly, we'll resolve the ratio between the price of the vault token and the price of the underlying token. In the case of Yearn tokens, there's a convenience method called `pricePerShare()` that can be used to resolve the ratio (in units of wei). In the case of `xJOE`, we'll simply divide the reserve amount by the vault token supply to get the ratio.
+## Add `resolvePricePerShare` parameter
+
+Lastly, we'll resolve the ratio between the price of the vault token and the price of the underlying token using `resolvePricePerShare`. In the case of Yearn tokens, there's a convenience method called `pricePerShare()` that can be used to resolve the ratio (in units of wei). In the case of `xJOE`, we'll simply divide the reserve amount by the vault token supply to get the ratio.
 
 ```ts
 @Register.TokenPositionFetcher({ appId, groupId, network })
