@@ -1,8 +1,8 @@
 ---
-sidebar_position: 2
+sidebar_position: 3
 ---
 
-# Single Staking Farm
+# Curve Gauge Single Staking Farm
 
 Web3 applications often incentivize holding tokens through _yield farming_. A **Single Staking Farm** is a smart contract that allows a user to deposit a single token and accumulate rewards over time. These rewards are claimable through the same smart contract interface.
 
@@ -328,4 +328,59 @@ export class EthereumCurveFarmContractPositionFetcher implements PositionFetcher
 }
 ```
 
-We're done! The helper will do most of the work for you to build the farm contract positions.
+## Simplify implementation using helpers
+
+Now that we know how things work, we'll just replace some of our implementations with helper classes that are available.
+
+```ts
+@Register.ContractPositionFetcher({ appId, groupId, network })
+export class EthereumCurveFarmContractPositionFetcher implements PositionFetcher<ContractPosition> {
+  constructor(
+    @Inject(APP_TOOLKIT) private readonly appToolkit: IAppToolkit,
+    @Inject(CurveContractFactory)
+    private readonly curveContractFactory: CurveContractFactory,
+    @Inject(CurveGaugeRoiStrategy)
+    private readonly curveGaugeRoiStrategy: CurveGaugeRoiStrategy,
+    @Inject(CurveGaugeIsActiveStrategy)
+    private readonly curveGaugeIsActiveStrategy: CurveGaugeIsActiveStrategy,
+    @Inject(CurveFactoryGaugeAddressHelper)
+    private readonly curveFactoryGaugeAddressHelper: CurveFactoryGaugeAddressHelper,
+  ) {}
+
+  async getPositions() {
+    return this.appToolkit.helpers.singleStakingFarmContractPositionHelper.getContractPositions<CurveNGauge>({
+      network,
+      appId,
+      groupId,
+      dependencies: [{ appId: CURVE_DEFINITION.id, groupIds: [CURVE_DEFINITION.groups.pool.id], network }],
+      resolveFarmAddresses: async () => this.curveFactoryGaugeAddressHelper.getGaugeAddresses({
+        factoryAddress: '0xb9fc157394af804a3578134a6585c0dc9cc990d4',
+        network,
+      }),
+      resolveFarmContract: ({ address, network }) => this.curveContractFactory.curveNGauge({ address, network }),
+      resolveStakedTokenAddress: ({ contract, multicall }) => multicall.wrap(contract).lp_token(),
+      resolveRewardTokenAddresses: async ({ contract, multicall }) => {
+        const bonusRewardTokenAddress = await multicall.wrap(contract).reward_tokens(0);
+        return [CRV_TOKEN_ADDRESS, bonusRewardTokenAddress].filter(v => v !== ZERO_ADDRESS);
+      },
+      resolveTotalValueLocked: ({ contract, multicall }) => multicall.wrap(contract).totalSupply(),
+      resolveIsActive: this.curveGaugeIsActiveStrategy.build({
+        resolveInflationRate: ({ contract, multicall }) => multicall.wrap(contract).inflation_rate(),
+      }),
+      resolveRois: this.curveGaugeRoiStrategy.build<CurveNGauge, CurveController>({
+        resolveControllerContract: ({ network }) =>
+          this.curveContractFactory.curveController({
+            address: '0x2f50d538606fa9edd2b11e2446beb18c9d5846bb',
+            network,
+          }),
+        resolveInflationRate: ({ gaugeContract, multicall }) => multicall.wrap(gaugeContract).inflation_rate(),
+        resolveWorkingSupply: ({ gaugeContract, multicall }) => multicall.wrap(gaugeContract).working_supply(),
+        resolveRelativeWeight: ({ controllerContract, multicall, address }) =>
+          multicall.wrap(controllerContract)['gauge_relative_weight(address)'](address),
+      }),
+    });
+  }
+}
+```
+
+We're done!
