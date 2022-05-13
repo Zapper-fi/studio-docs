@@ -30,7 +30,7 @@ const FeatureList: FeatureItem[] = [
     ),
   },
   {
-    title: "Rapid Scaffolding, Recipes and Helpers",
+    title: "Rapid Scaffolding and Recipes",
     Svg: require("@site/static/img/undraw_docusaurus_react.svg").default,
     description: (
       <>
