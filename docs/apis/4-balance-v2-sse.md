@@ -9,7 +9,7 @@ aggregating balances from various web3 protocols in a relatively simple
 manner.
 
 When fetching all the balances for a given address, we recommend using
-the balance streamer endpoint `/v1/balances-v3`. This endpoint
+the balance streamer endpoint `/v2/balances`. This endpoint
 uses streaming and server sent events under the hood.
 
 Consumption of this endpoint is different than a typical RESTful endpoint.
