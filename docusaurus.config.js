@@ -57,10 +57,22 @@ const config = {
         },
         items: [
           {
-            type: "doc",
-            docId: "intro",
             position: "left",
             label: "Tutorial",
+            to: "docs/intro",
+            activeBaseRegex: "docs/(intro|tutorial)",
+          },
+          {
+            to: "docs/recipes/vault-token",
+            position: "left",
+            label: "Recipes",
+            activeBaseRegex: "docs/recipes/",
+          },
+          {
+            to: "docs/apis/getting-started",
+            position: "left",
+            label: "APIs",
+            activeBaseRegex: "docs/apis/",
           },
           {
             href: "https://github.com/Zapper-fi/studio",
