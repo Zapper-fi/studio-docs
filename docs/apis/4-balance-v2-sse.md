@@ -33,24 +33,17 @@ All events sent from the server MUST implement the following structure
 
 ```
 event: ${event_name as STRING}
-data: ${payload as JSON | 'start' | 'end'}
+data: ${payload as JSON | 'end'}
 ```
 
 When the server sends an event, an associated data payload is sent.
-The event is ALWAYS a string. The data varies between JSON, 'start' and 'end'
+The event is ALWAYS a string. The data varies between JSON and 'end'
 
-The data payload 'start' and 'end' are exclusive to the start and end event. For
-all intents and purposes, they can be ignored.
+The data payload 'end' is exclusive to the end event. For
+all intents and purposes, it can be ignored.
 
 When a connection is established and the server will begin
-to stream information the following payload is sent:
-
-```
-event: start
-data: start
-```
-
-When all data has been streamed, the server will send the following:
+to stream balance data. Then, when all data has been streamed, the server will send the following:
 
 ```
 event: end
@@ -67,17 +60,14 @@ Concretely, the client has 4 primary concerns to handle
 
 1. Open a connection
 2. Close a connection
-3. Squash information
-4. Push information
+3. Aggregate the balances
 
-Open/Close a connection are exlusive to the start and end event.
+Opening the connection should be done via the client, by making a reques to the `/v2/balances` endpoint.
+Closing the connection should be done once the `end` event has been received.
 
-Squash and Push varies based on the event (detailed in the "Events and Payloads" section).
-
-When doing a Squash, we expect the client to take the data payload and replace as is the corresponding
-locally saved state.
-
-When doing a Push, we expect the client to take the data payload and append it to some locally saved state.
+Aggregating the data consist in mostly two actions. When receiving a `balance` event, your client should ensure
+it keeps the results in a local state. Then the client should aggregate some of the results together, you wish
+to display a total net worth.
 
 ## Token types and breakdown
 
@@ -192,11 +182,6 @@ the `displayProps` before inferring data from other fields present in a TokenBre
 
 ## Events and Payloads
 
-### start
-
-Signals that the server is ready and will start sending data down the wire.
-The data payload can be safely ignored.
-
 ### end
 
 Signals that the server has done all the needed work and will no longer send any events.
@@ -204,71 +189,18 @@ The data payload can be safely ignored.
 
 **Important**: Please close the connection on reception of the 'end' event.
 
-### totals
+### balance
 
-Signifies a calculated balance total of a given address.
+Represents a new/updated balance result.
+This balance could be either for a wallet token, an app participation an NFT.
 
-This event expects the client to SQUASH local state as it computes all that is needed and
-should be updated as a whole.
+The response contains 3 main parts that should be looked into:
 
-Totals will always contain the final calculation of all possible balances as well
-as some minor statistics.
+The **balance** field will contain a map of categories. Each categories (category_name) have a 
+corresponding token to be squashed. To help us identify which token from which category needs
+to be squashed, we provide a unique key (token_key) to quickly identify what element has been updated.
 
-The sent payload is `TotalsPayload`.
-
-```typescript
-type TotalsPayload = {
-  categoriesTotal: {
-    claimable: number;
-    debt: number;
-    deposits: number;
-    vesting: number;
-    nft: number;
-    wallet: number;
-    locked: number;
-  };
-  netTotal: number;
-  netTotalWithNfts: number;
-  assetTotal: number;
-  debtTotal: number;
-  networkTotals: {
-    // NOTE: the key value pair will ONLY appear if a balance is found
-    [network_name: string]: number;
-  };
-  claimablePerNetwork: {
-    // NOTE: the key value pair will ONLY appear if a balance is found
-    [network_name: string]: number;
-  };
-  stats: {
-    topHoldings: Array<{
-      appId: string;
-      label: string;
-      balanceUSD: number;
-      key: string;
-      pctHolding: number;
-    }>;
-    topHoldingsWithNfts: Array<{
-      appId: string;
-      label: string;
-      balanceUSD: number;
-      key: string;
-      pctHolding: number;
-    }>
-  };
-};
-```
-
-### category
-
-Represents a new/updated category.
-
-This event expects the client to SQUASH a specific part local state.
-
-Each categories (category_name) have a corresponding token to be squashed. To help us identify
-which token from which category needs to be squashed, we provide a unique key (token_key) to quickly
-identify what element has been updated.
-
-The sent payload is `CategoryPayload`.
+The paylaod sent is `BalancePayload`.
 
 ```typescript
 type CategoryNames = 
@@ -280,7 +212,7 @@ type CategoryNames =
   | 'vesting'
   | 'wallet';
 
-type CategoryPayload = {
+type BalancePayload = {
   [category_name in CategoryNames]:
     | {
         [token_key: string]: PositionBreakdown | NonFungibleTokenBreakdown | TokenBreakdown;
@@ -289,16 +221,31 @@ type CategoryPayload = {
 };
 ```
 
-### protocol
+The **totals** field will contain the total is USD for the given balance. This value can be useful 
+if you are looking to build a total net worth of all balances for a given address or bundle.
 
-Represents a new protocol that a user has balances of.
+Each totals are identified by a key, so that they can be uniquely identified when adding them together.
+
+The sent payload is `TotalsPayload`.
+
+```typescript
+type PartialTotal = {
+  key: string;
+  network: string;
+  balanceUSD: number;
+}
+
+type TotalsPayload = PartialTotal[];
+```
+
+The **app** field is optionnally present, and represents an app that an address or bundle has balances of.
 
 This event expects the client to PUSH to a specific part local state.
 
-The sent payload is `ProtocolPayload`.
+The sent payload is `AppPayload`.
 
 ```typescript
-type ProtocolPayload = {
+type AppPayload = {
   appId: string;
   network: string;
   data: Array<PositionBreakdown | NonFungibleTokenBreakdown | TokenBreakdown>;
@@ -310,4 +257,17 @@ type ProtocolPayload = {
     total: number;
   };
 };
+```
+
+Finally the resulting full payload received on a `balance` event will a `PresentedBalancePayload`.
+
+```typescript
+type PresentedBalancePayload = {
+  appId: 'tokens' | 'nft' | string;
+  network: string;
+  addresses: string[];
+  balance: BalancePayload;
+  totals: TotalsPayload;
+  app?: AppPayload;
+}
 ```
