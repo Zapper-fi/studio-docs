@@ -61,6 +61,7 @@ Concretely, the client has 4 primary concerns to handle
 1. Open a connection
 2. Close a connection
 3. Aggregate the balances
+4. Calculate totals
 
 Opening the connection should be done via the client, by making a reques to the `/v2/balances` endpoint.
 Closing the connection should be done once the `end` event has been received.
@@ -81,21 +82,30 @@ helps the client to determine what fields are and are not available.
 
 ```typescript
 // Common types found in each TokenBreakdowns
-type MetaType = 'wallet' | 'supplied' | 'borrowed' | 'claimable' | 'vesting' | 'nft' | null;
+type MetaType =
+  | "wallet"
+  | "supplied"
+  | "borrowed"
+  | "claimable"
+  | "vesting"
+  | "nft"
+  | null;
 type DisplayItem = {
   type: string;
   value: string | number;
 };
 
 type TokenBreakdown = {
-  type: 'token';
+  type: "token";
   appId: string | null;
   metaType: MetaType;
   address: string;
   balanceUSD: number;
   network: string;
   contractType: string;
-  breakdown: Array<PositionBreakdown | NonFungibleTokenBreakdown | TokenBreakdown>;
+  breakdown: Array<
+    PositionBreakdown | NonFungibleTokenBreakdown | TokenBreakdown
+  >;
   context: {
     balance: number;
     balanceRaw: string;
@@ -115,14 +125,16 @@ type TokenBreakdown = {
 };
 
 type NonFungibleTokenBreakdown = {
-  type: 'nft';
+  type: "nft";
   appId: string | null;
   metaType: MetaType;
   address: string;
   balanceUSD: number;
   network: string;
   contractType: string;
-  breakdown: Array<PositionBreakdown | NonFungibleTokenBreakdown | TokenBreakdown>;
+  breakdown: Array<
+    PositionBreakdown | NonFungibleTokenBreakdown | TokenBreakdown
+  >;
   assets: Array<{
     assetImg: string;
     assetName: string;
@@ -154,14 +166,16 @@ type NonFungibleTokenBreakdown = {
 };
 
 type PositionBreakdown = {
-  type: 'position';
+  type: "position";
   appId: string | null;
   metaType: MetaType;
   address: string;
   balanceUSD: number;
   network: string;
   contractType: string;
-  breakdown: Array<PositionBreakdown | NonFungibleTokenBreakdown | TokenBreakdown>;
+  breakdown: Array<
+    PositionBreakdown | NonFungibleTokenBreakdown | TokenBreakdown
+  >;
   displayProps: {
     label: string;
     secondaryLabel: DisplayItem | null;
@@ -192,36 +206,39 @@ The data payload can be safely ignored.
 ### balance
 
 Represents a new/updated balance result.
-This balance could be either for a wallet token, an app participation an NFT.
+This balance is for a wallet token, an app position or an NFT.
 
 The response contains 3 main parts that should be looked into:
 
-The **balance** field will contain a map of categories. Each categories (category_name) have a 
+The **balance** field will contain a map of categories. Each categories (category_name) have a
 corresponding token to be squashed. To help us identify which token from which category needs
 to be squashed, we provide a unique key (token_key) to quickly identify what element has been updated.
 
-The paylaod sent is `BalancePayload`.
+The payload sent is `BalancePayload`.
 
 ```typescript
-type CategoryNames = 
-  | 'claimable'
-  | 'debt'
-  | 'deposits'
-  | 'locked'
-  | 'nft'
-  | 'vesting'
-  | 'wallet';
+type CategoryNames =
+  | "claimable"
+  | "debt"
+  | "deposits"
+  | "locked"
+  | "nft"
+  | "vesting"
+  | "wallet";
 
 type BalancePayload = {
   [category_name in CategoryNames]:
     | {
-        [token_key: string]: PositionBreakdown | NonFungibleTokenBreakdown | TokenBreakdown;
+        [token_key: string]:
+          | PositionBreakdown
+          | NonFungibleTokenBreakdown
+          | TokenBreakdown;
       }
     | {};
 };
 ```
 
-The **totals** field will contain the total is USD for the given balance. This value can be useful 
+The **totals** field will contain the total is USD for the given balance. This value can be useful
 if you are looking to build a total net worth of all balances for a given address or bundle.
 
 Each totals are identified by a key, so that they can be uniquely identified when adding them together.
@@ -231,9 +248,10 @@ The sent payload is `TotalsPayload`.
 ```typescript
 type PartialTotal = {
   key: string;
+  type: "app-token" | "non-fungible-token";
   network: string;
   balanceUSD: number;
-}
+};
 
 type TotalsPayload = PartialTotal[];
 ```
@@ -263,11 +281,40 @@ Finally the resulting full payload received on a `balance` event will a `Present
 
 ```typescript
 type PresentedBalancePayload = {
-  appId: 'tokens' | 'nft' | string;
+  appId: "tokens" | "nft" | string;
   network: string;
   addresses: string[];
   balance: BalancePayload;
   totals: TotalsPayload;
   app?: AppPayload;
-}
+};
+```
+
+Since balances are sent individually, an aggregated result can be built client side, by doing the following:
+
+All balanceUSD can be added together per-categories to build a category total.
+
+Example:
+
+```typescript
+const walletTotal = Object.values(balances.wallet).reduce(
+  (total, { balanceUSD }) => (total += balanceUSD),
+  0
+);
+```
+
+The net worth can be built by aggregating all partial totals together. The total can be built for a specific network,
+or type of token (App vs NFT) by filtering on other fields present in the `PartialTotal` payload.
+
+Example:
+
+```typescript
+const netWorth = balances.totals.reduce(
+  (total, { balanceUSD }) => (total += balanceUSD),
+  0
+);
+
+const netWorthWithoutNFT = balances.totals
+  .filter(({ type }) => type !== "non-fungible-token")
+  .reduce((total, { balanceUSD }) => (total += balanceUSD), 0);
 ```
