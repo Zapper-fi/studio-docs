@@ -4,18 +4,7 @@ sidebar_position: 4
 
 # Create a token fetcher
 
-## What is a token?
-
-As mentioned in the previous section, **Tokens** are investment positions that are represented by a token standard like `ERC20`. These are transferrable and fungible positions that maybe considered as a _receipt_ for an investment transaction. These _receipts_ may be used to represent:
-
-- Liquidity pool positions in a decentralized exchange like **Uniswap**, **SushiSwap**, or **Curve**
-- Autocompounding "vaults" like in a yield aggregator like **Pickle** or **Yearn**
-- Supply and borrow positions in a lending app like **Aave**
-- Or even more obscure primitives like options in **Opyn** or prize savings accounts in **PoolTogether**
-
-## What is a token fetcher?
-
-In the Zapper API, a `TokenFetcher` class dynamically lists a single group of tokens. Groups of tokens share common properties, such as APYs for **Pickle** vault tokens, or fees for **Uniswap** pool tokens. As such, we declare unique strategy classes for each token group that we want to index in Zapper.
+In the Zapper API, a `TokenFetcher` class dynamically lists a single group of `AppToken` typed objects. You can see more information [here](../concepts/app-tokens.md).
 
 ## Generate a token fetcher
 
