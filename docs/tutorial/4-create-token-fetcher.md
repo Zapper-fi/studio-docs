@@ -4,6 +4,8 @@ sidebar_position: 4
 
 # Create a token fetcher
 
+In the Zapper API, a `TokenFetcher` class dynamically lists a single group of `AppToken` typed objects. You can see more information [here](../concepts/app-tokens.md).
+
 ## Generate a token fetcher
 
 Our codegen utilities will automatically generate the boilerplate for a token fetcher. Run `pnpm studio create-token-fetcher pickle`. When prompted for the group, select `jar`, and when prompted for the network, select `ethereum`.
