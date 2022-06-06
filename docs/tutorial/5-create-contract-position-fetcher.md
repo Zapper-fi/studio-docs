@@ -1,23 +1,10 @@
 ---
-sidebar_position: 5
+sidebar_position: 2
 ---
 
 # Create a contract position fetcher
 
-## What is a contract position?
-
-As mentioned in the previous section, **Contract Positions** are investment positions that are _not_ represented by a token standard. It is often these positions that are more difficult to track by simple wallet applications, and this is especially where Zapper shines at decoding these positions from blockchain data. These positions may be used to represent:
-
-- Farming positions in **SushiSwap** Master Chef staking contracts
-- Bonds in **Olympus** or other apps that aim to own their liquidity
-- Leveraged positions in isolated markets like **Abracadabra** cauldrons or **Alchemix** alchemists
-- Claimable airdrops across the Web3 ecosystem!
-
-As a little rule of thumb, you likely won't be able to manually add these positions to your Metamask wallet because they are _not_ tokenized! For example, once you deposit a token into a SushiSwap Master Chef farm, your wallet will likely not be able to display this position.
-
-## What is a contract position fetcher?
-
-In the Zapper API, a `ContractPositionFetcher` class dynamically lists a single group of contract positions. Groups of contract positions share common properties, such as APYs for **SushiSwap** farms, or collateralization limits for **Alchemix** alchemists. As such, we declare unique strategy classes for each contract position group that we want to index in Zapper.
+In the Zapper API, a `ContractpositionFetcher` class dynamically lists a single group of `ContractPosition` typed objects. You can see more information [here](../concepts/contract-positions.md).
 
 ## Generate a contract position fetcher
 
