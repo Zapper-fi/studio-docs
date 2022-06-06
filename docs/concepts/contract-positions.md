@@ -2,7 +2,7 @@
 sidebar_position: 2
 ---
 
-# App Tokens
+# Contract Positions
 
 ## What is a `ContractPosition`?
 
