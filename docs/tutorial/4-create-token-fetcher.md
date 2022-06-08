@@ -77,7 +77,7 @@ export class EthereumPickleJarTokenFetcher implements PositionFetcher<AppTokenPo
     const endpoint = 'https://api.pickle.finance/prod/protocol/pools';
     const data = await Axios.get<PickleVaultDetails[]>(endpoint).then(v => v.data);
     const ethData = data.filter(({ network }) => network === 'eth');
-    const jarAddresses = ethData.map(({ jarAddress }) => v.jarAddress.toLowerCase());
+    const jarAddresses = ethData.map(({ jarAddress }) => jarAddress.toLowerCase());
     const jarAddressToDetails = _.keyBy(ethData, v => v.jarAddress.toLowerCase());
 
     // Return _anything_ so we can see a result right now!
