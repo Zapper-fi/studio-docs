@@ -191,7 +191,7 @@ export class EthereumPickleJarTokenFetcher implements PositionFetcher<AppTokenPo
       { appId: 'curve', groupIds: ['pool'], network },
     );
 
-    const allTokenDependencies = [...appTokenDepencies, ...baseTokenDependencies];
+    const allTokenDependencies = [...appTokenDependencies, ...baseTokenDependencies];
    
     const tokens = await Promise.all(
       jarAddresses.map(async jarAddress => {
@@ -262,6 +262,7 @@ Let's return the total value locked and the APY as part of the `dataProps`.
 // Declare the data properties for a Pickle jar token
 export type PickleJarTokenDataProps = {
   apy: number;
+  tvl: number;
 }
 
 @Register.TokenPositionFetcher({ appId, groupId, network })
@@ -344,6 +345,7 @@ export type PickleVaultDetails = {
 
 export type PickleJarTokenDataProps = {
   apy: number;
+  tvl: number;
 };
 
 @Register.TokenPositionFetcher({ appId, groupId, network })
@@ -358,7 +360,7 @@ export class EthereumPickleJarTokenFetcher implements PositionFetcher<AppTokenPo
     const endpoint = 'https://api.pickle.finance/prod/protocol/pools';
     const data = await Axios.get<PickleVaultDetails[]>(endpoint).then(v => v.data);
     const ethData = data.filter(({ network }) => network === 'eth');
-    const jarAddresses = ethData.map(v => v.jarAddress.toLowerCase());
+    const jarAddresses = ethData.map(({ jarAddress }) => jarAddress.toLowerCase());
     const jarAddressToDetails = _.keyBy(ethData, v => v.jarAddress.toLowerCase());
 
     const baseTokens = await this.appToolkit.getBaseTokenPrices(network);
@@ -373,27 +375,29 @@ export class EthereumPickleJarTokenFetcher implements PositionFetcher<AppTokenPo
     const tokens = await Promise.all(
       jarAddresses.map(async jarAddress => {
         const contract = this.pickleContractFactory.pickleJar({ address: jarAddress, network });
-        const underlyingTokenContract = this.pickleContractFactory.pickleJar({ address: underlyingToken.address, network });
+   
 
-        const [symbol, decimals, supplyRaw, underlyingTokenAddressRaw, ratioRaw, reserveRaw] = await Promise.all([
+        const [symbol, decimals, supplyRaw, underlyingTokenAddressRaw, ratioRaw] = await Promise.all([
           multicall.wrap(contract).symbol(),
           multicall.wrap(contract).decimals(),
           multicall.wrap(contract).totalSupply(),
-          multicall.wrap(contract).token(),
-          multicall.wrap(contract).getRatio(),
-          multicall.wrap(underlyingTokenContract).balanceOf(jarAddress),
+          multicall.wrap(contract).token().catch(() => ''),
+          multicall.wrap(contract).getRatio().catch(() => ''),
         ]);
 
         const supply = Number(supplyRaw) / 10 ** decimals;
         const underlyingTokenAddress = underlyingTokenAddressRaw.toLowerCase();
         const underlyingToken = allTokens.find(v => v.address === underlyingTokenAddress);
         if (!underlyingToken) return null;
+        const underlyingTokenContract = this.pickleContractFactory.pickleJar({ address: underlyingToken.address, network });
+        //reserveRaw is used for calculating tvl
+        const reserveRaw = await multicall.wrap(underlyingTokenContract).balanceOf(jarAddress); 
 
         const tokens = [underlyingToken];
         const pricePerShare = Number(ratioRaw) / 10 ** 18;
         const price = pricePerShare * underlyingToken.price;
         const apy = (jarAddressToDetails[jarAddress]?.apy ?? 0) / 100;
-        const reserve = Number(reserveRaw) / 10 ** underlyingToken.decimals; 
+        const supplyreserve = Number(reserveRaw) / 10 ** underlyingToken.decimals; 
         const tvl = supplyreserve * underlyingToken.price;
 
         // As a label, we'll use the underlying label (i.e.: 'LOOKS' or 'UNI-V2 LOOKS / ETH'), and suffix it with 'Jar'
@@ -419,6 +423,7 @@ export class EthereumPickleJarTokenFetcher implements PositionFetcher<AppTokenPo
           pricePerShare,
           dataProps: {
             apy,
+            tvl,
           },
           displayProps: {
             label,
