@@ -262,7 +262,8 @@ Let's return the total value locked and the APY as part of the `dataProps`.
 // Declare the data properties for a Pickle jar token
 export type PickleJarTokenDataProps = {
   apy: number;
-  tvl: number;
+  
+  : number;
 }
 
 @Register.TokenPositionFetcher({ appId, groupId, network })
@@ -282,18 +283,18 @@ export class EthereumPickleJarTokenFetcher implements PositionFetcher<AppTokenPo
         // Retrieve the APY from the map we created in the first step
         const apy = (jarAddressToDetails[jarAddress]?.apy ?? 0) / 100;
 
-        // The TVL is the deposited reserve times the price of the deposited token
+        // The Liquidity is the deposited reserve times the price of the deposited token
         const underlyingTokenContract = this.pickleContractFactory.pickleJar({ address: underlyingToken.address, network });
         const [reserveRaw] = await multicall.wrap(underlyingTokenContract).balanceOf(jarAddress);
         const reserve = Number(reserveRaw) / 10 ** underlyingToken.decimals; 
-        const tvl = supplyreserve * underlyingToken.price;
+        const liquidity = supplyreserve * underlyingToken.price;
         
         // Create the token object
         const token: AppTokenPosition<PickleJarTokenDataProps> = {
           // ...
           dataProps: {
             apy,
-            tvl,
+            liquidity,
           }
         };
 
@@ -345,7 +346,7 @@ export type PickleVaultDetails = {
 
 export type PickleJarTokenDataProps = {
   apy: number;
-  tvl: number;
+  liquidity: number;
 };
 
 @Register.TokenPositionFetcher({ appId, groupId, network })
@@ -390,15 +391,15 @@ export class EthereumPickleJarTokenFetcher implements PositionFetcher<AppTokenPo
         const underlyingToken = allTokens.find(v => v.address === underlyingTokenAddress);
         if (!underlyingToken) return null;
         const underlyingTokenContract = this.pickleContractFactory.pickleJar({ address: underlyingToken.address, network });
-        //reserveRaw is used for calculating tvl
+        //reserveRaw is used for calculating liquidity
         const reserveRaw = await multicall.wrap(underlyingTokenContract).balanceOf(jarAddress); 
 
         const tokens = [underlyingToken];
         const pricePerShare = Number(ratioRaw) / 10 ** 18;
         const price = pricePerShare * underlyingToken.price;
         const apy = (jarAddressToDetails[jarAddress]?.apy ?? 0) / 100;
-        const supplyreserve = Number(reserveRaw) / 10 ** underlyingToken.decimals; 
-        const tvl = supplyreserve * underlyingToken.price;
+        const supplyReserve = Number(reserveRaw) / 10 ** underlyingToken.decimals; 
+        const liquidity = supplyReserve * underlyingToken.price;
 
         // As a label, we'll use the underlying label (i.e.: 'LOOKS' or 'UNI-V2 LOOKS / ETH'), and suffix it with 'Jar'
         const label = `${getLabelFromToken(underlyingToken)} Jar`;
@@ -423,7 +424,7 @@ export class EthereumPickleJarTokenFetcher implements PositionFetcher<AppTokenPo
           pricePerShare,
           dataProps: {
             apy,
-            tvl,
+            liquidity,
           },
           displayProps: {
             label,
