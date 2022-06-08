@@ -262,8 +262,7 @@ Let's return the total value locked and the APY as part of the `dataProps`.
 // Declare the data properties for a Pickle jar token
 export type PickleJarTokenDataProps = {
   apy: number;
-  
-  : number;
+  liquidity: number;
 }
 
 @Register.TokenPositionFetcher({ appId, groupId, network })
