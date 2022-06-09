@@ -8,8 +8,9 @@ Due to how the information is spread out, we need a clever way of aggregating
 balances from various web3 protocols in a relatively simple manner.
 
 When fetching all the balances for a given address, we recommend using the
-balance streamer endpoint `/v2/balances`. This endpoint uses streaming and
-server sent events under the hood.
+balance streamer endpoint
+[`/v2/balances`](https://api.zapper.fi/api/static/index.html#/Balances/BalanceController_getBalances).
+This endpoint uses streaming and server sent events under the hood.
 
 Consumption of this endpoint is different than a typical RESTful endpoint.
 
