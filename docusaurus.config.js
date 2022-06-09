@@ -57,6 +57,12 @@ const config = {
         },
         items: [
           {
+            to: "docs/concepts/app-tokens",
+            position: "left",
+            label: "Concepts",
+            activeBaseRegex: "docs/concepts/",
+          },
+          {
             position: "left",
             label: "Tutorial",
             to: "docs/intro",
