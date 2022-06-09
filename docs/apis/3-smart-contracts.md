@@ -4,10 +4,15 @@ sidebar_position: 3
 
 # Smart Contracts
 
-[**Zap contracts**](https://learn.zapper.fi/articles/what-is-a-zap) make it easy for anyone to interact with complex DeFi protocols.
+[**Zap contracts**](https://learn.zapper.fi/articles/what-is-a-zap) make it easy
+for anyone to interact with complex DeFi protocols.
 
 ## Ethereum
-These contracts are currently deployed on Ethereum mainnet and are used by [Zapper.fi](https://zapper.fi) and other DeFi projects. The recommended way to interact with these contracts is via the [Transactions API](../zapper-api/api-guides/#transactions-api).
+
+These contracts are currently deployed on Ethereum mainnet and are used by
+[Zapper.fi](https://zapper.fi) and other DeFi projects. The recommended way to
+interact with these contracts is via the
+[Transactions API](../zapper-api/api-guides/#transactions-api).
 
 | Contract                   | Address                                                                                                                    | Version |
 | -------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ------- |
@@ -38,7 +43,11 @@ These contracts are currently deployed on Ethereum mainnet and are used by [Zapp
 | Alpha Homora Earn          | [0x8a0a04f0bed364ccba553b79b01072dcf4ee153b](https://etherscan.io/address/0x8a0a04f0bed364ccba553b79b01072dcf4ee153b)      | 1.0     |
 
 ## Polygon
-These contracts are currently deployed on Polygon (Matic) and are used by [Zapper.fi](https://zapper.fi) and other DeFi projects. The recommended way to interact with these contracts is via the [Transactions API](../zapper-api/api-guides/#transactions-api).
+
+These contracts are currently deployed on Polygon (Matic) and are used by
+[Zapper.fi](https://zapper.fi) and other DeFi projects. The recommended way to
+interact with these contracts is via the
+[Transactions API](../zapper-api/api-guides/#transactions-api).
 
 | Contract         | Address                                                                                                                                               | Version |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
@@ -49,7 +58,11 @@ These contracts are currently deployed on Polygon (Matic) and are used by [Zappe
 | Aave Add         | [0x8DfDea6A4818d2AA7463edB9A8841cB0c04255aF](https://polygonscan.com/address/0x8dfdea6a4818d2aa7463edb9a8841cb0c04255af)                              | 1.0.2   |
 
 ## Binance Smart Chain
-These contracts are currently deployed on BSC (Binance Smart Chain) and are used by [Zapper.fi](https://zapper.fi) and other DeFi projects. The recommended way to interact with these contracts is via the [Transactions API](../zapper-api/api-guides/#transactions-api).
+
+These contracts are currently deployed on BSC (Binance Smart Chain) and are used
+by [Zapper.fi](https://zapper.fi) and other DeFi projects. The recommended way
+to interact with these contracts is via the
+[Transactions API](../zapper-api/api-guides/#transactions-api).
 
 | Contract           | Address                                                                                                              | Version |
 | ------------------ | -------------------------------------------------------------------------------------------------------------------- | ------- |
@@ -57,6 +70,7 @@ These contracts are currently deployed on BSC (Binance Smart Chain) and are used
 | PancakeSwap Remove | [0x4bF331Aa2BfB0869315fB81a350d109F4839f81b](https://bscscan.com/address/0x4bF331Aa2BfB0869315fB81a350d109F4839f81b) | 3.0     |
 
 ## Avalanche
+
 | Contract              | Address                                                                                                                                            | Version |
 | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
 | TraderJoe Add         | [0x8308a1A404dB3cB3075618B1651671bC4E15F9d5](https://cchain.explorer.avax.network/address/0x8308a1A404dB3cB3075618B1651671bC4E15F9d5/transactions) | 1.0     |
