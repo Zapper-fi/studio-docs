@@ -147,6 +147,13 @@ export class EthereumLlamaAirforceAirdropContractPositionFetcher
         appId,
         groupId,
         network,
+        dependencies: [
+          {
+            appId,
+            groupIds: [LLAMA_AIRFORCE_DEFINITION.groups.vault.id],
+            network,
+          },
+        ],
         rewardTokenAddresses: [
           "0x83507cc8c8b67ed48badd1f59f684d5d02884c81", // uCRV
           "0xf964b0e3ffdea659c44a5a52bc0b82a24b89ce0e", // uFXS
