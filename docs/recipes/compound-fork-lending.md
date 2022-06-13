@@ -980,4 +980,4 @@ export class EthereumCozyFinanceBalanceFetcher implements BalanceFetcher {
 ```
 
 Run your application with `pnpm start dev`, then check any addresses positions
-with http://localhost:5001/apps/cozy-finance/balances?addresses[]=<ADDRESS>.
+with http://localhost:5001/apps/cozy-finance/balances?addresses[]=ADDRESS.
