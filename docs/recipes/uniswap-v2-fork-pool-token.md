@@ -84,9 +84,7 @@ export class AvalancheTraderJoePoolTokenFetcher
 ## Inject and reference the helper class through the `UniswapV2PoolTokenHelper`
 
 We'll inject the `UniswapV2PoolTokenHelper` exported by the
-`UniswapV2AppModule`. We'll call the `getPositions` method on this helper class,
-and pass in the generated **Ethers** contract interface for the `StakingRewards`
-contract.
+`UniswapV2AppModule`. We'll call the `getPositions` method on this helper class.
 
 ```ts
 @Register.TokenPositionFetcher({ appId, groupId, network })
