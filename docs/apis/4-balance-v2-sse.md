@@ -468,7 +468,7 @@ eventSource.addEventListener("balance", ({ data }) => {
 });
 ```
 
-Launch `npm run start` and something similar to this should print in the terminal.
+Launch `node index.js` and something similar to this should print in the terminal.
 
 ```
 Open ...
