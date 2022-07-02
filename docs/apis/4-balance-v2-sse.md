@@ -439,7 +439,7 @@ eventSource.addEventListener("balance", ({ data }) => {
 
 eventSource.addEventListener("end", () => {
   // all datas received
-  eventSource.close(); // don't forgot to close
+  eventSource.close(); // don't forget to close
 });
 ```
 
