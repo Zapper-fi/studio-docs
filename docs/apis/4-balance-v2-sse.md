@@ -15,7 +15,7 @@ This endpoint uses
 as a method of sending data.
 
 Consumption of this endpoint is different than a typical RESTful endpoint. Your
-application must establish a connection to the endpoint, handle balnace data
+application must establish a connection to the endpoint, handle balance data
 being streamed, and close the connection.
 
 > **NOTE**: Always ensure that **you close the connection** once the server has
@@ -367,7 +367,7 @@ In order to handle the API `event-stream` response on a NodeJS environment, you 
 
 In this example we'll fetch the total USD balances of tokens and positions of the [UMAMI Finance](https://umami.finance/) treasury. 
 
-Firstn get an API key from Zapper
+First, get an API key from Zapper
 ```javascript
 const ZAPPER_API_KEY = "";
 ```
@@ -411,7 +411,7 @@ const generateEventSourceDict = (apiKey) => {
 };
 ```
 
-Instanciate the `EventSource`
+Create an `EventSource` instance
 
 ```javascript
 import EventSource from "eventsource";
@@ -421,7 +421,7 @@ const eventSourceDict = generateEventSourceDict(ZAPPER_API_KEY);
 const eventSource = new EventSource(url, eventSourceDict);
 ```
 
-Add the listeners 
+Add the events listeners 
 
 ```javascript
 eventSource.addEventListener("open", () => {
@@ -439,7 +439,7 @@ eventSource.addEventListener("balance", ({ data }) => {
 
 eventSource.addEventListener("end", () => {
   // all datas received
-  eventSource.close(); // don't forget to close
+  eventSource.close(); // don't forget to close !
 });
 ```
 
@@ -468,7 +468,7 @@ eventSource.addEventListener("balance", ({ data }) => {
 });
 ```
 
-Launch `node index.js` and something similar to this should print in the terminal.
+Launch `node index.js` and a list similar to this one should print in the terminal.
 
 ```
 Open ...
@@ -482,6 +482,5 @@ Open ...
 Close.
 ```
 
-You can see the fully functionnal implementation of this in the following code snippet made by one of our community member.
 
-[Zapper API fetch example in NodeJS](https://gitlab.com/-/snippets/2363664)
+You can find a fully working example made by Clonescody here : [https://gitlab.com/-/snippets/2363664](https://gitlab.com/-/snippets/2363664)
