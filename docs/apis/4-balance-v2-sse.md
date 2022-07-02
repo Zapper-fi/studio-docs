@@ -360,7 +360,7 @@ const netWorthWithoutNFT = balances.totals
   .reduce((total, { balanceUSD }) => (total += balanceUSD), 0);
 ```
 
-### Example : fetch Umami's treasury balance in NodeJS
+## Example : fetch Umami's treasury balance in NodeJS
 
 
 In order to handle the API `event-stream` response on a NodeJS environment, you will need to install the [eventsource package](https://github.com/EventSource/eventsource).
