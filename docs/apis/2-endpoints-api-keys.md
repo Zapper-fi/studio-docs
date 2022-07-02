@@ -9,7 +9,7 @@ The Zapper API uses
 authenticate requests. Zapper has made available for public use the following
 API key:
 
-`96e0cc51-a62e-42ca-acee-910ea7d2a241`
+`ad01527e-8133-4a68-ad67-fbf8d9040ad1`
 
 :::caution As of March 2022, Zapper began rate limiting query volume on the
 **public API key**. See below for how to get a **private API key** if you are
