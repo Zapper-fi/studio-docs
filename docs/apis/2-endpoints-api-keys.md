@@ -26,6 +26,8 @@ to see the responses for various endpoints based on parameters you specify.
 
 ![Enter API key into the authorize section](../../static/img/assets/swagger-auth.png)
 
-::: info For any API related inquiries, please reach out in the
+:::info 
+For any API related inquiries, please reach out in the
 [#api-buildooorrs channel](https://discord.com/channels/647279669388771329/650654989202489354)
-in the [Zapper Discord](https://zapper.fi/discord). :::
+in the [Zapper Discord](https://zapper.fi/discord). 
+:::

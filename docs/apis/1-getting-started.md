@@ -11,10 +11,12 @@ from pool liquidity and prices on different AMMs to complex DeFi app balances, a
 one convenient place. In addition, the API also supports bridging between
 different networks as well as formatted Zap transaction endpoints.
 
-:::info We ask that builders using the API include our **"Powered by Zapper"**
+:::info 
+We ask that builders using the API include our **"Powered by Zapper"**
 logo with a backlink to [https://zapper.fi](https://zapper.fi) in their project.
 **"Powered by Zapper"** brand asset can be downloaded
-[here](../docs/brand-assets.md):::
+[here](../docs/brand-assets.md)
+:::
 
 ## Data Endpoints
 
@@ -46,9 +48,11 @@ needed to be consumed by
 anyone to assemble and execute a complex Zap including multi exchange hops and
 interacting with several DeFi apps in a single atomic transaction.
 
-:::tip To learn and see all of Zapper's public API endpoints, check out the
+:::tip 
+To learn and see all of Zapper's public API endpoints, check out the
 [Swagger UI](https://api.zapper.fi/api/static/index.html#/) page.
 
 For any API-related inquiries, please reach out in the
 [#api-buildooorrs channel](https://discord.com/channels/647279669388771329/650654989202489354)
-in the [Zapper Discord](https://zapper.fi/discord):::
+in the [Zapper Discord](https://zapper.fi/discord)
+:::
