@@ -6,15 +6,15 @@ sidebar_position: 1
 
 ![](../../static/img/assets/zapper_api_logo.png)
 
-The Zapper API provides some of the most robust DeFi related data, everything
-from liquidity and prices on different AMMs to complex DeFi app balances all in
+The Zapper API provides some of the most robust DeFi related data, 
+from pool liquidity and prices on different AMMs to complex DeFi app balances, all in
 one convenient place. In addition, the API also supports bridging between
 different networks as well as formatted Zap transaction endpoints.
 
 :::info We ask that builders using the API include our **"Powered by Zapper"**
 logo with a backlink to [https://zapper.fi](https://zapper.fi) in their project.
 **"Powered by Zapper"** brand asset can be downloaded
-[here](../docs/brand-assets.md). :::
+[here](../docs/brand-assets.md):::
 
 ## Data Endpoints
 
@@ -51,4 +51,4 @@ interacting with several DeFi apps in a single atomic transaction.
 
 For any API-related inquiries, please reach out in the
 [#api-buildooorrs channel](https://discord.com/channels/647279669388771329/650654989202489354)
-in the [Zapper Discord](https://zapper.fi/discord). :::
+in the [Zapper Discord](https://zapper.fi/discord):::
