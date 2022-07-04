@@ -15,7 +15,7 @@ This endpoint uses
 as a method of sending data.
 
 Consumption of this endpoint is different than a typical RESTful endpoint. Your
-application must establish a connection to the endpoint, handle balnace data
+application must establish a connection to the endpoint, handle balance data
 being streamed, and close the connection.
 
 > **NOTE**: Always ensure that **you close the connection** once the server has
@@ -359,3 +359,128 @@ const netWorthWithoutNFT = balances.totals
   .filter(({ type }) => type !== "non-fungible-token")
   .reduce((total, { balanceUSD }) => (total += balanceUSD), 0);
 ```
+
+## Example : fetch Umami's treasury balance in NodeJS
+
+
+In order to handle the API `event-stream` response on a NodeJS environment, you will need to install the [eventsource package](https://github.com/EventSource/eventsource).
+
+In this example we'll fetch the total USD balances of tokens and positions of the [UMAMI Finance](https://umami.finance/) treasury. 
+
+First, get an API key from Zapper
+```javascript
+const ZAPPER_API_KEY = "";
+```
+
+Their treasury consists of 3 addresses :
+
+``` javascript
+const ADDRESSES = [
+  "0xb137d135dc8482b633265c21191f50a4ba26145d",
+  "0x6468f283f9d71d2dc28020c0dbe4458f3b47a2c6",
+  "0xb0b4bd94d656353a30773ac883591ddbabc0c0ba",
+];
+```
+
+Format the query url
+
+``` javascript
+const generateUrl = (addresses) => {
+  let url = `https://api.zapper.fi/v2/balances?`;
+  addresses.forEach((address, _index) => {
+    url += `addresses[]=${address}${
+      _index === addresses.length - 1 ? "" : "&"
+    }`;
+  });
+  return encodeURI(url);
+};
+```
+
+Generate the query headers, the `User-Agent` is mandatory in a Node environment to prevent requests being forbidden.
+
+```javascript
+const generateEventSourceDict = (apiKey) => {
+  return {
+    withCredentials: true,
+    headers: {
+      "Content-Type": "text/event-stream",
+      "User-Agent": "Mozilla/5.0",
+      Authorization: `Basic ${Buffer.from(`${apiKey}:`).toString("base64")}`,
+    },
+  };
+};
+```
+
+Create an `EventSource` instance
+
+```javascript
+import EventSource from "eventsource";
+
+const url = generateUrl(ADDRESSES);
+const eventSourceDict = generateEventSourceDict(ZAPPER_API_KEY);
+const eventSource = new EventSource(url, eventSourceDict);
+```
+
+Add the events listeners 
+
+```javascript
+eventSource.addEventListener("open", () => {
+  console.log("Open ...");
+});
+
+eventSource.addEventListener("error", ({ message }) => {
+  message && console.log("Error :", message)
+});
+
+eventSource.addEventListener("balance", ({ data }) => {
+  const parsedDatas = JSON.parse(data);
+  // interpret the parsed data chunk
+});
+
+eventSource.addEventListener("end", () => {
+  // all datas received
+  eventSource.close(); // don't forget to close !
+});
+```
+
+Write the `balance` listener logic to get the infos we need, we'll just log them in the example but you can store them to be used later on the `end` listener.
+
+```javascript
+eventSource.addEventListener("balance", ({ data }) => {
+  const parsedDatas = JSON.parse(data);
+  const { appId, app, balance } = parsedDatas;
+  
+  // we exclude NFTs in the example
+  if (appId !== "nft") {
+    if (appId === "tokens") {
+      const { wallet } = balance;
+      if (Object.keys(wallet).length > 0) {
+        Object.keys(wallet).forEach((value) => {
+          const { key, balanceUSD, context, network } = wallet[value];
+          const { symbol } = context;
+          console.log(`${balanceUSD} $ of ${symbol} on ${network} wallet`);
+        });
+      }
+    } else {
+      console.log(`${app.meta.total} $ deployed in ${appId}`)
+    }
+  }
+});
+```
+
+Launch `node index.js` and a list similar to this one should print in the terminal.
+
+```
+Open ...
+88842.40285414727 $ deployed in convex
+5876.87297918009 $ deployed in votium
+91.83087286664514 $ of INV on ethereum wallet
+44.585063108399346 $ of DAI on ethereum wallet
+255.8991724908701 $ of ETH on ethereum wallet
+19.983526439068097 $ of GRO on ethereum wallet
+0.343820169 $ of AVAX on avalanche wallet
+Close.
+```
+
+
+You can find a fully working example made by Clonescody here : [https://gitlab.com/-/snippets/2363664](https://gitlab.com/-/snippets/2363664)
