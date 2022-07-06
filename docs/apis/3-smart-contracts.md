@@ -12,7 +12,7 @@ for anyone to interact with complex DeFi protocols.
 These contracts are currently deployed on Ethereum mainnet and are used by
 [Zapper.fi](https://zapper.fi) and other DeFi projects. The recommended way to
 interact with these contracts is via the
-[Transactions API](../zapper-api/api-guides/#transactions-api).
+[Transactions API](https://api.zapper.fi/api/static/index.html#/Zap%20In).
 
 | Contract                   | Address                                                                                                                    | Version |
 | -------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ------- |
@@ -47,7 +47,7 @@ interact with these contracts is via the
 These contracts are currently deployed on Polygon (Matic) and are used by
 [Zapper.fi](https://zapper.fi) and other DeFi projects. The recommended way to
 interact with these contracts is via the
-[Transactions API](../zapper-api/api-guides/#transactions-api).
+[Transactions API](https://api.zapper.fi/api/static/index.html#/Zap%20In).
 
 | Contract         | Address                                                                                                                                               | Version |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
@@ -62,7 +62,7 @@ interact with these contracts is via the
 These contracts are currently deployed on BSC (Binance Smart Chain) and are used
 by [Zapper.fi](https://zapper.fi) and other DeFi projects. The recommended way
 to interact with these contracts is via the
-[Transactions API](../zapper-api/api-guides/#transactions-api).
+[Transactions API](https://api.zapper.fi/api/static/index.html#/Zap%20In).
 
 | Contract           | Address                                                                                                              | Version |
 | ------------------ | -------------------------------------------------------------------------------------------------------------------- | ------- |
@@ -70,6 +70,11 @@ to interact with these contracts is via the
 | PancakeSwap Remove | [0x4bF331Aa2BfB0869315fB81a350d109F4839f81b](https://bscscan.com/address/0x4bF331Aa2BfB0869315fB81a350d109F4839f81b) | 3.0     |
 
 ## Avalanche
+
+These contracts are currently deployed on Avalanche network and are used
+by [Zapper.fi](https://zapper.fi) and other DeFi projects. The recommended way
+to interact with these contracts is via the
+[Transactions API](https://api.zapper.fi/api/static/index.html#/Zap%20In).
 
 | Contract              | Address                                                                                                                                            | Version |
 | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
