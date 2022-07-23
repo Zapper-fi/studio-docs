@@ -299,9 +299,10 @@ it takes the same inputs as `requestGraph` but it does require an additional
 property `dataToSearch`. `dataToSearch` refers to the name (in your query)
 of the collection name.
 
-It is _required_ for your query to have defined `first` and `offset`
+It is _required_ for your query to have defined `first` and `lastId`
 parameters for the query so the helper can actually go through
-the paginated list.
+the paginated list. You will need to add a `where` clause into the collection
+that you are fetching, setting `id_gt: $lastId`
 
 Modifying the example before the new query would look like
 
@@ -341,13 +342,13 @@ type MeanFinancePosition = {
 };
 
 export const GET_USER_POSITIONS = gql`
-  query getUserPositions($address: String!, $first: Int, $skip: Int) {
+  query getUserPositions($address: String!, $first: Int, $lastId: String) {
     positions(
       where: {
         user: $address,
+        id_gt: $lastId,
       },
       first: $first,
-      skip: $skip,
     ) {
       id
       executedSwaps
