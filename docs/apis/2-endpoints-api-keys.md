@@ -8,6 +8,8 @@ The Zapper API uses
 [API keys](https://swagger.io/docs/specification/authentication/api-keys/) to
 authenticate requests. 
 
+We authenticate your private API key using **HTTP authorization request headers**. To learn more about how authorization headers work, check out [this documentation on the topic from Mozilla foundation](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization#basic_authentication).
+
 ## Requesting a private key
 
 You will need a private API key to use the Zapper API. To request an API key, please file a [ZenDesk ticket](https://zapperfi.zendesk.com/hc/en-us/requests/new). You will be issued a private API key in 24-48 hours.
