@@ -42,7 +42,7 @@ example, we'll look at **TraderJoe**, the largest DEX on the **Avalanche**
 network at the time of writing.
 
 First, let's generate a new token fetcher with
-`yarn studio create-token-fetcher trader-joe`. When prompted for a group, select
+`pnpm studio create-token-fetcher trader-joe`. When prompted for a group, select
 `Create New`, then enter `pool` as the ID and `Pools` as the label. When
 prompted for a network, select `avalanche`.
 

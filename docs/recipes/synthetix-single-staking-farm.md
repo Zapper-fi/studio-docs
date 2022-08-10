@@ -24,7 +24,7 @@ stake their tokens in return for `SNX` rewards. Although the rewards for these
 farms are over, we will integrate these for educational purposes.
 
 First, let's generate a new contract position fetcher with
-`yarn studio create-contract-position-fetcher synthetix`. When prompted for a
+`pnpm studio create-contract-position-fetcher synthetix`. When prompted for a
 group, select `Create New`, then enter `farm` as the ID and `Farms` as the
 label. When prompted for a network, select `ethereum`.
 
