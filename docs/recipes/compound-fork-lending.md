@@ -45,7 +45,7 @@ The `CompoundSupplyTokenHelper` helper class can be used to build a list of
 in an isolated market_ that reflect Compound's comptroller architecture.
 
 First, let's generate a new token fetcher with
-`yarn studio create-token-fetcher cozy-finance`. When prompted for a group,
+`pnpm studio create-token-fetcher cozy-finance`. When prompted for a group,
 select `Create New`, then enter `supply` as the ID and `Supply` as the label.
 When prompted for a network, select `ethereum`.
 

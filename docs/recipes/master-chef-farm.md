@@ -30,7 +30,7 @@ These LP tokens can be staked in the Stargate `MasterChef` contract to earn
 `STG` rewards.
 
 First, let's generate a new contract position fetcher with
-`yarn studio create-contract-position-fetcher stargate`. When prompted for a
+`pnpm studio create-contract-position-fetcher stargate`. When prompted for a
 group, select `Create New`, then enter `farm` as the ID and `Farms` as the
 label. When prompted for a network, select `arbitrum`.
 

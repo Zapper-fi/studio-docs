@@ -23,7 +23,7 @@ a vault token that progressively gives the holder an increasing amount of `JOE`
 token over time.
 
 First, let's generate a new token fetcher with
-`yarn studio create-token-fetcher trader-joe`. When prompted for a group, select
+`pnpm studio create-token-fetcher trader-joe`. When prompted for a group, select
 `Create New`, then enter `x-joe` as the ID and `xJOE` as the label. When
 prompted for a network, select `avalanche`.
 

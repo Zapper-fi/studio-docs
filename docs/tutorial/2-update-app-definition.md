@@ -109,7 +109,7 @@ Jar deposits are represented by an ERC20 token that _wraps_ the underlying token
 being deposited. Farms, however, are _not_ represented by a token.
 
 Our CLI allows us to quickly add groups to an existing app. Run
-`yarn studio create-group pickle`, and follow the prompts. For Jar tokens, we'll
+`pnpm studio create-group pickle`, and follow the prompts. For Jar tokens, we'll
 configure the ID to `jar`, the label to `Jars`, and the type to `token`. For
 farms, we'll configure the ID to `farm`, the label to `Farms`, and the type to
 `contract-position`.

@@ -26,7 +26,7 @@ specifically look at the `nGauge` implementation. This implementation is used
 for many newer Curve opportunities like the `rETH / ETH` pool.
 
 First, let's generate a new contract position fetcher with
-`yarn studio create-contract-position-fetcher curve`. When prompted for a group,
+`pnpm studio create-contract-position-fetcher curve`. When prompted for a group,
 select `Create New`, then enter `farm` as the ID and `Farms` as the label. When
 prompted for a network, select `ethereum`.
 
