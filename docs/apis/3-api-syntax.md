@@ -20,7 +20,7 @@ Notes on use of the API and limits:
 <ul>
   <li>Maximum of 30 RPM (requests per minute)</li>
   <li>Maximum of 15 wallets can be passed into 1 call, though its recommended you query wallets one at a time for best performance</li>
-  <li>Any balance < $0.01 USD value is not included in the output</li>
+  <li>Any balance less than $0.01 USD value is not included in the output</li>
 </ul>
 
 ### Path
@@ -93,7 +93,7 @@ If you query for `appId` = `tokens`, you will get all tokens held in the wallet 
 Notes on use of the API and limits
 <ul>
 <li>Maximum of 15 wallets can be passed into 1 call, though its recommended you query wallets one at a time for best performance</li>
-<li>Any balance < $0.01 USD value is not included in the output</li>
+<li>Any balance less than $0.01 USD value is not included in the output</li>
 </ul>
 
 ### Path
@@ -489,7 +489,7 @@ Endpoint provides insight into what apps the wallet has investments in, and meta
 Notes on use of the API and limits
 <ul>
 <li>Maximum of 15 wallets can be passed into 1 call, though its recommended you query wallets one at a time for best performance</li>
-<li>Any balance < $0.01 USD value is not included in the output</li>
+<li>Any balance less than $0.01 USD value is not included in the output</li>
 </ul>
 
 ### Path
