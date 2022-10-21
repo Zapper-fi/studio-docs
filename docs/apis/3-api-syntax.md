@@ -8,7 +8,7 @@ See below for details on each of Zapper's API endpoints. [Swagger docs to test t
 
 # Balances endpoints
 
-## `v2/balances`
+## `v2/balances` 
 The `v2/balances` endpoint is the most powerful of those offered by Zapper. You input wallet addresses and get all the following:
 <ul>
   <li>All tokens the wallet owns, by network, valued in USD</li>
