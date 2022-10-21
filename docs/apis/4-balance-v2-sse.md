@@ -1,5 +1,5 @@
 ---
-sidebar_position: 4
+sidebar_position: 3
 ---
 
 # Balance aggregation and SSE
@@ -59,10 +59,6 @@ Concretely, an API client has 4 primary concerns to handle with this endpoint:
 Opening the connection is accomplished by making a request to the `/v2/balances`
 endpoint. Closing the connection should be done once the `end` event has been
 received.
-
-> **NOTE**: Please use the `useNewBalancesFormat` query parameter described in
-> the Swagger specification. The legacy format of balances being returned the
-> user is **deprecated**!
 
 Aggregating the data consist in mostly two actions:
 
