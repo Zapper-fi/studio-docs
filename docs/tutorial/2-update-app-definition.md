@@ -69,7 +69,7 @@ Let's take a look at a few examples!
 ### Tokens
 
 Tokens are investment positions that are represented by a token standard like
-`ERC20`. These are transferrable and fungible positions that maybe considered as
+`ERC20`. These are transferrable and fungible positions that may be considered as
 a _receipt_ for an investment transaction. These _receipts_ may be used to
 represent:
 
