@@ -7,9 +7,9 @@ sidebar_class_name: hide
 
 Apps are constantly generating new capabilities for their users to take
 advantage of, and it is critical for Zapper to reflect those new positions for
-users to track. Additonally, when devs are updating their app, they may break
+users to track. Additionally, when devs are updating their app, they may break
 Zapper's integration, requiring some work to update the integration so it
-comtinues to show correct information to users on Zapper and via the Zapper
+continues to show correct information to users on Zapper and via the Zapper
 APIs.
 
 ## How to update an existing integration
