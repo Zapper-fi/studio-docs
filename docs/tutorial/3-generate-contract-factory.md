@@ -16,7 +16,7 @@ of interacting with smart contracts.
 
 ## Add an ABI to your app
 
-For the **Pickle Finnace** app, we'll need the ABI for the **Jar** tokens that
+For the **Pickle Finance** app, we'll need the ABI for the **Jar** tokens that
 we intend to enumerate in our application. An easy way to find this ABI is to
 open
 [any Pickle vault token on Etherscan](https://etherscan.io/address/0x1bb74b5ddc1f4fc91d6f9e7906cf68bc93538e33),
