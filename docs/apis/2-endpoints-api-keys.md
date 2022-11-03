@@ -17,16 +17,14 @@ You will need a private API key to use the Zapper API. To request an API key, pl
 These private API keys still have a rate limit of 30RPM on the `v2/balances`
 endpoints and 1,000RPM on ALL endpoints collectively.
 
-If these rate limits are not sufficient, you may also request a higher rate
-limit for your private API key by via the same ZenDesk ticket link, through
-replying to it in your email.
+If these rate limits are not sufficient, we allow for higher RPMs on paid plans
 
 ### Testing endpoints using the API key on Swagger
 
 You can test the available endpoints on Swagger by entering your API key **into the Authorize section in Swagger**. This will then allow you
 to see the responses for various endpoints based on parameters you specify.
 
-![Enter API key into the authorize section](../../static/img/assets/swagger-auth.png)
+![Enter API key into the authorize section](../../static/img/assets/points_purchase_table.png)
 
 :::info 
 For any API related inquiries, please reach out in the
