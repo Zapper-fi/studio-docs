@@ -48,7 +48,7 @@ However, sequential, lower value pre-purchases do not sum to increase the pricin
 You can pay either on-chain, using USDC, or off-chain, using credit cards, debit cards, bank account details, etc.
 
 ### Paying off-chain
-<b>To pay using a credit card, debit card or bank account, simply [follow this link to our Stripe checkout flow.](https://buy.stripe.com/8wMcPb8fC2jl1wI8wz)</b>
+To pay using a credit card, debit card or bank account, simply **[follow this link to our Stripe checkout flow.](https://buy.stripe.com/8wMcPb8fC2jl1wI8wz)**
 
 Once the purchase is completed, we will credit your API key with the corresponding amount of API points purchased.
 
