@@ -2135,16 +2135,62 @@ JSON response
 </ul>
 
 ### Returns
-TEST
+<ul>
+<li><code>price</code>: price of the sell token</li>
+<li><code>value</code>: token value assouciated with price</li>
+<li><code>gas</code>: gas limit of the transaction</li>
+<li><code>estimatedGas</code>: gas required for the transaction</li>
+<li><code>gasPrice</code>: gas price at the time of transaction</li>
+<li><code>maxPriorityFeePerGas</code>: maximum priority fee for gas in this speed tier</li>
+<li><code>maxFeePerGas</code>: max fee for gas in this gas speed tier</li>
+<li><code>buyTokenAddress</code>: token address for the token wanting to buy</li>
+<li><code>sellTokenAddress</code>: token address for the token wanting to sell</li>
+<li><code>buyAmount</code>: total quantity of buy token</li>
+<li><code>sellAmount</code>: total quantity of sell token</li>
+<li><code>allowanceTarget</code>: token address of token that is approved to sell</li>
+<li><code>source</code>
+  <li><code>name</code>: source of swap route</li>
+  <li><code>proportion</code>: proportion of tokens swapped by this source</li>
+  <li><code>displayName</code>: display name of source</li>
+  <li><code>symbol</code>: symbol of source</li>
+  <li><code>hops</code>: number of hops needed for swap</li>
+<li><code>zapperFee</code>: percentage of fees from swap</li>
+</ul>
 
 ### Curl
 ```
-TODO
+curl -X 'GET' \
+  'https://api.zapper.fi/v2/exchange/price?sellTokenAddress=0x0000000000000000000000000000000000000000&buyTokenAddress=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48&sellAmount=1000000000000000000&ownerAddress=0xd8da6bf26964af9d7eed9e03e53415d37aa96045&slippagePercentage=0.03&network=ethereum' \
+  -H 'accept: */*' \
+  -H 'Authorization: Basic sadkfljsdafksal24uh2jk34=='
 ```
 
 ### Response
 ```
-TODO
+{
+  "price": "1626.154659",
+  "value": "1000000000000000000",
+  "gas": "265203",
+  "estimatedGas": "265203",
+  "gasPrice": "35000000000",
+  "maxPriorityFeePerGas": "1000000000",
+  "maxFeePerGas": "29000000000",
+  "buyTokenAddress": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+  "sellTokenAddress": "0x0000000000000000000000000000000000000000",
+  "buyAmount": "1626194089",
+  "sellAmount": "1000000000000000000",
+  "allowanceTarget": "0x0000000000000000000000000000000000000000",
+  "sources": [
+    {
+      "name": "Uniswap_V3",
+      "proportion": 1,
+      "displayName": "Uniswap V3",
+      "symbol": "uniswap-v3",
+      "hops": []
+    }
+  ],
+  "zapperFee": 0.005
+}
 ```
 
 ## `/v2/exchange/quote`
