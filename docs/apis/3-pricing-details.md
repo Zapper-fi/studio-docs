@@ -62,7 +62,7 @@ Once you have completed the transaction, [please fill out this form](https://zap
 ## Monitoring API use and API point purchases
 We recognize not everyone is able to build monitoring for their API usage, so we have built a dashboard for API users to understand their query volume, points usage, and see their points purchase history.
 
-<b>You can find the [dashboard at this link](https://datastudio.google.com/reporting/88563472-154b-44d2-aba4-339e9f4ba674).</b>
+**You can find the [dashboard at this link](https://datastudio.google.com/reporting/88563472-154b-44d2-aba4-339e9f4ba674).**
 
 The first time you access the dashboard, you will need to request access, and access requires a Google-managed email address to be granted. We plan to launch an updated API partner portal in the coming months that will not have this Google dependency.
 

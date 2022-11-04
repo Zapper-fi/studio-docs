@@ -24,7 +24,7 @@ If these rate limits are not sufficient, we allow for higher RPMs on paid plans
 You can test the available endpoints on Swagger by entering your API key **into the Authorize section in Swagger**. This will then allow you
 to see the responses for various endpoints based on parameters you specify.
 
-![Enter API key into the authorize section](../../static/img/assets/points_purchase_table.png)
+![Enter API key into the authorize section](../../static/img/assets/swagger-auth.png)
 
 :::info 
 For any API related inquiries, please reach out in the
