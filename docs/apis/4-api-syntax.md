@@ -19,7 +19,7 @@ The `v2/balances` endpoint is the most powerful of those offered by Zapper. You 
 Notes on use of the API and limits:
 <ul>
   <li>Maximum of 30 RPM (requests per minute)</li>
-  <li>Maximum of 15 wallets can be passed into 1 call, though its recommended you query wallets one at a time for best performance</li>
+  <li>Maximum of 15 wallets can be passed into 1 call, though it's recommended you query wallets one at a time for best performance</li>
   <li>Any balance less than $0.01 USD value is not included in the output</li>
 </ul>
 
@@ -43,7 +43,7 @@ The response is in JSON, but is streamed from our endpoint. You will need to und
   <li><code>network</code>: network the app is on</li>
   <li><code>addresses</code>: addresses queried for</li>
   <li><code>balance</code>: details on the balance structure, and what kind of balance it is</li>
-  <li><code>type</code>: type of position the invesment is. <code>contract-position</code> is if the investment is held on a 3rd party contract</li>
+  <li><code>type</code>: type of position the investment is. <code>contract-position</code> is if the investment is held on a 3rd party contract</li>
   <li><code>app-token</code>: is if the wallet holds tokens in the wallet representing the investment</li>
   <li><code>displayProps</code>: details on how to display the asset on Zapper's frontend</li>
 </ul>
@@ -92,7 +92,7 @@ If you query for `appId` = `tokens`, you will get all tokens held in the wallet 
 
 Notes on use of the API and limits
 <ul>
-<li>Maximum of 15 wallets can be passed into 1 call, though its recommended you query wallets one at a time for best performance</li>
+<li>Maximum of 15 wallets can be passed into 1 call, though it's recommended you query wallets one at a time for best performance</li>
 <li>Any balance less than $0.01 USD value is not included in the output</li>
 </ul>
 
@@ -116,7 +116,7 @@ JSON response
 <li><code>network</code>: network the app is on</li>
 <li><code>groupId</code>: group this particular investment belongs to within in the app, such as <code>pool</code> or <code>farms</code></li>
 <li><code>balance</code>: details on the balance structure, and what kind of balance it is</li>
-<li><code>type</code>: type of position the invesment is. <code>contract-position</code> is if the investment is held on a 3rd party contract. <code>app-token</code> is if the wallet holds tokens in the wallet representing the investment</li>
+<li><code>type</code>: type of position the investment is. <code>contract-position</code> is if the investment is held on a 3rd party contract. <code>app-token</code> is if the wallet holds tokens in the wallet representing the investment</li>
 <li><code>address</code>: address of token</li>
 <li><code>symbol</code>: symbol of token</li>
 <li><code>decimals</code>: decimals of token</li>
@@ -488,7 +488,7 @@ Endpoint provides insight into what apps the wallet has investments in, and meta
 
 Notes on use of the API and limits
 <ul>
-<li>Maximum of 15 wallets can be passed into 1 call, though its recommended you query wallets one at a time for best performance</li>
+<li>Maximum of 15 wallets can be passed into 1 call, though it's recommended you query wallets one at a time for best performance</li>
 <li>Any balance less than $0.01 USD value is not included in the output</li>
 </ul>
 
@@ -1160,7 +1160,7 @@ JSON response
 <li><code>network</code>: network the app is on</li>
 <li><code>groupId</code>: group this particular investment belongs to within in the app, such as `pool` or `farms`</li>
 <li><code>balance</code>: details on the balance structure, and what kind of balance it is</li>
-<li><code>type</code>: type of position the invesment is. <code>contract-position</code> is if the investment is held on a 3rd party contract. <code>app-token</code> is if the wallet holds tokens in the wallet representing the investment</li>
+<li><code>type</code>: type of position the investment is. <code>contract-position</code> is if the investment is held on a 3rd party contract. <code>app-token</code> is if the wallet holds tokens in the wallet representing the investment</li>
 <li><code>address</code>: address of token</li>
 <li><code>symbol</code>: symbol of token</li>
 <li><code>decimals</code>: decimals of token</li>
@@ -1415,7 +1415,7 @@ JSON response
 <li><code>network</code>: network the app is on</li>
 <li><code>groupId</code>: group this particular investment belongs to within in the app, such as `pool` or `farms`</li>
 <li><code>balance</code>: details on the balance structure, and what kind of balance it is</li>
-<li><code>type</code>: type of position the invesment is. <code>contract-position</code> is if the investment is held on a 3rd party contract. <code>app-token</code> is if the wallet holds tokens in the wallet representing the investment</li>
+<li><code>type</code>: type of position the investment is. <code>contract-position</code> is if the investment is held on a 3rd party contract. <code>app-token</code> is if the wallet holds tokens in the wallet representing the investment</li>
 <li><code>address</code>: address of token</li>
 <li><code>symbol</code>: symbol of token</li>
 <li><code>decimals</code>: decimals of token</li>
@@ -1976,12 +1976,12 @@ JSON response
 <ul>
 <li><code>token</code>
     <ul>
-    <li><code>balance</code>: number of NFTs owned of a given type. If its ERC_721, will always be 1. If NFT is is ERC_1155, will be a count of how many NFTs are owned by this wallet</li>
+    <li><code>balance</code>: number of NFTs owned of a given type. If it's ERC_721, it will always be 1. If NFT is is ERC_1155, will be a count of how many NFTs are owned by this wallet</li>
     <li><code>name</code>: name of NFT</li>
     <li><code>tokenId</code>: ID of token within collection</li>
     <li><code>lastSaleEth</code>: price of last sale of this NFT</li>
     <li><code>rarityRank</code>: rank of this NFTs rarity, based on traits, within its collection</li>
-    <li><code>estimatedValueEth</code>: estimated value of this NFT, based on various singals using Zapper's internal model</li>
+    <li><code>estimatedValueEth</code>: estimated value of this NFT, based on various signals using Zapper's internal model</li>
     <li><code>medias</code>: link to image for NFT</li>
     </ul>
     </li>
@@ -2148,7 +2148,7 @@ TODO
 ```
 
 ## `/v2/exchange/quote`
-Returns both the relative price for a trade as well as the call data used to sumbit a transaction for a trade. Should only be called when a trade is ready to be submitted.
+Returns both the relative price for a trade as well as the call data used to submit a transaction for a trade. Should only be called when a trade is ready to be submitted.
 
 ### Path
 `/v2/exchange/quote`
@@ -2263,7 +2263,7 @@ JSON response
 
 ### Parameters
 <ul>
-<li><code>network</code>: retreive tokens for this specified network</li>
+<li><code>network</code>: retrieve tokens for this specified network</li>
 </ul>
 
 ### Returns
@@ -2365,7 +2365,7 @@ JSON response
 <ul>
 <li><code>eip1559</code>: coingecko API id for token</li>
 <li><code>baseFeePerGas</code>: base fee for gas in this gas speed tier</li>
-<li><code>maxPriorityFeePerGas</code>: maximimum priority fee for gas in this speed tier</li>
+<li><code>maxPriorityFeePerGas</code>: maximum priority fee for gas in this speed tier</li>
 <li><code>maxFeePerGas</code>: max fee for gas in this gas speed tier</li>
 </ul>
 
@@ -2398,3 +2398,6 @@ curl -X 'GET' \
   }
 }
 ```
+
+
+

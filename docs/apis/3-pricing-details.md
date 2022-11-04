@@ -4,7 +4,7 @@ sidebar_position: 3
 
 # API Plans - Free and Paid
 
-On November 1st, 2022, Zapper rolled out paid plans for high-volume consumers of our API via implementing a **points** system, which each successful API query has a related point value. [You can read the full details of the API plan rollout this Medium post.](https://blog.zapper.fi/transitioning-to-paid-api-plans-for-large-consumers-14973bb0cbbb)
+On November 1st, 2022, Zapper rolled out paid plans for high-volume consumers of our API via implementing a **points** system, where each successful API query has a related point value. [You can read the full details of the API plan rollout this Medium post.](https://blog.zapper.fi/transitioning-to-paid-api-plans-for-large-consumers-14973bb0cbbb)
 
 The points breakdown is as follows:
 <ul>
@@ -13,20 +13,20 @@ The points breakdown is as follows:
 </ul>
 
 :::note
-When querying the all  endpoint, each Wallet counts as 1 query, even if multiple addresses are bundled into 1 call. By way of example only, if you pass 10 Wallets into 1 API call of v2/balances endpoint, that will count as 10 queries of that endpoint, for a total of 70 points.
+When querying, each wallet counts as 1 query, even if multiple addresses are bundled into 1 call. By way of example only, if you pass 10 Wallets into 1 API call of v2/balances endpoint, that will count as 10 queries of that endpoint, for a total of 70 points.
 :::
 
 ## Free monthly quota of points
 To support hobbyist developers and personal projects, all API clients receive **10,000 free API points** at the start of the month, and will receive 10,000 points each month going forward.  The 10,000 points granted each month is the equivalent of 10,000 free queries per month on non-<code>v2/balance</code> endpoints.
 
-The free points expire at the end of the month, so its a "use-it-or-lose-it" situation within the month. Note that these points are granted to each API client, and not on an API-key basis. If you have multiple API keys associated with your account, all your keys will share the same pool of points. 
+The free points expire at the end of the month, so it's a "use-it-or-lose-it" situation within the month. Note that these points are granted to each API client, and not on an API-key basis. If you have multiple API keys associated with your account, all your keys will share the same pool of points. 
 
-:::danger
+:::caution
 It is also against [Zapper's API terms of use](https://zapper.fi/docs/api-terms-of-use.pdf) to register multiple API clients for the same business entity with the goal of accumulating large amounts of free point distributions, and you will be banned. Please do not abuse our APIs in this way.
 :::
 
 ## Paid API plans for larger API users
-There are many API users who's query volume needs exceed the 10,000 points. For these users, there is now have the option to purchase additional points.
+There are many API users who's query volume needs exceed 10,000 points in a given month. For these users, there is now the option to purchase additional points.
 
 Points that are purchased expire after 12 months, allowing devs to consume them over time, across many months. This is helpful, as Zapper offers discounts on larger point purchases.
 
@@ -40,15 +40,15 @@ As another example, if you purchased $300,000 USD worth of Points, you would rec
 However, sequential, lower value pre-purchases do not sum to increase the pricing tier. By way of example only, one $10,000 USD purchase cannot be combined with a $15,000 USD purchase a week later to claim Middle tier pricing. Both purchases generate 1,333 Points per USD.
 
 ## Other benefits of being on a paid plan
-We will use our best effort to accommodate higher RPM rates if your business needs it and you have purchased points. Please reach out to us to discuss at [partnerships@zapper.fi](mailto:partnerships@zapper.fi).
+<b>Higher RPMs</b>: We will use our best effort to accommodate higher RPM rates if your business needs it and you have purchased points. Please reach out to us to discuss at [partnerships@zapper.fi](mailto:partnerships@zapper.fi).
 
-If you purchase more than $25,000 USD in points, we will establish a private telegram/discord chat with Zapper product and engineering team; This will offer you a line of communication to Zapper’s product team for you to provide Feedback, ask technical questions about our APIs, highlight issues you're running into while building and to offer you an early heads-up on API changes.
+<b>Direct line of communication with dev team</b>: If you purchase more than $25,000 USD in points, we will establish a private telegram/discord chat with Zapper product and engineering team; This will offer you a line of communication to Zapper’s product team for you to provide Feedback, ask technical questions about our APIs, highlight issues you're running into while building and to offer you an early heads-up on API changes.
 
-## How to purchase points
+## How to purchase API points
 You can pay either on-chain, using USDC, or off-chain, using credit cards, debit cards, bank account details, etc.
 
 ### Paying off-chain
-To pay using a credit card, debit card or bank account, simply [follow this link to our Stripe checkout flow.](https://buy.stripe.com/8wMcPb8fC2jl1wI8wz)
+<b>To pay using a credit card, debit card or bank account, simply [follow this link to our Stripe checkout flow.](https://buy.stripe.com/8wMcPb8fC2jl1wI8wz)</b>
 
 Once the purchase is completed, we will credit your API key with the corresponding amount of API points purchased.
 
@@ -60,11 +60,11 @@ All payments will be made in USDC on the **Ethereum network**, paid to the addre
 Once you have completed the transaction, [please fill out this form](https://zapperfi.zendesk.com/hc/en-us/requests/new?ticket_form_id=10132222946321) and include a link to the transaction, so we can connect the transaction with your API account. We will then credit your account with the API credits.
 
 ## Monitoring API use and API point purchases
-We recognize not everyone is able to building monitoring for their API usage, so we have built a dashboard for API users to understand their query volume, points usage, and see their points purchase history.
+We recognize not everyone is able to build monitoring for their API usage, so we have built a dashboard for API users to understand their query volume, points usage, and see their points purchase history.
 
-You can find the [dashboard at this link](https://datastudio.google.com/reporting/88563472-154b-44d2-aba4-339e9f4ba674).
+<b>You can find the [dashboard at this link](https://datastudio.google.com/reporting/88563472-154b-44d2-aba4-339e9f4ba674).</b>
 
-The first time you access the dashboard, you will need to request access, and access requires a Google-managed email address to be granted. We plan to launch an updated API partner portal in the coming months, that will not have this Google dependency.
+The first time you access the dashboard, you will need to request access, and access requires a Google-managed email address to be granted. We plan to launch an updated API partner portal in the coming months that will not have this Google dependency.
 
 The dashboard operates using the first 8 characters of your API key, which you input into the green box in the top right of the dashboard when accessed. So, if your API key <code>12345678-abced-abc123123</code>, you would input <code>12345678</code> into that box.
 

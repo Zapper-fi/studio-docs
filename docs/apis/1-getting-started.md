@@ -7,7 +7,7 @@ sidebar_position: 1
 ![](../../static/img/assets/zapper_api_logo.png)
 
 The Zapper API provides some of the most robust Web3-related data, 
-fromcomplex DeFi app balances to NFT valuations and  pool liquidity and prices on different AMMs, all in
+from complex DeFi app balances to NFT valuations and  pool liquidity and prices on different AMMs, all in
 one convenient place. 
 
 :::info 

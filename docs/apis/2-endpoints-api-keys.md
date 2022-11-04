@@ -14,7 +14,7 @@ We authenticate your private API key using **HTTP authorization request headers*
 
 You will need a private API key to use the Zapper API. To request an API key, please file a [ZenDesk ticket](https://zapperfi.zendesk.com/hc/en-us/requests/new). You will be issued a private API key in 24-48 hours.
 
-These private API keys still have a rate limit of 30RPM on the `v2/balances`
+These private API keys still have a rate limit of 30 requests per minute (RPM) on the `v2/balances`
 endpoints and 1,000RPM on ALL endpoints collectively.
 
 If these rate limits are not sufficient, we allow for higher RPMs on paid plans
