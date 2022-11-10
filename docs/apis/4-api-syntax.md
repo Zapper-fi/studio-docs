@@ -2156,6 +2156,8 @@ JSON response
   <li><code>hops</code>: number of hops needed for swap</li>
 <li><code>zapperFee</code>: percentage of fees from swap</li>
 </ul>
+</li>
+</ul>
 
 ### Curl
 ```
