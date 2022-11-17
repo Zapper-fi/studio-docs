@@ -2148,7 +2148,6 @@ JSON response
 <li><code>buyAmount</code>: total quantity of buy token</li>
 <li><code>sellAmount</code>: total quantity of sell token</li>
 <li><code>allowanceTarget</code>: token address of token that is approved to sell</li>
-<li><code>source</code>
   </u>
   <li><code>name</code>: source of swap route</li>
   <li><code>proportion</code>: proportion of tokens swapped by this source</li>
@@ -2158,6 +2157,8 @@ JSON response
   </u>
   </li>
 <li><code>zapperFee</code>: percentage of fees from swap</li>
+</ul>
+</li>
 </ul>
 
 ### Curl
