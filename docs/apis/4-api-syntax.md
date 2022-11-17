@@ -2136,6 +2136,7 @@ JSON response
 
 ### Returns
 <ul>
+updating-api-schema-3
 <li><code>price</code>: Price of the sell token</li>
 <li><code>value</code>: Token value assouciated with price</li>
 <li><code>gas</code>: Gas limit of the transaction</li>
@@ -2158,6 +2159,7 @@ JSON response
   </ul>
   </li>
 <li><code>zapperFee</code>: Percentage of fees from swap</li>
+main
 </ul>
 
 ### Curl
