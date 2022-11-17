@@ -1804,7 +1804,7 @@ JSON response
 <li><code>cardImageUrl</code>: URL for card image</li>
 <li><code>bannerImageUrl</code>: URL for banner image</li>
 <li><code>nftStandard</code>: standard of the NFT (1155 or 721)</li>
-<li><code>floorPriceEth</code>: floor price of collection in eth</li>
+<li><code>floorPriceEth</code>: floor price of collection in eth. Floor price is pulled from multiple platforms via Reservoir and the displayed floor price is the lowest aggregated value. [https://docs.reservoir.tools/docs/aggregated-orderbook] (https://docs.reservoir.tools/docs/aggregated-orderbook)</li>
 <li><code>marketCap</code>: market cap of the collection in eth</li>
 <li><code>openseaId</code>: ID of collection on OpenSea</li>
 <li><code>socialLinks</code>: links to various socials</li>
@@ -2148,12 +2148,16 @@ JSON response
 <li><code>buyAmount</code>: total quantity of buy token</li>
 <li><code>sellAmount</code>: total quantity of sell token</li>
 <li><code>allowanceTarget</code>: token address of token that is approved to sell</li>
+  <ul>
   <li><code>name</code>: source of swap route</li>
   <li><code>proportion</code>: proportion of tokens swapped by this source</li>
   <li><code>displayName</code>: display name of source</li>
   <li><code>symbol</code>: symbol of source</li>
   <li><code>hops</code>: number of hops needed for swap</li>
+  <ul>
+  </li>
 <li><code>zapperFee</code>: percentage of fees from swap</li>
+</li>
 </ul>
 
 ### Curl
