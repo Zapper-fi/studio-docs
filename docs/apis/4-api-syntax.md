@@ -2136,28 +2136,30 @@ JSON response
 
 ### Returns
 <ul>
-<li><code>price</code>: price of the sell token</li>
-<li><code>value</code>: token value assouciated with price</li>
-<li><code>gas</code>: gas limit of the transaction</li>
-<li><code>estimatedGas</code>: gas required for the transaction</li>
-<li><code>gasPrice</code>: gas price at the time of transaction</li>
-<li><code>maxPriorityFeePerGas</code>: maximum priority fee for gas in this speed tier</li>
-<li><code>maxFeePerGas</code>: max fee for gas in this gas speed tier</li>
-<li><code>buyTokenAddress</code>: token address for the token wanting to buy</li>
-<li><code>sellTokenAddress</code>: token address for the token wanting to sell</li>
-<li><code>buyAmount</code>: total quantity of buy token</li>
-<li><code>sellAmount</code>: total quantity of sell token</li>
-<li><code>allowanceTarget</code>: token address of token that is approved to sell</li>
+updating-api-schema-3
+<li><code>price</code>: Price of the sell token</li>
+<li><code>value</code>: Token value assouciated with price</li>
+<li><code>gas</code>: Gas limit of the transaction</li>
+<li><code>estimatedGas</code>: Gas required for the transaction</li>
+<li><code>gasPrice</code>: Gas price at the time of transaction</li>
+<li><code>maxPriorityFeePerGas</code>: Maximum priority fee for gas in this speed tier</li>
+<li><code>maxFeePerGas</code>: Max fee for gas in this gas speed tier</li>
+<li><code>buyTokenAddress</code>: Token address for the token wanting to buy</li>
+<li><code>sellTokenAddress</code>: Token address for the token wanting to sell</li>
+<li><code>buyAmount</code>: Total quantity of buy token</li>
+<li><code>sellAmount</code>: Total quantity of sell token</li>
+<li><code>allowanceTarget</code>: Token address of token that is approved to sell</li>
+<li><code>sources</code>:
   <ul>
-  <li><code>name</code>: source of swap route</li>
-  <li><code>proportion</code>: proportion of tokens swapped by this source</li>
-  <li><code>displayName</code>: display name of source</li>
-  <li><code>symbol</code>: symbol of source</li>
-  <li><code>hops</code>: number of hops needed for swap</li>
-  <ul>
+  <li><code>name</code>: Source of swap route</li>
+  <li><code>proportion</code>: Proportion of tokens swapped by this source</li>
+  <li><code>displayName</code>: Display name of source</li>
+  <li><code>symbol</code>: Symbol of source</li>
+  <li><code>hops</code>: Number of hops needed for swap</li>
+  </ul>
   </li>
-<li><code>zapperFee</code>: percentage of fees from swap</li>
-</li>
+<li><code>zapperFee</code>: Percentage of fees from swap</li>
+main
 </ul>
 
 ### Curl
@@ -2220,16 +2222,67 @@ JSON response
 </ul>
 
 ### Returns
-TODO
+<ul>
+<li><code>price</code>: Sell token price divided by buy token price</li>
+<li><code>data</code>: Transactional data for swap</li>
+<li><code>to</code>: Address that tokens are transferred to</li>
+<li><code>value</code>: Quantity of native network token being transferred</li>
+<li><code>estimatedGas</code>: Address of the token that is being bought</li>
+<li><code>maxPriorityFeePerGas</code>: Maximum priority fee for gas in this speed tier</li>
+<li><code>maxFeePerGas</code>: Max fee for gas in this gas speed tier</li>
+<li><code>buyTokenAddress</code>: Token address for the token wanting to buy</li>
+<li><code>sellTokenAddress</code>: Token address for the token wanting to sell</li>
+<li><code>buyAmount</code>: Total quantity of buy token</li>
+<li><code>sellAmount</code>: Total quantity of sell token</li>
+<li><code>allowanceTarget</code>: Token address of token that is approved to sell</li>
+<li><code>sources</code>:
+  <ul>
+  <li><code>name</code>: source of swap route</li>
+  <li><code>proportion</code>: proportion of tokens swapped by this source</li>
+  <li><code>displayName</code>: display name of source</li>
+  <li><code>symbol</code>: symbol of source</li>
+  <li><code>hops</code>: number of hops needed for swap</li>
+  </ul>
+  </li>
+<li><code>zapperFee</code>: percentage of fees from swap</li>
+</ul>
 
 ### Curl
 ```
-TODO
+curl -X 'GET' \
+  'https://api.zapper.fi/v2/exchange/quote?gasPrice=35000000000&maxFeePerGas=40000000000&maxPriorityFeePerGas=1000000000&sellTokenAddress=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48&buyTokenAddress=0x0000000000000000000000000000000000000000&sellAmount=1000000&ownerAddress=0xe321bd63cde8ea046b382f82964575f2a5586474&slippagePercentage=0.03&network=ethereum' \
+  -H 'accept: */*' \
+  -H 'Authorization: Basic sadkfljsdafksal24uh2jk34=='
 ```
 
 ### Response
 ```
-TODO
+{
+  "price": "0.000824318884007021",
+  "data": "0x415565b0000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee00000000000000000000000000000000000000000000000000000000000f42400000000000000000000000000000000000000000000000000002d7217cd6e6d700000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000042000000000000000000000000000000000000000000000000000000000000004c000000000000000000000000000000000000000000000000000000000000005c0000000000000000000000000000000000000000000000000000000000000001a0000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000034000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc200000000000000000000000000000000000000000000000000000000000001400000000000000000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000002c000000000000000000000000000000000000000000000000000000000000f42400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000025375736869537761700000000000000000000000000000000000000000000000000000000000000000000000000f42400000000000000000000000000000000000000000000000000002dac437104bd5000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000d9e1ce17f2641f24ae83637ab66a2cca9c378b9f00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000002000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000040000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000001b000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000001000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee000000000000000000000000000000000000000000000000000003a2ba3964fe00000000000000000000000043a2a720cd0911690c248075f4a29a5e7716f758000000000000000000000000000000000000000000000000000000000000001c000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000001000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000000000000000000000000000000000000000000869584cd0000000000000000000000003ce37278de6388532c3949ce4e886f365b14fb5600000000000000000000000000000000000000000000005c32bfbad3637698a8",
+  "to": "0xdef1c0ded9bec7f1a1670819833240f027b25eff",
+  "value": "0",
+  "estimatedGas": "339874",
+  "gasPrice": "35000000000",
+  "maxPriorityFeePerGas": "1000000000",
+  "maxFeePerGas": "40000000000",
+  "buyTokenAddress": "0x0000000000000000000000000000000000000000",
+  "sellTokenAddress": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+  "buyAmount": "824338871226566",
+  "sellAmount": "1000000",
+  "allowanceTarget": "0xdef1c0ded9bec7f1a1670819833240f027b25eff",
+  "sources": [
+    {
+      "name": "SushiSwap",
+      "proportion": 1,
+      "displayName": "SushiSwap",
+      "symbol": "sushiswap",
+      "hops": []
+    }
+  ],
+  "gas": "339874",
+  "zapperFee": 0.005
+}
 ```
 
 ## `/v2/exchange/supported`
