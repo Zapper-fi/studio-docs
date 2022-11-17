@@ -2157,7 +2157,6 @@ JSON response
   <ul>
   </li>
 <li><code>zapperFee</code>: percentage of fees from swap</li>
-</ul>
 </li>
 </ul>
 
