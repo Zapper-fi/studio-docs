@@ -4,12 +4,16 @@ sidebar_position: 4
 
 # API Schema
 
-See below for details on each of Zapper's API endpoints. [Swagger docs to test these endpoints can be found here.](<https://api.zapper.fi/api/static/index.html#>)
+See below for details on each of Zapper's API endpoints.
+[Swagger docs to test these endpoints can be found here.](https://api.zapper.fi/api/static/index.html#)
 
 # Balances endpoints
 
-## `v2/balances` 
-The `v2/balances` endpoint is the most powerful of those offered by Zapper. You input wallet addresses and get all the following:
+## `v2/balances`
+
+The `v2/balances` endpoint is the most powerful of those offered by Zapper. You
+input wallet addresses and get all the following:
+
 <ul>
   <li>All tokens the wallet owns, by network, valued in USD</li>
   <li>Detailed breakdown of all app investment positions represented as app tokens owned by the wallet, such as Aave lending positions or Uniswap pools, valued in USD</li>
@@ -17,6 +21,7 @@ The `v2/balances` endpoint is the most powerful of those offered by Zapper. You 
 </ul>
 
 Notes on use of the API and limits:
+
 <ul>
   <li>Maximum of 30 RPM (requests per minute)</li>
   <li>Maximum of 15 wallets can be passed into 1 call, though it's recommended you query wallets one at a time for best performance</li>
@@ -24,20 +29,25 @@ Notes on use of the API and limits:
 </ul>
 
 ### Path
+
 `v2/balances`
 
-
 ### Response format
-The response is in JSON, but is streamed from our endpoint. You will need to understand how to handle streamed responses. [See our documentation on SSE handling here](<https://studio.zapper.fi/docs/apis/balance-v2-sse>).
 
-### Parameters 
+The response is in JSON, but is streamed from our endpoint. You will need to
+understand how to handle streamed responses.
+[See our documentation on SSE handling here](https://studio.zapper.fi/docs/apis/balance-v2-sse).
+
+### Parameters
+
 <ul>
   <li><code>addresses[]</code>: *(required)* Addresses for which to retrieve balances, inputted as an array. Can handle up to 15 addresses</li>
   <li><code>networks[]</code>: Networks for which to retrieve balances, inputted an array. Available values : ethereum, polygon, optimism, gnosis, binance-smart-chain, fantom, avalanche, arbitrum, celo, moonriver, bitcoin, cronos, aurora</li>
   <li><code>bundled</code>: Set to false to receive balance individually for each addresses, instead of bundled together</li>
 </ul>
 
-### Return 
+### Return
+
 <ul>
   <li><code>appId</code>: ID of the app</li>
   <li><code>network</code>: network the app is on</li>
@@ -48,8 +58,8 @@ The response is in JSON, but is streamed from our endpoint. You will need to und
   <li><code>displayProps</code>: details on how to display the asset on Zapper's frontend</li>
 </ul>
 
-
 ### Curl
+
 ```
 curl -X 'GET' \
   'https://api.zapper.fi/v2/balances?addresses%5B%5D=0x3d280fde2ddb59323c891cf30995e1862510342f&bundled=false' \
@@ -58,6 +68,7 @@ curl -X 'GET' \
 ```
 
 ### Response
+
 ```
 event: balance
 data: {"appId":"sudoswap","network":"ethereum","addresses":["0x3d280fde2ddb59323c891cf30995e1862510342f"],"balance":{"deposits":{},"debt":{},"vesting":{},"wallet":{},"claimable":{},"locked":{},"nft":{}},"totals":[{"key":"2987028053","type":"contract-position","network":"ethereum","balanceUSD":7256.5594200000005}],"errors":[],"app":{"appId":"sudoswap","network":"ethereum","data":[{"key":"2987028053","type":"position","appId":"sudoswap","address":"0xea504f1857707c6c875cba618a33bd09fc4aefac","metaType":null,"balanceUSD":7256.5594200000005,"contractType":"contract-position","network":"ethereum","displayProps":{"label":"Chain Runners ↔ ETH - Price: 0.22Ξ","secondaryLabel":null,"tertiaryLabel":null,"images":["https://lh3.googleusercontent.com/3vScLGUcTB7yhItRYXuAFcPGFNJ3kgO0mXeUSUfEMBjGkGPKz__smtXyUlRxzZjr1Y5x8hz1QXoBQSEb8wm4oBByeQC_8WOCaDON4Go=s120","https://storage.googleapis.com/zapper-fi-assets/tokens/ethereum/0x0000000000000000000000000000000000000000.png"],"stats":[],"info":[{"label":{"type":"string","value":"App"},"value":{"type":"string","value":"Sudoswap"}}],"balanceDisplayMode":"default"},"breakdown":[{"key":"917389808","appId":"nft","address":"0x97597002980134bea46250aa0510c9b90d87a587","network":"ethereum","balanceUSD":7256.5594200000005,"metaType":"supplied","type":"nft","contractType":"non-fungible-token","breakdown":[],"assets":[{"tokenId":"1976","assetImg":"https://web.zapper.fi/images/?url=https%3A%2F%2Fimg.chainrunners.xyz%2Fapi%2Fv1%2Ftokens%2Fpng%2F1976&width=250&checksum=6f122","assetName":"Chain Runners #1976","balance":1,"balanceUSD":219.89574000000002},{"tokenId":"2835","assetImg":"https://web.zapper.fi/images/?url=https%3A%2F%2Fimg.chainrunners.xyz%2Fapi%2Fv1%2Ftokens%2Fpng%2F2835&width=250&checksum=f4896","assetName":"Chain Runners #2835","balance":1,"balanceUSD":219.89574000000002},{"tokenId":"3067","assetImg":"https://web.zapper.fi/images/?url=https%3A%2F%2Fimg.chainrunners.xyz%2Fapi%2Fv1%2Ftokens%2Fpng%2F3067&width=250&checksum=d3ddb","assetName":"Chain Runners #3067","balance":1,"balanceUSD":219.89574000000002},{"tokenId":"3094","assetImg":"https://web.zapper.fi/images/?url=https%3A%2F%2Fimg.chainrunners.xyz%2Fapi%2Fv1%2Ftokens%2Fpng%2F3094&width=250&checksum=83db0","assetName":"Chain Runners #3094","balance":1,"balanceUSD":219.89574000000002},{"tokenId":"4605","assetImg":"https://web.zapper.fi/images/?url=https%3A%2F%2Fimg.chainrunners.xyz%2Fapi%2Fv1%2Ftokens%2Fpng%2F4605&width=250&checksum=93684","assetName":"Chain Runners #4605","balance":1,"balanceUSD":219.89574000000002}],"context":{"incomplete":true,"openseaId":"18242","holdersCount":3341,"floorPrice":0.171,"amountHeld":33,"volume24h":0,"volume7d":0,"volume1m":0},"displayProps":{"label":"RUN","secondaryLabel":{"type":"linkVersion","value":2},"tertiaryLabel":null,"profileImage":"https://lh3.googleusercontent.com/3vScLGUcTB7yhItRYXuAFcPGFNJ3kgO0mXeUSUfEMBjGkGPKz__smtXyUlRxzZjr1Y5x8hz1QXoBQSEb8wm4oBByeQC_8WOCaDON4Go=s120","profileBanner":"https://lh3.googleusercontent.com/8MKiOEUA3COVcXKzhj54Q5eP0GP9NDOFsumbkiQ2KokimqYGlfTxLKei60ZUG_ipq-VZ5_D2rGZAjxmOVEIVSJaezvrwZe2IywOyEQ=s2500","featuredImg":"","featuredImage":"","images":[],"balanceDisplayMode":"default","stats":[],"info":[]}}]}],"displayProps":{"appName":"Sudoswap","images":["https://storage.googleapis.com/zapper-fi-assets/apps/sudoswap.png"]},"meta":{"total":7256.5594200000005}}}
@@ -82,53 +93,62 @@ data: {}
 
 ## `v2/apps/{appId}/balances`
 
-The `v2/apps/{appId}/balances` endpoint is similar to the `v2/balances` query, but returns data only for a specific app, instead of ALL apps, tokens and NFTsin a wallet . You input wallet addresses and get all the following:
+The `v2/apps/{appId}/balances` endpoint is similar to the `v2/balances` query,
+but returns data only for a specific app, instead of ALL apps, tokens and NFTsin
+a wallet . You input wallet addresses and get all the following:
+
 <ul>
-<li>Detailed breakdown of all app investment positions represented as app tokens owned by the wallet, such as Aave lending positions or Uniswap pools, valued in USD</li>
-<li>Detailed breakdown of all app investment positions represented as contract positions that are not held on the wallet, such ve-locked or farming positions, valued in USD</li>
+  <li>Detailed breakdown of all app investment positions represented as app tokens owned by the wallet, such as Aave lending positions or Uniswap pools, valued in USD</li>
+  <li>Detailed breakdown of all app investment positions represented as contract positions that are not held on the wallet, such ve-locked or farming positions, valued in USD</li>
 </ul>
 
-If you query for `appId` = `tokens`, you will get all tokens held in the wallet that are not associated with an App.
+If you query for `appId` = `tokens`, you will get all tokens held in the wallet
+that are not associated with an App.
 
 Notes on use of the API and limits
+
 <ul>
-<li>Maximum of 15 wallets can be passed into 1 call, though it's recommended you query wallets one at a time for best performance</li>
-<li>Any balance less than $0.01 USD value is not included in the output</li>
+  <li>Maximum of 15 wallets can be passed into 1 call, though it's recommended you query wallets one at a time for best performance</li>
+  <li>Any balance less than $0.01 USD value is not included in the output</li>
 </ul>
 
 ### Path
+
 `v2/apps/{appId}/balances`
 
-
 ### Format
+
 JSON response
 
 ### Parameters
+
 <ul>
-<li><code>appId</code>: appId of the desired app</li>
-<li><code>addresses[]</code>: *(required)* Addresses for which to retrieve balances, inputted as an array. Can handle up to 15 addresses</li>
-<li><code>networks[]</code>: Networks for which to retrieve balances, inputted an array</li>
+  <li><code>appId</code>: appId of the desired app</li>
+  <li><code>addresses[]</code>: *(required)* Addresses for which to retrieve balances, inputted as an array. Can handle up to 15 addresses</li>
+  <li><code>networks[]</code>: Networks for which to retrieve balances, inputted an array</li>
 </ul>
 
 ### Returns
+
 <ul>
-<li><code>appId</code>: ID of the app</li>
-<li><code>network</code>: network the app is on</li>
-<li><code>groupId</code>: group this particular investment belongs to within in the app, such as <code>pool</code> or <code>farms</code></li>
-<li><code>balance</code>: details on the balance structure, and what kind of balance it is</li>
-<li><code>type</code>: type of position the investment is. <code>contract-position</code> is if the investment is held on a 3rd party contract. <code>app-token</code> is if the wallet holds tokens in the wallet representing the investment</li>
-<li><code>address</code>: address of token</li>
-<li><code>symbol</code>: symbol of token</li>
-<li><code>decimals</code>: decimals of token</li>
-<li><code>supply</code>: supply of token</li>
-<li><code>pricePerShare</code>: ratio of price to supply of assets</li>
-<li><code>tokens</code>: details on underlying tokens in the investment, such as their address, price, symbol, daily volume, balance, etc</li>
-<li><code>displayProps</code>: details on how to display the asset on Zapper's frontend</li>
-<li><code>statsItems</code>: ancillary stats associated with the investment, such as APY, APR, liquidity, volume, fee, ratio of underlying assets, etc</li>
-<li><code>meta</code>: total value of all positions in the app (example below has 3 different uniswap v2 positions)</li>
+  <li><code>appId</code>: ID of the app</li>
+  <li><code>network</code>: network the app is on</li>
+  <li><code>groupId</code>: group this particular investment belongs to within in the app, such as <code>pool</code> or <code>farms</code></li>
+  <li><code>balance</code>: details on the balance structure, and what kind of balance it is</li>
+  <li><code>type</code>: type of position the investment is. <code>contract-position</code> is if the investment is held on a 3rd party contract. <code>app-token</code> is if the wallet holds tokens in the wallet representing the investment</li>
+  <li><code>address</code>: address of token</li>
+  <li><code>symbol</code>: symbol of token</li>
+  <li><code>decimals</code>: decimals of token</li>
+  <li><code>supply</code>: supply of token</li>
+  <li><code>pricePerShare</code>: ratio of price to supply of assets</li>
+  <li><code>tokens</code>: details on underlying tokens in the investment, such as their address, price, symbol, daily volume, balance, etc</li>
+  <li><code>displayProps</code>: details on how to display the asset on Zapper's frontend</li>
+  <li><code>statsItems</code>: ancillary stats associated with the investment, such as APY, APR, liquidity, volume, fee, ratio of underlying assets, etc</li>
+  <li><code>meta</code>: total value of all positions in the app (example below has 3 different uniswap v2 positions)</li>
 </ul>
 
 ### Curl
+
 ```
 curl -X 'GET' \
   'https://api.zapper.fi/v2/apps/uniswap-v2/balances?addresses%5B%5D=0xd8da6bf26964af9d7eed9e03e53415d37aa96045' \
@@ -137,6 +157,7 @@ curl -X 'GET' \
 ```
 
 ### Response
+
 ```
 {
   "balances": {
@@ -484,34 +505,42 @@ curl -X 'GET' \
 ```
 
 ## `v2/apps/balances/supported`
-Endpoint provides insight into what apps the wallet has investments in, and metadata about those apps
+
+Endpoint provides insight into what apps the wallet has investments in, and
+metadata about those apps
 
 Notes on use of the API and limits
+
 <ul>
-<li>Maximum of 15 wallets can be passed into 1 call, though it's recommended you query wallets one at a time for best performance</li>
-<li>Any balance less than $0.01 USD value is not included in the output</li>
+  <li>Maximum of 15 wallets can be passed into 1 call, though it's recommended you query wallets one at a time for best performance</li>
+  <li>Any balance less than $0.01 USD value is not included in the output</li>
 </ul>
 
 ### Path
+
 `v2/apps/{appId}/balances`
 
 ### Format
+
 JSON response
 
 ### Parameters
+
 <ul>
-<li><code>addresses[]</code>: *(required)* Addresses for which to retrieve balances, inputted as an array. Can handle up to 15 addresses</li>
+  <li><code>addresses[]</code>: *(required)* Addresses for which to retrieve balances, inputted as an array. Can handle up to 15 addresses</li>
 </ul>
 
 ### Returns
+
 <ul>
-<li><code>appId</code>: ID of the app</li>
-<li><code>label</code>: App display name</li>
-<li><code>img</code>: image used for the app's icon</li>
-<li><code>tags</code>: tags associated with this app</li>
+  <li><code>appId</code>: ID of the app</li>
+  <li><code>label</code>: App display name</li>
+  <li><code>img</code>: image used for the app's icon</li>
+  <li><code>tags</code>: tags associated with this app</li>
 </ul>
 
 ### Curl
+
 ```
 curl -X 'GET' \
   'https://api.zapper.fi/v2/apps/balances/supported?addresses%5B%5D=0xd8da6bf26964af9d7eed9e03e53415d37aa96045' \
@@ -520,6 +549,7 @@ curl -X 'GET' \
 ```
 
 ### Response
+
 ```
 [
   {
@@ -820,33 +850,40 @@ curl -X 'GET' \
 # Apps queries
 
 ## `v2/apps/{appId}`
-Provides metadata about a particular app, such as the networks it is available on and what investment groupings (`groupIds`) are included within it
+
+Provides metadata about a particular app, such as the networks it is available
+on and what investment groupings (`groupIds`) are included within it
 
 ### Path
+
 `v2/apps/{appId}`
 
 ### Format
+
 JSON output
 
 ### Parameters
+
 <ul>
-<li><code>appId</code>: *(required)* AppId to get data for</li>
+  <li><code>appId</code>: *(required)* AppId to get data for</li>
 </ul>
 
 ### Returns
+
 <ul>
-<li><code>Id</code>: ID of the app</li>
-<li><code>name</code>: display name for app</li>
-<li><code>description</code>: description of the app</li>
-<li><code>groups</code>: groupings of different asset types, represented by groupIds, within the app</li>
-<li><code>presentationConfig</code>: details on how to display the app's assets on the App's details page for Zapper's frontend</li>
-<li><code>supportedNetworks</code>: Networks the app is available on</li>
-<li><code>token</code>: Token associated with the app, if any</li>
-<li><code>tags</code>: tags associated with this app</li>
-<li><code>links</code>: relevant social links for the app and website</li>
+  <li><code>Id</code>: ID of the app</li>
+  <li><code>name</code>: display name for app</li>
+  <li><code>description</code>: description of the app</li>
+  <li><code>groups</code>: groupings of different asset types, represented by groupIds, within the app</li>
+  <li><code>presentationConfig</code>: details on how to display the app's assets on the App's details page for Zapper's frontend</li>
+  <li><code>supportedNetworks</code>: Networks the app is available on</li>
+  <li><code>token</code>: Token associated with the app, if any</li>
+  <li><code>tags</code>: tags associated with this app</li>
+  <li><code>links</code>: relevant social links for the app and website</li>
 </ul>
 
 ### Curl
+
 ```
 curl -X 'GET' \
   'https://api.zapper.fi/v2/apps/aave-v3' \
@@ -855,6 +892,7 @@ curl -X 'GET' \
 ```
 
 ### Response
+
 ```
 {
   "id": "aave-v3",
@@ -979,31 +1017,38 @@ curl -X 'GET' \
 ```
 
 ## `v2/apps`
-Provides details on ALL apps listed on Zapper, including metadata. This will return 100s of apps
+
+Provides details on ALL apps listed on Zapper, including metadata. This will
+return 100s of apps
 
 ### Path
+
 `v2/apps`
 
 ### Format
+
 JSON response
 
 ### Parameters
+
 None
 
 ### Returns
+
 <ul>
-<li><code>Id</code>: ID of the app</li>
-<li><code>name</code>: display name for app</li>
-<li><code>description</code>: description of the app</li>
-<li><code>groups</code>: groupings of different asset types, represented by groupIds, within the app</li>
-<li><code>presentationConfig</code>: details on how to display the app's assets on the App's details page for Zapper's frontend</li>
-<li><code>supportedNetworks</code>: Networks the app is available on</li>
-<li><code>token</code>: Token associated with the app, if any</li>
-<li><code>tags</code>: tags associated with this app</li>
-<li><code>links</code>: relevant social links for the app and website</li>
+  <li><code>Id</code>: ID of the app</li>
+  <li><code>name</code>: display name for app</li>
+  <li><code>description</code>: description of the app</li>
+  <li><code>groups</code>: groupings of different asset types, represented by groupIds, within the app</li>
+  <li><code>presentationConfig</code>: details on how to display the app's assets on the App's details page for Zapper's frontend</li>
+  <li><code>supportedNetworks</code>: Networks the app is available on</li>
+  <li><code>token</code>: Token associated with the app, if any</li>
+  <li><code>tags</code>: tags associated with this app</li>
+  <li><code>links</code>: relevant social links for the app and website</li>
 </ul>
 
 ### Curl
+
 ```
 curl -X 'GET' \
   'https://api.zapper.fi/v2/apps' \
@@ -1012,6 +1057,7 @@ curl -X 'GET' \
 ```
 
 ### Response
+
 ```
 [
   {
@@ -1136,43 +1182,56 @@ curl -X 'GET' \
 ```
 
 ## `v2/apps/{appId}/tokens`
-Provides details on *app tokens* held within a given app for a given `groupId`, and the relevant data on them, such as supply, underlying tokens, APYs. This is more detailed than the breakdown provided in `v2/apps` and `v2/apps/{appId}`, as it includes data about the investments held within the app
 
-> Note that this query will only return data if the `groupId` is represented by app tokens. If you are not getting results, try the following query on `v2/apps/{appId}/positions`
+Provides details on _app tokens_ held within a given app for a given `groupId`,
+and the relevant data on them, such as supply, underlying tokens, APYs. This is
+more detailed than the breakdown provided in `v2/apps` and `v2/apps/{appId}`, as
+it includes data about the investments held within the app
+
+> Note that this query will only return data if the `groupId` is represented by
+> app tokens. If you are not getting results, try the following query on
+> `v2/apps/{appId}/positions`
 
 ### Path
+
 `v2/apps/{appId}/tokens`
 
 ### Format
+
 JSON response
-> Note: the shape of this response is a little different from `v2/apps/{appId}/positions`
+
+> Note: the shape of this response is a little different from
+> `v2/apps/{appId}/positions`
 
 ### Parameters
+
 <ul>
-<li><code>appId</code>: *(required)* id of the app</li>
-<li><code>network</code>: *(required)* network to query the app on</li>
-<li><code>groupId</code>: *(required)* investment within the app data that is desired for</li>
+  <li><code>appId</code>: *(required)* id of the app</li>
+  <li><code>network</code>: *(required)* network to query the app on</li>
+  <li><code>groupId</code>: *(required)* investment within the app data that is desired for</li>
 </ul>
 
 ### Returns
+
 <ul>
-<li><code>appId</code>: ID of the app</li>
-<li><code>network</code>: network the app is on</li>
-<li><code>groupId</code>: group this particular investment belongs to within in the app, such as `pool` or `farms`</li>
-<li><code>balance</code>: details on the balance structure, and what kind of balance it is</li>
-<li><code>type</code>: type of position the investment is. <code>contract-position</code> is if the investment is held on a 3rd party contract. <code>app-token</code> is if the wallet holds tokens in the wallet representing the investment</li>
-<li><code>address</code>: address of token</li>
-<li><code>symbol</code>: symbol of token</li>
-<li><code>decimals</code>: decimals of token</li>
-<li><code>supply</code>: supply of token</li>
-<li><code>price</code>: price of token</li>
-<li><code>pricePerShare</code>: ratio of price to supply of assets</li>
-<li><code>tokens</code>: details on underlying tokens in the investment, such as their address, price, symbol, daily volume, balance, etc</li>
-<li><code>displayProps</code>: details on how to display the asset on Zapper's frontend</li>
-<li><code>statsItems</code>: ancillary stats associated with the investment, such as APY, APR, liquidity, volume, fee, ratio of underlying assets, etc</li>
+  <li><code>appId</code>: ID of the app</li>
+  <li><code>network</code>: network the app is on</li>
+  <li><code>groupId</code>: group this particular investment belongs to within in the app, such as `pool` or `farms`</li>
+  <li><code>balance</code>: details on the balance structure, and what kind of balance it is</li>
+  <li><code>type</code>: type of position the investment is. <code>contract-position</code> is if the investment is held on a 3rd party contract. <code>app-token</code> is if the wallet holds tokens in the wallet representing the investment</li>
+  <li><code>address</code>: address of token</li>
+  <li><code>symbol</code>: symbol of token</li>
+  <li><code>decimals</code>: decimals of token</li>
+  <li><code>supply</code>: supply of token</li>
+  <li><code>price</code>: price of token</li>
+  <li><code>pricePerShare</code>: ratio of price to supply of assets</li>
+  <li><code>tokens</code>: details on underlying tokens in the investment, such as their address, price, symbol, daily volume, balance, etc</li>
+  <li><code>displayProps</code>: details on how to display the asset on Zapper's frontend</li>
+  <li><code>statsItems</code>: ancillary stats associated with the investment, such as APY, APR, liquidity, volume, fee, ratio of underlying assets, etc</li>
 </ul>
 
 ### Curl
+
 ```
 curl -X 'GET' \
   'https://api.zapper.fi/v2/apps/aave-v3/tokens?network=avalanche&groupId=variable-debt' \
@@ -1181,6 +1240,7 @@ curl -X 'GET' \
 ```
 
 ### Response
+
 ```
 [
   {
@@ -1391,43 +1451,57 @@ curl -X 'GET' \
 ```
 
 ## `v2/apps/{appId}/positions`
-Provides details on *contract positions* held within a given app for a given `groupId`, and the relevant data on them, such as supply, underlying tokens, APYs. This is more detailed than the breakdown provided in `v2/apps` and `v2/apps/{appId}`, as it includes data about the investments held within the app in a given `groupId`
 
-> Note that this query will only return data if the `groupId` is represented by contract positions. If you are not getting results, try the following query on `v2/apps/{appId}/tokens`
+Provides details on _contract positions_ held within a given app for a given
+`groupId`, and the relevant data on them, such as supply, underlying tokens,
+APYs. This is more detailed than the breakdown provided in `v2/apps` and
+`v2/apps/{appId}`, as it includes data about the investments held within the app
+in a given `groupId`
+
+> Note that this query will only return data if the `groupId` is represented by
+> contract positions. If you are not getting results, try the following query on
+> `v2/apps/{appId}/tokens`
 
 ### Path
+
 `v2/apps/{appId}/positions`
 
 ### Format
+
 JSON response
-> Note: the shape of this response is a little different from `v2/apps/{appId}/tokens`
+
+> Note: the shape of this response is a little different from
+> `v2/apps/{appId}/tokens`
 
 ### Parameters
+
 <ul>
-<li><code>appId</code>: *(required)* id of the app</li>
-<li><code>network</code>: *(required)* network to query the app on</li>
-<li><code>groupId</code>: *(required)* investment within the app data that is desired for</li>
+  <li><code>appId</code>: *(required)* id of the app</li>
+  <li><code>network</code>: *(required)* network to query the app on</li>
+  <li><code>groupId</code>: *(required)* investment within the app data that is desired for</li>
 </ul>
 
 ### Returns
+
 <ul>
-<li><code>appId</code>: ID of the app</li>
-<li><code>network</code>: network the app is on</li>
-<li><code>groupId</code>: group this particular investment belongs to within in the app, such as `pool` or `farms`</li>
-<li><code>balance</code>: details on the balance structure, and what kind of balance it is</li>
-<li><code>type</code>: type of position the investment is. <code>contract-position</code> is if the investment is held on a 3rd party contract. <code>app-token</code> is if the wallet holds tokens in the wallet representing the investment</li>
-<li><code>address</code>: address of token</li>
-<li><code>symbol</code>: symbol of token</li>
-<li><code>decimals</code>: decimals of token</li>
-<li><code>supply</code>: supply of token</li>
-<li><code>price</code>: price of token</li>
-<li><code>pricePerShare</code>: ratio of price to supply of assets</li>
-<li><code>tokens</code>: details on underlying tokens in the investment, such as their address, price, symbol, daily volume, balance, etc</li>
-<li><code>displayProps</code>: details on how to display the asset on Zapper's frontend</li>
-<li><code>statsItems</code>: ancillary stats associated with the investment, such as APY, APR, liquidity, volume, fee, ratio of underlying assets, etc</li>
+  <li><code>appId</code>: ID of the app</li>
+  <li><code>network</code>: network the app is on</li>
+  <li><code>groupId</code>: group this particular investment belongs to within in the app, such as `pool` or `farms`</li>
+  <li><code>balance</code>: details on the balance structure, and what kind of balance it is</li>
+  <li><code>type</code>: type of position the investment is. <code>contract-position</code> is if the investment is held on a 3rd party contract. <code>app-token</code> is if the wallet holds tokens in the wallet representing the investment</li>
+  <li><code>address</code>: address of token</li>
+  <li><code>symbol</code>: symbol of token</li>
+  <li><code>decimals</code>: decimals of token</li>
+  <li><code>supply</code>: supply of token</li>
+  <li><code>price</code>: price of token</li>
+  <li><code>pricePerShare</code>: ratio of price to supply of assets</li>
+  <li><code>tokens</code>: details on underlying tokens in the investment, such as their address, price, symbol, daily volume, balance, etc</li>
+  <li><code>displayProps</code>: details on how to display the asset on Zapper's frontend</li>
+  <li><code>statsItems</code>: ancillary stats associated with the investment, such as APY, APR, liquidity, volume, fee, ratio of underlying assets, etc</li>
 </ul>
 
 ### Curl
+
 ```
 curl -X 'GET' \
   'https://api.zapper.fi/v2/apps/gmx/positions?network=arbitrum&groupId=farm' \
@@ -1436,6 +1510,7 @@ curl -X 'GET' \
 ```
 
 ### Response
+
 ```
 [
   {
@@ -1741,23 +1816,30 @@ curl -X 'GET' \
 # NFT queries
 
 ## `/v2/nft/balances/net-worth`
-Provides the value of a wallet, or set of wallets, NFT portfolio, according to Zapper's price estimation.
+
+Provides the value of a wallet, or set of wallets, NFT portfolio, according to
+Zapper's price estimation.
 
 ### Path
+
 `/v2/nft/balances/net-worth`
 
 ### Format
+
 JSON response
 
 ### Parameters
+
 <ul>
-<li><code>addresses</code>: *(required)* Input addresses to get net worth for (maximum of 15)</li>
+  <li><code>addresses</code>: *(required)* Input addresses to get net worth for (maximum of 15)</li>
 </ul>
 
 ### Returns
+
 Net Worth in USD of the wallets NFTs
 
 ### Curl
+
 ```
 curl -X 'GET' \
   'https://api.zapper.fi/v2/nft/balances/net-worth?addresses%5B%5D=0xd8da6bf26964af9d7eed9e03e53415d37aa96045' \
@@ -1766,6 +1848,7 @@ curl -X 'GET' \
 ```
 
 ### Response
+
 ```
 {
   "0xd8da6bf26964af9d7eed9e03e53415d37aa96045": "65415.9656178"
@@ -1773,45 +1856,56 @@ curl -X 'GET' \
 ```
 
 ## `/v2/nft/balances/collections`
-Provides detailed breakdown of all collections owned in a given wallet, including collection metadata, estimated price for all NFTs owned in that collection, and trading volume for that collection in a given time period
+
+Provides detailed breakdown of all collections owned in a given wallet,
+including collection metadata, estimated price for all NFTs owned in that
+collection, and trading volume for that collection in a given time period
 
 ### Path
+
 `/v2/nft/balances/collections`
 
 ### Format
+
 JSON response
-> NOTE: the response is paginated, with a maximum number of 25 per response. You will need to parse through different pages, using `cursor` to get values beyond the initial 25
+
+> NOTE: the response is paginated, with a maximum number of 25 per response. You
+> will need to parse through different pages, using `cursor` to get values
+> beyond the initial 25
 
 ### Parameters
+
 <ul>
-<li><code>addresses</code>: *(required)* Input addresses to get net worth for (maximum of 15)</li>
-<li><code>minCollectionValueUsd</code>: Returns only collections with an estimated value above the amount inputted</li>
-<li><code>search</code>: Returns only collections with name starting with inputted string</li>
-<li><code>collectionAddresses[]</code>: Returns only collections provided</li>
-<li><code>network</code>: Returns only NFTs from network provided</li>
-<li><code>limit</code>: Maximum items to return. Limited to 25 maximum</li>
-<li><code>cursor</code>: Cursor used to paginate the results</li>
+  <li><code>addresses</code>: *(required)* Input addresses to get net worth for (maximum of 15)</li>
+  <li><code>minCollectionValueUsd</code>: Returns only collections with an estimated value above the amount inputted</li>
+  <li><code>search</code>: Returns only collections with name starting with inputted string</li>
+  <li><code>collectionAddresses[]</code>: Returns only collections provided</li>
+  <li><code>network</code>: Returns only NFTs from network provided</li>
+  <li><code>limit</code>: Maximum items to return. Limited to 25 maximum</li>
+  <li><code>cursor</code>: Cursor used to paginate the results</li>
 </ul>
 
 ### Returns
+
 <ul>
-<li><code>balance</code>: number of NFTs owned in the collection</li>
-<li><code>balanceUSD</code>: estimated value of all the NFTs owned in the collection</li>
-<li><code>name</code>: name of collection</li>
-<li><code>network</code>: network of the collection</li>
-<li><code>description</code>: description of the collection </li>
-<li><code>logoImageUrl</code>: URL for logo image</li>
-<li><code>cardImageUrl</code>: URL for card image</li>
-<li><code>bannerImageUrl</code>: URL for banner image</li>
-<li><code>nftStandard</code>: standard of the NFT (1155 or 721)</li>
-<li><code>floorPriceEth</code>: floor price of collection in eth. Floor price is pulled from multiple platforms via Reservoir and the displayed floor price is the lowest aggregated value. [https://docs.reservoir.tools/docs/aggregated-orderbook] (https://docs.reservoir.tools/docs/aggregated-orderbook)</li>
-<li><code>marketCap</code>: market cap of the collection in eth</li>
-<li><code>openseaId</code>: ID of collection on OpenSea</li>
-<li><code>socialLinks</code>: links to various socials</li>
-<li><code>stats</code>: stats on hourly/daily/weekly/total volume in eth for the collection</li>
+  <li><code>balance</code>: number of NFTs owned in the collection</li>
+  <li><code>balanceUSD</code>: estimated value of all the NFTs owned in the collection</li>
+  <li><code>name</code>: name of collection</li>
+  <li><code>network</code>: network of the collection</li>
+  <li><code>description</code>: description of the collection </li>
+  <li><code>logoImageUrl</code>: URL for logo image</li>
+  <li><code>cardImageUrl</code>: URL for card image</li>
+  <li><code>bannerImageUrl</code>: URL for banner image</li>
+  <li><code>nftStandard</code>: standard of the NFT (1155 or 721)</li>
+  <li><code>floorPriceEth</code>: floor price of collection in eth. Floor price is pulled from multiple platforms via Reservoir and the displayed floor price is the lowest aggregated value. [https://docs.reservoir.tools/docs/aggregated-orderbook] (https://docs.reservoir.tools/docs/aggregated-orderbook)</li>
+  <li><code>marketCap</code>: market cap of the collection in eth</li>
+  <li><code>openseaId</code>: ID of collection on OpenSea</li>
+  <li><code>socialLinks</code>: links to various socials</li>
+  <li><code>stats</code>: stats on hourly/daily/weekly/total volume in eth for the collection</li>
 </ul>
 
 ### Curl
+
 ```
 curl -X 'GET' \
   'https://api.zapper.fi/v2/nft/balances/collections?addresses%5B%5D=0xd8da6bf26964af9d7eed9e03e53415d37aa96045&limit=25' \
@@ -1820,6 +1914,7 @@ curl -X 'GET' \
 ```
 
 ### Response
+
 ```
 {
   "items": [
@@ -1911,32 +2006,40 @@ curl -X 'GET' \
 ```
 
 ## `/v2/nft/balances/collections-totals`
-Provides a simple value returned for the total count of collections in the wallet, the estimated value of them.
 
-Differs from `v2/nft/balances/net-worth` as you can scope down the NFTs you want the value for in the wallet
+Provides a simple value returned for the total count of collections in the
+wallet, the estimated value of them.
+
+Differs from `v2/nft/balances/net-worth` as you can scope down the NFTs you want
+the value for in the wallet
 
 ### Path
+
 `/v2/nft/balances/collections-totals`
 
 ### Format
+
 JSON response
 
 ### Parameters
+
 <ul>
-<li><code>addresses</code>: *(required)* Input addresses to get net worth for (maximum of 15)</li>
-<li><code>minCollectionValueUsd</code>: Returns only collections with an estimated value above the amount inputted</li>
-<li><code>search</code>: Returns only collections with name starting with inputted string</li>
-<li><code>collectionAddresses[]</code>: Returns only collections provided</li>
-<li><code>network</code>: Returns only NFTs from network provided</li>
+  <li><code>addresses</code>: *(required)* Input addresses to get net worth for (maximum of 15)</li>
+  <li><code>minCollectionValueUsd</code>: Returns only collections with an estimated value above the amount inputted</li>
+  <li><code>search</code>: Returns only collections with name starting with inputted string</li>
+  <li><code>collectionAddresses[]</code>: Returns only collections provided</li>
+  <li><code>network</code>: Returns only NFTs from network provided</li>
 </ul>
 
 ### Returns
+
 <ul>
-<li><code>count</code>: number of collections owned by the wallet</li>
-<li><code>balanceUSD</code>: estimated value of all the NFTs owned in the wallet</li>
+  <li><code>count</code>: number of collections owned by the wallet</li>
+  <li><code>balanceUSD</code>: estimated value of all the NFTs owned in the wallet</li>
 </ul>
 
 ### Curl
+
 ```
 curl -X 'GET' \
   'https://api.zapper.fi/v2/nft/balances/collections-totals?addresses%5B%5D=0xd8da6bf26964af9d7eed9e03e53415d37aa96045' \
@@ -1945,6 +2048,7 @@ curl -X 'GET' \
 ```
 
 ### Response
+
 ```
 {
   "count": "153",
@@ -1953,52 +2057,58 @@ curl -X 'GET' \
 ```
 
 ## `/v2/nft/balances/tokens`
-Provides detailed breakdown of all *individual NFTs* owned in a given wallet, including NFT metadata, collection metadata, estimated value for the NFT, last sale price, rarity, etc.
+
+Provides detailed breakdown of all _individual NFTs_ owned in a given wallet,
+including NFT metadata, collection metadata, estimated value for the NFT, last
+sale price, rarity, etc.
 
 ### Path
+
 `/v2/nft/balances/tokens`
 
 ### Format
+
 JSON response
 
 ### Parameters
+
 <ul>
-<li><code>addresses</code>: *(required)* Input addresses to get net worth for (maximum of 15)</li>
-<li><code>minCollectionValueUsd</code>: Returns only collections with an estimated value above the amount inputted</li>
-<li><code>search</code>: Returns only collections with name starting with inputted string</li>
-<li><code>collectionAddresses[]</code>: Returns only collections provided</li>
-<li><code>network</code>: Returns only NFTs from network provided</li>
-<li><code>limit</code>: Maximum items to return. Limited to 25 maximum</li>
-<li><code>cursor</code>: Cursor used to paginate the results</li>
+  <li><code>addresses</code>: *(required)* Input addresses to get net worth for (maximum of 15)</li>
+  <li><code>minCollectionValueUsd</code>: Returns only collections with an estimated value above the amount inputted</li>
+  <li><code>search</code>: Returns only collections with name starting with inputted string</li>
+  <li><code>collectionAddresses[]</code>: Returns only collections provided</li>
+  <li><code>network</code>: Returns only NFTs from network provided</li>
+  <li><code>limit</code>: Maximum items to return. Limited to 25 maximum</li>
+  <li><code>cursor</code>: Cursor used to paginate the results</li>
 </ul>
 
 ### Returns
+
 <ul>
-<li><code>token</code>
+  <li><code>token</code></li>
     <ul>
-    <li><code>balance</code>: number of NFTs owned of a given type. If it's ERC_721, it will always be 1. If NFT is is ERC_1155, will be a count of how many NFTs are owned by this wallet</li>
-    <li><code>name</code>: name of NFT</li>
-    <li><code>tokenId</code>: ID of token within collection</li>
-    <li><code>lastSaleEth</code>: price of last sale of this NFT</li>
-    <li><code>rarityRank</code>: rank of this NFTs rarity, based on traits, within its collection</li>
-    <li><code>estimatedValueEth</code>: estimated value of this NFT, based on various signals using Zapper's internal model</li>
-    <li><code>medias</code>: link to image for NFT</li>
+      <li><code>balance</code>: number of NFTs owned of a given type. If it's ERC_721, it will always be 1. If NFT is is ERC_1155, will be a count of how many NFTs are owned by this wallet</li>
+      <li><code>name</code>: name of NFT</li>
+      <li><code>tokenId</code>: ID of token within collection</li>
+      <li><code>lastSaleEth</code>: price of last sale of this NFT</li>
+      <li><code>rarityRank</code>: rank of this NFTs rarity, based on traits, within its collection</li>
+      <li><code>estimatedValueEth</code>: estimated value of this NFT, based on various signals using Zapper's internal model</li>
+      <li><code>medias</code>: link to image for NFT</li>
     </ul>
-    </li>
-<li><code>collection</code>
+  <li><code>collection</code></li>
     <ul>
-    <li><code>address</code>: collection address</li>
-    <li><code>network</code>: network collection is on</li>
-    <li><code>name</code>: name of collection</li>
-    <li><code>nftStandard</code>: standard of the NFT (1155 or 721)</li>
-    <li><code>floorPriceEth</code>: floor price of collection in eth</li>
-    <li><code>logoImageURL</code>: URL for logo of collection</li>
-    <li><code>openseaId</code>: ID of collection on OpenSea</li>
+      <li><code>address</code>: collection address</li>
+      <li><code>network</code>: network collection is on</li>
+      <li><code>name</code>: name of collection</li>
+      <li><code>nftStandard</code>: standard of the NFT (1155 or 721)</li>
+      <li><code>floorPriceEth</code>: floor price of collection in eth</li>
+      <li><code>logoImageURL</code>: URL for logo of collection</li>
+      <li><code>openseaId</code>: ID of collection on OpenSea</li>
     </ul>
-    </li>
 </ul>
 
 ### Curl
+
 ```
 curl -X 'GET' \
   'https://api.zapper.fi/v2/nft/balances/tokens?addresses%5B%5D=0xd8da6bf26964af9d7eed9e03e53415d37aa96045&collectionAddresses%5B%5D=0x47b648edd37aeae4f16d153451fd1784c1dd19a5&limit=25' \
@@ -2007,6 +2117,7 @@ curl -X 'GET' \
 ```
 
 ### Response
+
 ```
 {
   "items": [
@@ -2066,33 +2177,41 @@ curl -X 'GET' \
 ```
 
 ## `/v2/nft/balances/tokens-totals`
-Provides a simple value returned for the total count of NFTs in the wallet, the estimated value of them.
 
-Differs from `v2/nft/balances/collections-total` as it is at the NFT level for the counts.
+Provides a simple value returned for the total count of NFTs in the wallet, the
+estimated value of them.
+
+Differs from `v2/nft/balances/collections-total` as it is at the NFT level for
+the counts.
 
 ### Path
+
 `/v2/nft/balances/tokens-totals`
 
 ### Format
+
 JSON response
 
 ### Parameters
+
 <ul>
-<li><code>addresses</code>: *(required)* Input addresses to get net worth for (maximum of 15)</li>
-<li><code>minCollectionValueUsd</code>: Returns only collections with an estimated value above the amount inputted</li>
-<li><code>search</code>: Returns only collections with name starting with inputted string</li>
-<li><code>collectionAddresses[]</code>: Returns only collections provided</li>
-<li><code>network</code>: Returns only NFTs from network provided</li>
+  <li><code>addresses</code>: *(required)* Input addresses to get net worth for (maximum of 15)</li>
+  <li><code>minCollectionValueUsd</code>: Returns only collections with an estimated value above the amount inputted</li>
+  <li><code>search</code>: Returns only collections with name starting with inputted string</li>
+  <li><code>collectionAddresses[]</code>: Returns only collections provided</li>
+  <li><code>network</code>: Returns only NFTs from network provided</li>
 </ul>
 
 ### Returns
+
 <ul>
-<li><code>count</code>: number of NFTs owned, where ERC_1155 NFTs count as 1 per collection</li>
-<li><code>totalCount</code>: number of NFTs owned, where ERC_1155 NFTs count as 1 per NFT held</li>
-<li><code>balanceUSD</code>: estimated value of all the NFTs owned in the wallet</li>
+  <li><code>count</code>: number of NFTs owned, where ERC_1155 NFTs count as 1 per collection</li>
+  <li><code>totalCount</code>: number of NFTs owned, where ERC_1155 NFTs count as 1 per NFT held</li>
+  <li><code>balanceUSD</code>: estimated value of all the NFTs owned in the wallet</li>
 </ul>
 
 ### Curl
+
 ```
 curl -X 'GET' \
   'https://api.zapper.fi/v2/nft/balances/tokens-totals?addresses%5B%5D=0xd8da6bf26964af9d7eed9e03e53415d37aa96045' \
@@ -2101,6 +2220,7 @@ curl -X 'GET' \
 ```
 
 ### Response
+
 ```
 {
   "count": "917",
@@ -2112,57 +2232,62 @@ curl -X 'GET' \
 # Exchange queries
 
 ## `/v2/exchange/price`
-Returns data about the amount received if a trade would be made. Should be called whenever a price needs to be calculated.
+
+Returns data about the amount received if a trade would be made. Should be
+called whenever a price needs to be calculated.
 
 ### Path
+
 `/v2/exchange/price`
 
 ### Format
+
 JSON response
 
 ### Parameters
+
 <ul>
-<li><code>gasPrice</code>: Gas price (wei)</li>
-<li><code>maxFeePerGas</code>: Max gas fee (wei)</li>
-<li><code>maxPriorityFeePerGas</code>: Max priority gas fee (wei)</li>
-<li><code>sellTokenAddress</code>: Address of the token that is being sold</li>
-<li><code>buyTokenAddress</code>: Address of the token that is being bought</li>
-<li><code>sellAmount</code>: Amount to sell</li>
-<li><code>buyAmount</code>: Amount to buy</li>
-<li><code>ownerAddress</code>: Address of the owner</li>
-<li><code>slippagePercentage</code>: Slippage percentage as a decimal value</li>
-<li><code>network</code>: Network where the swap would be made</li>
+  <li><code>gasPrice</code>: Gas price (wei)</li>
+  <li><code>maxFeePerGas</code>: Max gas fee (wei)</li>
+  <li><code>maxPriorityFeePerGas</code>: Max priority gas fee (wei)</li>
+  <li><code>sellTokenAddress</code>: Address of the token that is being sold</li>
+  <li><code>buyTokenAddress</code>: Address of the token that is being bought</li>
+  <li><code>sellAmount</code>: Amount to sell</li>
+  <li><code>buyAmount</code>: Amount to buy</li>
+  <li><code>ownerAddress</code>: Address of the owner</li>
+  <li><code>slippagePercentage</code>: Slippage percentage as a decimal value</li>
+  <li><code>network</code>: Network where the swap would be made</li>
 </ul>
 
 ### Returns
+
 <ul>
-updating-api-schema-3
-<li><code>price</code>: Price of the sell token</li>
-<li><code>value</code>: Token value assouciated with price</li>
-<li><code>gas</code>: Gas limit of the transaction</li>
-<li><code>estimatedGas</code>: Gas required for the transaction</li>
-<li><code>gasPrice</code>: Gas price at the time of transaction</li>
-<li><code>maxPriorityFeePerGas</code>: Maximum priority fee for gas in this speed tier</li>
-<li><code>maxFeePerGas</code>: Max fee for gas in this gas speed tier</li>
-<li><code>buyTokenAddress</code>: Token address for the token wanting to buy</li>
-<li><code>sellTokenAddress</code>: Token address for the token wanting to sell</li>
-<li><code>buyAmount</code>: Total quantity of buy token</li>
-<li><code>sellAmount</code>: Total quantity of sell token</li>
-<li><code>allowanceTarget</code>: Token address of token that is approved to sell</li>
-<li><code>sources</code>:
-  <ul>
-  <li><code>name</code>: Source of swap route</li>
-  <li><code>proportion</code>: Proportion of tokens swapped by this source</li>
-  <li><code>displayName</code>: Display name of source</li>
-  <li><code>symbol</code>: Symbol of source</li>
-  <li><code>hops</code>: Number of hops needed for swap</li>
-  </ul>
-  </li>
-<li><code>zapperFee</code>: Percentage of fees from swap</li>
-main
+   updating-api-schema-3
+   <li><code>price</code>: Price of the sell token</li>
+   <li><code>value</code>: Token value assouciated with price</li>
+   <li><code>gas</code>: Gas limit of the transaction</li>
+   <li><code>estimatedGas</code>: Gas required for the transaction</li>
+   <li><code>gasPrice</code>: Gas price at the time of transaction</li>
+   <li><code>maxPriorityFeePerGas</code>: Maximum priority fee for gas in this speed tier</li>
+   <li><code>maxFeePerGas</code>: Max fee for gas in this gas speed tier</li>
+   <li><code>buyTokenAddress</code>: Token address for the token wanting to buy</li>
+   <li><code>sellTokenAddress</code>: Token address for the token wanting to sell</li>
+   <li><code>buyAmount</code>: Total quantity of buy token</li>
+   <li><code>sellAmount</code>: Total quantity of sell token</li>
+   <li><code>allowanceTarget</code>: Token address of token that is approved to sell</li>
+   <li><code>sources</code>:</li>
+   <ul>
+      <li><code>name</code>: Source of swap route</li>
+      <li><code>proportion</code>: Proportion of tokens swapped by this source</li>
+      <li><code>displayName</code>: Display name of source</li>
+      <li><code>symbol</code>: Symbol of source</li>
+      <li><code>hops</code>: Number of hops needed for swap</li>
+   </ul>
+   <li><code>zapperFee</code>: Percentage of fees from swap</li>
 </ul>
 
 ### Curl
+
 ```
 curl -X 'GET' \
   'https://api.zapper.fi/v2/exchange/price?sellTokenAddress=0x0000000000000000000000000000000000000000&buyTokenAddress=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48&sellAmount=1000000000000000000&ownerAddress=0xd8da6bf26964af9d7eed9e03e53415d37aa96045&slippagePercentage=0.03&network=ethereum' \
@@ -2171,6 +2296,7 @@ curl -X 'GET' \
 ```
 
 ### Response
+
 ```
 {
   "price": "1626.154659",
@@ -2199,55 +2325,62 @@ curl -X 'GET' \
 ```
 
 ## `/v2/exchange/quote`
-Returns both the relative price for a trade as well as the call data used to submit a transaction for a trade. Should only be called when a trade is ready to be submitted.
+
+Returns both the relative price for a trade as well as the call data used to
+submit a transaction for a trade. Should only be called when a trade is ready to
+be submitted.
 
 ### Path
+
 `/v2/exchange/quote`
 
 ### Format
+
 JSON response
 
 ### Parameters
+
 <ul>
-<li><code>gasPrice</code>: Gas price (wei)</li>
-<li><code>maxFeePerGas</code>: Max gas fee (wei)</li>
-<li><code>maxPriorityFeePerGas</code>: Max priority gas fee (wei)</li>
-<li><code>sellTokenAddress</code>: Address of the token that is being sold</li>
-<li><code>buyTokenAddress</code>: Address of the token that is being bought</li>
-<li><code>sellAmount</code>: Amount to sell</li>
-<li><code>buyAmount</code>: Amount to buy</li>
-<li><code>ownerAddress</code>: Address of the owner</li>
-<li><code>slippagePercentage</code>: Slippage percentage as a decimal value</li>
-<li><code>network</code>: Network where the swap would be made</li>
+  <li><code>gasPrice</code>: Gas price (wei)</li>
+  <li><code>maxFeePerGas</code>: Max gas fee (wei)</li>
+  <li><code>maxPriorityFeePerGas</code>: Max priority gas fee (wei)</li>
+  <li><code>sellTokenAddress</code>: Address of the token that is being sold</li>
+  <li><code>buyTokenAddress</code>: Address of the token that is being bought</li>
+  <li><code>sellAmount</code>: Amount to sell</li>
+  <li><code>buyAmount</code>: Amount to buy</li>
+  <li><code>ownerAddress</code>: Address of the owner</li>
+  <li><code>slippagePercentage</code>: Slippage percentage as a decimal value</li>
+  <li><code>network</code>: Network where the swap would be made</li>
 </ul>
 
 ### Returns
+
 <ul>
-<li><code>price</code>: Sell token price divided by buy token price</li>
-<li><code>data</code>: Transactional data for swap</li>
-<li><code>to</code>: Address that tokens are transferred to</li>
-<li><code>value</code>: Quantity of native network token being transferred</li>
-<li><code>estimatedGas</code>: Address of the token that is being bought</li>
-<li><code>maxPriorityFeePerGas</code>: Maximum priority fee for gas in this speed tier</li>
-<li><code>maxFeePerGas</code>: Max fee for gas in this gas speed tier</li>
-<li><code>buyTokenAddress</code>: Token address for the token wanting to buy</li>
-<li><code>sellTokenAddress</code>: Token address for the token wanting to sell</li>
-<li><code>buyAmount</code>: Total quantity of buy token</li>
-<li><code>sellAmount</code>: Total quantity of sell token</li>
-<li><code>allowanceTarget</code>: Token address of token that is approved to sell</li>
-<li><code>sources</code>:
-  <ul>
-  <li><code>name</code>: source of swap route</li>
-  <li><code>proportion</code>: proportion of tokens swapped by this source</li>
-  <li><code>displayName</code>: display name of source</li>
-  <li><code>symbol</code>: symbol of source</li>
-  <li><code>hops</code>: number of hops needed for swap</li>
-  </ul>
-  </li>
-<li><code>zapperFee</code>: percentage of fees from swap</li>
+  <li><code>price</code>: Sell token price divided by buy token price</li>
+  <li><code>data</code>: Transactional data for swap</li>
+  <li><code>to</code>: Address that tokens are transferred to</li>
+  <li><code>value</code>: Quantity of native network token being transferred</li>
+  <li><code>estimatedGas</code>: Address of the token that is being bought</li>
+  <li><code>maxPriorityFeePerGas</code>: Maximum priority fee for gas in this speed tier</li>
+  <li><code>maxFeePerGas</code>: Max fee for gas in this gas speed tier</li>
+  <li><code>buyTokenAddress</code>: Token address for the token wanting to buy</li>
+  <li><code>sellTokenAddress</code>: Token address for the token wanting to sell</li>
+  <li><code>buyAmount</code>: Total quantity of buy token</li>
+  <li><code>sellAmount</code>: Total quantity of sell token</li>
+  <li><code>allowanceTarget</code>: Token address of token that is approved to sell</li>
+  <li><code>sources</code>:</li>
+    <ul>
+      <li><code>name</code>: source of swap route</li>
+      <li><code>proportion</code>: proportion of tokens swapped by this source</li>
+      <li><code>displayName</code>: display name of source</li>
+      <li><code>symbol</code>: symbol of source</li>
+      <li><code>hops</code>: number of hops needed for swap</li>
+    </ul>
+  <li><code>zapperFee</code>: percentage of fees from swap</li>
 </ul>
 
 ### Curl
+
 ```
 curl -X 'GET' \
   'https://api.zapper.fi/v2/exchange/quote?gasPrice=35000000000&maxFeePerGas=40000000000&maxPriorityFeePerGas=1000000000&sellTokenAddress=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48&buyTokenAddress=0x0000000000000000000000000000000000000000&sellAmount=1000000&ownerAddress=0xe321bd63cde8ea046b382f82964575f2a5586474&slippagePercentage=0.03&network=ethereum' \
@@ -2256,6 +2389,7 @@ curl -X 'GET' \
 ```
 
 ### Response
+
 ```
 {
   "price": "0.000824318884007021",
@@ -2286,25 +2420,31 @@ curl -X 'GET' \
 ```
 
 ## `/v2/exchange/supported`
+
 Returns the exchanges supported by Zapper API.
 
 ### Path
+
 `/v2/exchange/supported`
 
 ### Format
+
 JSON response
 
 ### Parameters
+
 None
 
 ### Returns
+
 <ul>
-<li><code>network</code>: network name available for swaps</li>
-<li><code>label</code>: label of network</li>
-<li><code>numTokens</code>: number of tokens available to be swapped on that network</li>
+  <li><code>network</code>: network name available for swaps</li>
+  <li><code>label</code>: label of network</li>
+  <li><code>numTokens</code>: number of tokens available to be swapped on that network</li>
 </ul>
 
 ### Curl
+
 ```
 curl -X 'GET' \
   'https://api.zapper.fi/v2/exchange/supported' \
@@ -2313,6 +2453,7 @@ curl -X 'GET' \
 ```
 
 ### Response
+
 ```
 [
   {
@@ -2352,54 +2493,63 @@ curl -X 'GET' \
   }
 ]
 ```
+
 # Miscellaneous Data Endpoints
 
 ## `/v2/prices`
-Retrieve supported tokens and their prices. Generally populated by data from CoinGecko
+
+Retrieve supported tokens and their prices. Generally populated by data from
+CoinGecko
 
 ### Path
+
 `/v2/prices`
 
 ### Format
+
 JSON response
 
 ### Parameters
+
 <ul>
-<li><code>network</code>: retrieve tokens for this specified network</li>
+  <li><code>network</code>: retrieve tokens for this specified network</li>
 </ul>
 
 ### Returns
+
 <ul>
-<li><code>id</code>: internal token id</li>
-<li><code>networkId</code>: internal network id</li>
-<li><code>address</code>: token's address</li>
-<li><code>name</code>: label for token</li>
-<li><code>symbol</code>: symbol for token</li>
-<li><code>decimals</code>: decimals for token</li>
-<li><code>coingeckoId</code>: coingecko API id for token</li>
-<li><code>status</code>: internal designation if token has been initially reviewed when ingested</li>
-<li><code>hide</code>: internal designation if token is approved for displaying</li>
-<li><code>canExchange</code>: flag if this token is exchangeable on Zapper's front end</li>
-<li><code>verified</code>: if token is on a verified token list, and has a blue-checkmark on Zapper's frontend</li>
-<li><code>updatedAt</code>: last date token was updated from CoinGecko</li>
-<li><code>createdAt</code>: date token was first ingested</li>
-<li><code>price</code>: current price of token in USD</li>
-<li><code>dailyVolume</code>: trading volume of token from coingecko</li>
-<li><code>totalSupply</code>: total supply of token available</li>
-<li><code>networkEnumValue</code>: network token is on</li>
-<li><code>type</code>: designation if the token is a base-token or app-token (meaning the token is associated with an app's investment)</li>
-<li><code>network</code>: label of network token is on</li>
+  <li><code>id</code>: internal token id</li>
+  <li><code>networkId</code>: internal network id</li>
+  <li><code>address</code>: token's address</li>
+  <li><code>name</code>: label for token</li>
+  <li><code>symbol</code>: symbol for token</li>
+  <li><code>decimals</code>: decimals for token</li>
+  <li><code>coingeckoId</code>: coingecko API id for token</li>
+  <li><code>status</code>: internal designation if token has been initially reviewed when ingested</li>
+  <li><code>hide</code>: internal designation if token is approved for displaying</li>
+  <li><code>canExchange</code>: flag if this token is exchangeable on Zapper's front end</li>
+  <li><code>verified</code>: if token is on a verified token list, and has a blue-checkmark on Zapper's frontend</li>
+  <li><code>updatedAt</code>: last date token was updated from CoinGecko</li>
+  <li><code>createdAt</code>: date token was first ingested</li>
+  <li><code>price</code>: current price of token in USD</li>
+  <li><code>dailyVolume</code>: trading volume of token from coingecko</li>
+  <li><code>totalSupply</code>: total supply of token available</li>
+  <li><code>networkEnumValue</code>: network token is on</li>
+  <li><code>type</code>: designation if the token is a base-token or app-token (meaning the token is associated with an app's investment)</li>
+  <li><code>network</code>: label of network token is on</li>
 </ul>
 
 ### Curl
+
 ```
 curl -X 'GET' \
   'https://api.zapper.fi/v2/prices?network=optimism' \
-  -H 'accept: */*' \
+  -H 'accept: */*' \1
   -H 'Authorization: Basic asdadsadada12341=='
 ```
 
 ### Response
+
 ```
 [
   {
@@ -2449,29 +2599,35 @@ curl -X 'GET' \
 ```
 
 ## `/v2/gas-prices`
+
 Retrieve supported tokens and their prices across many currencies
 
 ### Path
+
 `/v2/gas-prices`
 
 ### Format
+
 JSON response
 
 ### Parameters
+
 <ul>
-<li><code>network</code>: Retrieve gas prices for this network</li>
-<li><code>eip1559</code>: *(required)* boolean flag for Retrieve post London gas price details</li>
+  <li><code>network</code>: Retrieve gas prices for this network</li>
+  <li><code>eip1559</code>: *(required)* boolean flag for Retrieve post London gas price details</li>
 </ul>
 
 ### Returns
+
 <ul>
-<li><code>eip1559</code>: coingecko API id for token</li>
-<li><code>baseFeePerGas</code>: base fee for gas in this gas speed tier</li>
-<li><code>maxPriorityFeePerGas</code>: maximum priority fee for gas in this speed tier</li>
-<li><code>maxFeePerGas</code>: max fee for gas in this gas speed tier</li>
+  <li><code>eip1559</code>: coingecko API id for token</li>
+  <li><code>baseFeePerGas</code>: base fee for gas in this gas speed tier</li>
+  <li><code>maxPriorityFeePerGas</code>: maximum priority fee for gas in this speed tier</li>
+  <li><code>maxFeePerGas</code>: max fee for gas in this gas speed tier</li>
 </ul>
 
 ### Curl
+
 ```
 curl -X 'GET' \
   'https://api.zapper.fi/v2/gas-prices?network=ethereum&eip1559=true' \
@@ -2480,6 +2636,7 @@ curl -X 'GET' \
 ```
 
 ### Response
+
 ```
 {
   "eip1559": true,
@@ -2500,6 +2657,3 @@ curl -X 'GET' \
   }
 }
 ```
-
-
-
