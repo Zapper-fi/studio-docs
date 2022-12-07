@@ -25,7 +25,7 @@ In the Zapper API, a `BalanceFetcher` class returns balances for the tokens and
 contract positions (indexed from `TokenFetcher` and `ContractPositionFetcher`
 classes) of an application.
 
-## Generate a contract position fetcher
+## Generate a balance fetcher
 
 Our codegen utilities will automatically generate the boilerplate for a balance
 fetcher. Run `pnpm studio create-balance-fetcher pickle`. When prompted for the
