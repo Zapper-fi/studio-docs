@@ -14,7 +14,8 @@ structure for our **Pickle Finance** application integration.
 ![Create App Folder Structure](../../static/img/tutorial/create-app-folder-structure.png)
 
 The app definition file created in `src/apps/pickle/pickle.definition.ts` will
-be our starting point. Let's have a look!
+be our starting point. Let's have a look, and fill out some missing fields while
+we're there.
 
 ```ts
 import { Register } from "~app-toolkit/decorators";
@@ -28,14 +29,23 @@ export const PICKLE_DEFINITION = {
   description:
     "Pickle Finance helps users to maximize their DeFi yields by auto-compounding their rewards, saving them time and gas.",
   url: "https://pickle.finance/",
+  tags: [AppTag.YIELD_AGGREGATOR],
+
+  links: {
+    github: 'https://github.com/pickle-finance',
+    twitter: 'https://twitter.com/picklefinance',
+    discord: 'https://t.co/vbEtaWx8j6',
+    telegram: 'https://t.me/picklefinance',
+    medium: 'https://picklefinance.medium.com/',
+  }
+
   groups: {},
-  tags: [],
+
   supportedNetworks: {
     [Network.ETHEREUM_MAINNET]: [ProtocolAction.VIEW],
     [Network.POLYGON_MAINNET]: [ProtocolAction.VIEW],
     [Network.ARBITRUM_MAINNET]: [ProtocolAction.VIEW],
   },
-  primaryColor: "#fff",
 };
 
 @Register.AppDefinition(PICKLE_DEFINITION.id)
@@ -44,8 +54,6 @@ export class PickleAppDefinition extends AppDefinition {
     super(PICKLE_DEFINITION);
   }
 }
-
-export default PICKLE_DEFINITION;
 ```
 
 The prompts in the previous step have filled in most of the details of our
@@ -53,18 +61,18 @@ application, including the ID, name, description, and URL. We see that the
 networks that we intend to support have also been populated.
 
 You'll notice that a class has been declared called `PickleAppDefinition`, and
-it has been _decorated_ with `@Register.AppDefinition`. This annotation
+it has been _decorated_ with `@Register.AppDefinition`. This decorator
 _registers_ this the Pickle app definition as a
 [provider](https://docs.nestjs.com/providers) in our NestJS app so it can be
 discovered by the rest of the application.
 
 ## What are groups?
 
-In Zapper, we define a **group** as a _discrete type of investment opportunity_.
-We distinguish two types of groups: **tokenized** groups and **non-tokenized**
-groups. Elements of a tokenized group are simply referred to as **Tokens**, and
-elements of a non-tokenized group are referred to as **Contract Positions**.
-Let's take a look at a few examples!
+In Zapper, we define a **group** as a _set of similar investment opportunities
+within an app_. We distinguish two types of groups: **tokenized** groups and
+**non-tokenized** groups. Elements of a tokenized group are referred to as **App
+Tokens**, and elements of a non-tokenized group are referred to as **Contract
+Positions**. Let's take a look at a few examples!
 
 ### Tokens
 

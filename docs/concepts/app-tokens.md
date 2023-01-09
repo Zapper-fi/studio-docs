@@ -21,11 +21,15 @@ _receipts_ may be used to represent:
 
 ## What is a `TokenFetcher`?
 
-In the Zapper API, a `TokenFetcher` class dynamically lists a single group of
-`AppToken` typed objects. Groups of tokens share common properties, such as APYs
-for **Pickle** vault tokens, or fees for **Uniswap** pool tokens. As such, we
-declare unique strategy classes for each token group that we want to index in
-Zapper.
+In the Zapper API, a `TokenFetcher` class provides the template to create a
+group of `AppToken` objects.
+
+Groups of tokens share common properties, most predominantly how their prices
+are derived from on-chain RPC calls, but also properties like APYs for
+**Pickle** vault tokens, or fees for **Uniswap** pool tokens.
+
+As such, we declare unique strategy classes for each token group that we want to
+index in Zapper.
 
 ## What are the properties of an app token?
 
@@ -36,12 +40,12 @@ The following table describes the properties on the `AppToken` object.
 | `type`          | `ContractType.APP_TOKEN`                       | Used to [discriminate types](https://css-tricks.com/typescript-discriminated-unions/), do not change.                                                                                |
 | `address`       | `'0x028171bca77440897b824ca71d1c56cac55b68a3'` | Address of the token                                                                                                                                                                 |
 | `network`       | `Network.ETHEREUM`                             | Network of the token                                                                                                                                                                 |
-| `key`           | See below                                      | Optional. A unique key that represents this token, used for aggregation purposes in Zapper.                                                                                          |
-| `appId`         | `'aave-v2'`                                    | The token belongs to this app                                                                                                                                                        |
+| `key`           | See below                                      | A unique and stable key for this token, used for aggregation purposes in Zapper.                                                                                                     |
+| `appId`         | `'aave-v2'`                                    | The token belongs to this app.                                                                                                                                                       |
 | `groupId`       | `'supply'`                                     | The token belongs to this app group.                                                                                                                                                 |
 | `symbol`        | `'aDAI'`                                       | The ERC20 symbol of this token                                                                                                                                                       |
 | `decimals`      | `18`                                           | The ERC20 decimals of this token                                                                                                                                                     |
-| `supply`        | `438584072.834534305205134424`                 | The display value of the ERC20 supply of this token                                                                                                                                  |
+| `supply`        | `438584072.834534305205134424`                 | The ERC20 supply of this token, denormalized to the number of decimals                                                                                                               |
 | `tokens`        | `[daiToken]`                                   | The underlying token(s). For example, to mint `aDAI` tokens, you need to supply `DAI` tokens.                                                                                        |
 | `price`         | `1`                                            | The price of one unit of this token. In the case of `aDAI`, the tokens are minted 1:1, so the price is the same as the underlying `DAI` token.                                       |
 | `pricePerShare` | `1`                                            | The _ratio_ between the price of the token and the price of the underlying token. Since `aDAI` and `DAI` are minted 1:1, the `pricePerShare` is 1.                                   |
@@ -70,7 +74,7 @@ token.
 
 | Property         | Example      | Description                                                                                                                                                                                                                                                           |
 | ---------------- | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `label`          | `cUSDC`      | The primary label for this token. Token symbols generally aren't very human readable, so optimize for understanability.                                                                                                                                               |
+| `label`          | `cUSDC`      | The primary label for this token. Token symbols are usually cryptic and technical, so choose a label that helps with readability for an average user.                                                                                                                 |
 | `secondaryLabel` | `$1.00`      | The secondary label for this token. Often, its useful to put the token price here. Use your best judgement here; for example, Uniswap V2 token prices are not very human readable, so its instead useful to put the reserve percentages here instead for those cases. |
 | `tertiaryLabel`  | `0.671% APY` | The tertiary label for this token. Most of the time, you don't need to use this field, but it could be useful to surface additional information to the user like an APY for a vault or lending token.                                                                 |
 | `statsItems`     | `[]`         | An array of `StatsItem` objects that is rendered when expanding more details for the token. This field can include any additional information that is useful for the user in an expanded view.                                                                        |
@@ -104,12 +108,15 @@ The `key` is a unique identifier on the token object that is used to aggregate
 token balances across multiple addresses.
 
 Usually, you can ignore setting the `key` and Zapper API will set the default as
-`md5(<app_id>:<network>:<address>)`. However, in some circumstances, this is
-_not_ a unique identifier, in which case, you can override the `key` property in
-your token fetcher.
+`md5(<app_id>:<address>:<network>)`.
+
+In some circumstances, this is _not_ a unique identifier, in which case, you can
+add additional information via the `positionKey` data prop, which will then be
+used to generate the key via `md5(<app_id>:<address>:<network>:<position_key>)`.
 
 _Example 1_: In **Lyra**, the protocol uses an ERC1155 contract for tokens
 representing call and put options. The ERC1155 standard allows multiple token
 fungible tokens through a single contract address. In this case, each option
-token has an `id` field as an identifier, so we can use this in the key as
-`md5(<app_id>:<network>:<address>:<id>)`.
+token has an `id` field as an identifier. We'll return `positionKey: tokenId` in
+the data props so that each ERC1155 app token position will have a unique `key`
+as a result.

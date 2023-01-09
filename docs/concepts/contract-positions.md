@@ -17,7 +17,6 @@ represent:
 - Leveraged positions like **Abracadabra** cauldrons or **Alchemix** alchemists
 - Lending positions in **Compound** (Note: _Supply_ positions are represented by
   tokens!)
-- Claimable airdrops across the Web3 ecosystem!
 
 As a rule of thumb, you can identify `ContractPosition` as one you _can not_ add
 to your Metamask wallet because they are _not_ tokenized! For example, once you
@@ -44,7 +43,7 @@ non-fungible.
 | `type`         | `ContractType.POSITION`                        | Used to [discriminate types](https://css-tricks.com/typescript-discriminated-unions/), do not change.       |
 | `address`      | `'0xa39739ef8b0231dbfa0dcda07d7e29faabcf4bb2'` | Address of the contract. Use the address that a user interacts with to enter this position.                 |
 | `network`      | `Network.ETHEREUM`                             | Network of the contract.                                                                                    |
-| `key`          | See below.                                     | Optional. A unique key that represents this contract position, used for aggregation purposes in Zapper.     |
+| `key`          | See below.                                     | A unique key that represents this contract position, used for aggregation purposes in Zapper.               |
 | `appId`        | `'liquity'`                                    | The contract position belongs to this app                                                                   |
 | `groupId`      | `'trove'`                                      | The contract position belongs to this app group                                                             |
 | `tokens`       | `[supplied(ethToken), borrowed(lusdToken)]`    | The underlying token(s). For example, in a Liquity trove, the user deposits ETH as collateral to mint LUSD. |
@@ -105,18 +104,22 @@ the position object that is used to aggregate contract position balances across
 multiple addresses.
 
 Usually, you can ignore setting the `key` and Zapper API will set the default as
-`md5(<app_id>:<network>:<address>:<tokens_keys>)`, where `tokens_keys` is itself
+`md5(<address>:<network>:<app_id>:<tokens_keys>)`, where `tokens_keys` is itself
 `<app_id>:<network>:<address>:<metatype>` for each token in the contract
-position's `tokens` array. However, in some circumstances, this is _not_ a
-unique identifier, in which case, you can override the `key` property in your
-contract position fetcher.
+position's `tokens` array.
+
+In some circumstances, this is _not_ a unique identifier, in which case, you can
+add additional information via the `positionKey` data prop, which will then be
+used to generate the key via
+`md5(<address>:<network>:<app_id>:<tokens_keys>:<position_key>)`.
 
 _Example 1_: In **FloorDAO**, a user can sell fractional NFT tokens to the
 protocol treasury in return for a `FLOOR` token bond, which vests over a period
 of time. The bonds are all on the same address, and have the same underlying
-tokens: vesting and claimable `FLOOR`. However, if a bundle of addresses
-included one address with a bond that was opened by selling `PUNK` and another
-address with a bond that was opened by selling `MILADY`, these would be
-aggregated into a _single balance_ because of the key collision! Instead, we'll
-note that each bond has a `marketIndex`, and produce the key as simply
-`md5(<app_id>:<network>:<address>:<market_index>)` to prevent collisions.
+tokens: vesting and claimable `FLOOR`. As a result, these positions all have
+colliding `key` values.
+
+We can observe that each bond has a `marketIndex`, and as such, we can return
+`positionKey: marketIndex` in our data props, to produce a key as
+`md5(<app_id>:<network>:<address>:<market_index>)`, generating different keys
+for each of these positions and avoiding collisions.
