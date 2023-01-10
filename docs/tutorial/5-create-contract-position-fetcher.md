@@ -20,56 +20,95 @@ select `ethereum`.
 ## Implement the contract position fetcher
 
 Let's open `src/apps/pickle/ethereum/pickle.farm.contract-position-fetcher.ts`.
-The skeleton has been assembled for you, and you'll now need to fill in the
-contents of the `getPositions` method in the
-`EthereumPickleFarmContractPositionFetcher`.
+The skeleton has been assembled for you to implement the properties described in
+[here](../concepts/contract-positions.md). Your job is to correctly implement
+the scaffolded abstract properties and methods (and possibly override some
+default functionality from the parent class as well)
 
 ```ts
 import { Inject } from "@nestjs/common";
+import { BigNumberish, Contract } from "ethers";
 
-import { IAppToolkit, APP_TOOLKIT } from "~app-toolkit/app-toolkit.interface";
-import { Register } from "~app-toolkit/decorators";
-import { PositionFetcher } from "~position/position-fetcher.interface";
-import { ContractPosition } from "~position/position.interface";
-import { Network } from "~types/network.interface";
+import { APP_TOOLKIT, IAppToolkit } from "~app-toolkit/app-toolkit.interface";
+import { PositionTemplate } from "~app-toolkit/decorators/position-template.decorator";
+import { DefaultDataProps } from "~position/display.interface";
+import { ContractPositionTemplatePositionFetcher } from "~position/template/contract-position.template.position-fetcher";
+import {
+  GetDefinitionsParams,
+  DefaultContractPositionDefinition,
+  GetTokenDefinitionsParams,
+  UnderlyingTokenDefinition,
+  GetDisplayPropsParams,
+  GetTokenBalancesParams,
+} from "~position/template/contract-position.template.types";
 
 import { PickleContractFactory } from "../contracts";
-import { PICKLE_DEFINITION } from "../pickle.definition";
 
-const appId = PICKLE_DEFINITION.id;
-const groupId = PICKLE_DEFINITION.groups.farm.id;
-const network = Network.ETHEREUM_MAINNET;
+@PositionTemplate()
+export class EthereumPickleFarmContractPositionFetcher extends ContractPositionTemplatePositionFetcher<Contract> {
+  groupLabel: string;
 
-@Register.ContractPositionFetcher({ appId, groupId, network })
-export class EthereumPickleFarmContractPositionFetcher
-  implements PositionFetcher<ContractPosition>
-{
   constructor(
-    @Inject(APP_TOOLKIT) private readonly appToolkit: IAppToolkit,
+    @Inject(APP_TOOLKIT) protected readonly appToolkit: IAppToolkit,
     @Inject(PickleContractFactory)
-    private readonly pickleContractFactory: PickleContractFactory
-  ) {}
+    protected readonly pickleContractFactory: PickleContractFactory
+  ) {
+    super(appToolkit);
+  }
 
-  async getPositions() {
-    return [];
+  getContract(_address: string): Contract {
+    throw new Error("Method not implemented.");
+  }
+
+  getDefinitions(
+    _params: GetDefinitionsParams
+  ): Promise<DefaultContractPositionDefinition[]> {
+    throw new Error("Method not implemented.");
+  }
+
+  getTokenDefinitions(
+    _params: GetTokenDefinitionsParams<
+      Contract,
+      DefaultContractPositionDefinition
+    >
+  ): Promise<UnderlyingTokenDefinition[] | null> {
+    throw new Error("Method not implemented.");
+  }
+
+  getLabel(
+    _params: GetDisplayPropsParams<
+      Contract,
+      DefaultDataProps,
+      DefaultContractPositionDefinition
+    >
+  ): Promise<string> {
+    throw new Error("Method not implemented.");
+  }
+
+  getTokenBalancesPerPosition(
+    _params: GetTokenBalancesParams<Contract, DefaultDataProps>
+  ): Promise<BigNumberish[]> {
+    throw new Error("Method not implemented.");
   }
 }
 ```
 
-You might notice that it is almost identical to the boilerplate of the
-`TokenFetcher` class that we implemented in the previous section of this
-tutorial. In fact, it simply needs to return a list of `ContractPosition` rather
-than a list of `AppTokenPosition`.
+We'll note that our class is decorated with `@PositionTemplate()`. This
+decorator populates the `appId`, `groupId`, and `network` properties at runtime
+from the a conventional filepath structure as follows:
+`src/apps/<app_id>/<network>/<app_id>.<group_id>.contract-position-fetcher.ts`.
+
+We'll also note that the `AppToolkit` and `PickleContractFactory` have already
+been injected into the scope of your class. What are these? The `AppToolkit`
+provides an SDK of utilities to interact with the blockchain, retrieve base
+token prices, or even retrieve tokens and positions from other apps defined in
+Zapper. The `PickleContractFactory`, as explained in the previous section,
+builds typed instances of the contract ABIs you have in your
+`src/pickle/contracts/abis` directory.
 
 Let's get to work!
 
-## Resolve all farm addresses from the Pickle API
-
-In the last section, we used an
-[API endpoint](https://api.pickle.finance/prod/protocol/pools) from **Pickle
-Finance** to list out all the jar addresses for all supported networks on
-Pickle. This endpoint also includes the associated farm address for each vault
-token.
+## Implement `getContract`
 
 Before we continue, what is a _farm_? A **farm** is a smart contract in which a
 user can _stake_ their token in return for rewards over time. It incentivizes
@@ -77,498 +116,149 @@ the user to maintain their position in return for rewards. In the case of
 Pickle, the user would receive **PICKLE** token rewards for staking their jar
 tokens.
 
-Let's see how we would build a farm contract position fetcher!
+From the previous section, you should have already generated the contract
+factory boilerplate code to create an instance of the `PickleGauge` typed Ethers
+contract instance.
+
+We know that all Pickle gauge farms implement this interface, so we'll replace
+`Contract` in the `ContractPositionTemplatePositionFetcher` generic with
+`PickleGauge`.
 
 ```ts
-// ...
-
-// Define a partial of the return type from the Pickle API
-export type PickleVaultDetails = {
-  jarAddress: string;
-  gaugeAddress: string;
-  network: string;
-};
-
-@Register.ContractPositionFetcher({ appId, groupId, network })
-export class EthereumPickleFarmContractPositionFetcher
-  implements PositionFetcher<ContractPosition>
-{
-  constructor(
-    @Inject(APP_TOOLKIT) private readonly appToolkit: IAppToolkit,
-    @Inject(PickleContractFactory)
-    private readonly pickleContractFactory: PickleContractFactory
-  ) {}
-
-  async getPositions() {
-    // Retrieve pool addresses from the Pickle API
-    const endpoint = "https://api.pickle.finance/prod/protocol/pools";
-    const data = await Axios.get<PickleVaultDetails[]>(endpoint).then(
-      (v) => v.data
-    );
-    const ethData = data.filter(({ network }) => network === "eth");
-    const farmDefinitions = ethData
-      .filter(({ gaugeAddress }) => !!gaugeAddress)
-      .map(({ jarAddress, gaugeAddress }) => ({
-        address: gaugeAddress.toLowerCase(),
-        stakedTokenAddress: jarAddress.toLowerCase(),
-        rewardTokenAddress: "0x429881672b9ae42b8eba0e26cd9c73711b891ca5", // PICKLE
-      }));
-
-    // Return _anything_ so we can see a result right now!
-    return farmDefinitions as any;
-  }
+export class EthereumPickleFarmContractPositionFetcher extends ContractPositionTemplatePositionFetcher<PickleGauge> {
+  // ...
 }
 ```
 
-Easy enough. Open
-`http://localhost:5001/apps/pickle/positions?groupIds[]=farm&network=ethereum`
-and admire your work!
+Next, we'll implement `getContract` by calling the appropriate factory method on
+our injected contract factory. Note that `address` represents the address of one
+of the Pickle Jar tokens.
 
-## Resolve the staked and claimable tokens
+```ts
+export class EthereumPickleFarmContractPositionFetcher extends ContractPositionTemplatePositionFetcher<PickleGauge> {
+  //...
+
+  getContract(address: string): PickleGauge {
+    return this.contractFactory.pickleGauge({ address, network: this.network });
+  }
+
+  //...
+}
+```
+
+## Implement `getDefinitions`
+
+Pickle provides an
+[API endpoint](https://api.pickle.finance/prod/protocol/pools) that lists out
+all of the farm addresses across all supported networks on the Pickle
+application.
+
+We'll make use of this endpoint to list out all of our farms.
+
+```ts
+// Define a partial of the return type from the Pickle API
+export type PickleVaultDetails = {
+  gaugeAddress: string;
+  network: string;
+  apy: number;
+};
+
+export class EthereumPickleJarTokenFetcher extends AppTokenTemplatePositionFetcher<PickleJar> {
+  //...
+
+  async getDefinitions() {
+    // Retrieve pool addresses from the Pickle API
+    const endpoint = "https://api.pickle.finance/prod/protocol/pools";
+    const response = await axios.get<PickleVaultDetails[]>(endpoint);
+    const ethData = response.data.filter(({ network }) => network === "eth");
+    const gaugeAddresses = ethData.map(({ gaugeAddress }) => gaugeAddress);
+    return gaugeAddresses.map((address) => ({ address }));
+  }
+
+  //...
+}
+```
+
+## Implement `getTokenDefinitions`
 
 Our farm definitions have the staked token addresses and reward token addresses.
-Let's resolve these to the actual underlying `Token` objects, and augment them
-with **metatype** to indicate which token is `supplied` and which token is
+Let's resolve these as part of the `getTokenDefinitions` response, and augment
+them with **metatype** to indicate which token is `supplied` and which token is
 `claimable`.
 
 ```ts
-// ...
+export class EthereumPickleJarTokenFetcher extends AppTokenTemplatePositionFetcher<PickleJar> {
+  //...
 
-@Register.ContractPositionFetcher({ appId, groupId, network })
-export class EthereumPickleFarmContractPositionFetcher
-  implements PositionFetcher<ContractPosition>
-{
-  // ...
-
-  async getPositions() {
-    // ...
-
-    // The reward token is PICKLE, which is a base token
-    const baseTokens = await this.appToolkit.getBaseTokenPrices(network);
-
-    // ...and the staked tokens are Pickle Jar tokens, so resolve these app tokens
-    const appTokens = await this.appToolkit.getAppTokenPositions({
-      appId: "pickle",
-      groupIds: ["jar"],
-      network,
-    });
-
-    // ...combine these together as our index for finding token dependencies
-    const allTokens = [...appTokens, ...baseTokens];
-
-    // We will build a token object for each jar address, using data retrieved on-chain with Ethers
-    const positions = await Promise.all(
-      farmDefinitions.map(
-        async ({ address, stakedTokenAddress, rewardTokenAddress }) => {
-          const stakedToken = allTokens.find(
-            (v) => v.address === stakedTokenAddress
-          );
-          const rewardToken = allTokens.find(
-            (v) => v.address === rewardTokenAddress
-          );
-          if (!stakedToken || !rewardToken) return null;
-
-          const tokens = [supplied(stakedToken), claimable(rewardToken)];
-
-          // Create the contract position object
-          const position: ContractPosition = {
-            type: ContractType.POSITION,
-            appId,
-            groupId,
-            address,
-            network,
-            tokens,
-          };
-
-          return token;
-        }
-      )
-    );
-
-    return _.compact(positions);
+  async getTokenDefinitions({
+    contract,
+  }: GetTokenDefinitionsParams<PickleJar>) {
+    return [
+      {
+        metaType: MetaType.SUPPLIED,
+        address: await contract.TOKEN(),
+        network: this.network,
+      },
+      {
+        metaType: MetaType.CLAIMABLE,
+        address: await contract.PICKLE(),
+        network: this.network,
+      },
+    ];
   }
+
+  //...
 }
 ```
 
-## Resolve any additional data properties
+## Implement `getLabel`
 
-(This is an optional step and can be skipped!)
-
-As mentioned previously, groups of contract positions share common strategies on
-how to retrieve and build their properties, and may also share common additional
-properties. We can define additional properties in the `dataProps` field of the
-`ContractPosition` type.
-
-We'll also make the use of generics to properly type our `dataProps`. The rest
-of our application can use these types when referencing the **Pickle** farm
-contract positions.
-
-Let's return the total value locked in this farm response as part of the
-`dataProps`.
+We'll want to resolve a meaningful label for this position. Like stated in the
+previous section for the `TokenFetcher` class, these labels are used to optimize
+human readability of this investment.
 
 ```ts
-// ...
+export class EthereumPickleJarTokenFetcher extends AppTokenTemplatePositionFetcher<PickleJar> {
+  //...
 
-// Declare the data properties for a Pickle jar token
-export type PickleFarmContractPositionDataProps = {
-  totalValueLocked: number;
-};
-
-@Register.ContractPositionFetcher({ appId, groupId, network })
-export class EthereumPickleFarmContractPositionFetcher
-  implements PositionFetcher<ContractPosition>
-{
-  constructor(
-    @Inject(APP_TOOLKIT) private readonly appToolkit: IAppToolkit,
-    @Inject(PickleContractFactory)
-    private readonly pickleContractFactory: PickleContractFactory
-  ) {}
-
-  async getPositions() {
-    // ...
-
-    // Create a multicall wrapper instance to batch chain RPC calls together
-    const multicall = this.appToolkit.getMulticall(network);
-
-    const positions = await Promise.all(
-      farmDefinitions.map(
-        async ({ address, stakedTokenAddress, rewardTokenAddress }) => {
-          // ...
-
-          // Instantiate a smart contract instance pointing to the jar token address
-          const contract = this.pickleContractFactory.pickleJar({
-            address: stakedToken.address,
-            network,
-          });
-
-          // Request the jar token balance of this farm
-          const [balanceRaw] = await Promise.all([
-            multicall.wrap(contract).balanceOf(address),
-          ]);
-
-          // Denormalize the balance as the TVL
-          const totalValueLocked =
-            Number(balanceRaw) / 10 ** stakedToken.decimals;
-
-          // Create the token object
-          const token: ContractPosition<PickleFarmContractPositionDataProps> = {
-            // ...
-            dataProps: {
-              totalValueLocked,
-            },
-          };
-
-          return token;
-        }
-      )
-    );
-
-    return _.compact(positions);
+  async getLabel({ contractPosition }: GetDisplayPropsParams<PickleJar>) {
+    return `Staked ${getLabelFromToken(contractPosition.tokens[0])}`;
   }
+
+  //...
 }
 ```
 
-We're almost there! Now we just need to tell Zapper how to render this contract
-position in our application.
+## Implement `getTokenBalancesPerPosition`
 
-## Resolve display properties
-
-Lastly, we'll want to resolve a meaningful label for this position. Like stated
-in the previous section for the `TokenFetcher` class, these labels are used to
-optimize human readability of this investment.
-
-Let's put everything together and observe our finished product!
+We need to describe what RPC methods to call to derive balances for each
+position. We can do so by implementing the `getTokenBalancesPerPosition`. The
+balances for each of the tokens described in `getTokenDefinitions` must be
+returned from this function in the same order.
 
 ```ts
-import { Inject } from "@nestjs/common";
-import Axios from "axios";
-import { compact } from "lodash";
+export class EthereumPickleJarTokenFetcher extends AppTokenTemplatePositionFetcher<PickleJar> {
+  //...
 
-import { IAppToolkit, APP_TOOLKIT } from "~app-toolkit/app-toolkit.interface";
-import { Register } from "~app-toolkit/decorators";
-import { buildDollarDisplayItem } from "~app-toolkit/helpers/presentation/display-item.present";
-import {
-  getImagesFromToken,
-  getLabelFromToken,
-} from "~app-toolkit/helpers/presentation/image.present";
-import { ContractType } from "~position/contract.interface";
-import { PositionFetcher } from "~position/position-fetcher.interface";
-import { ContractPosition } from "~position/position.interface";
-import { claimable, supplied } from "~position/position.utils";
-import { Network } from "~types/network.interface";
-
-import { PickleContractFactory } from "../contracts";
-import { PICKLE_DEFINITION } from "../pickle.definition";
-
-const appId = PICKLE_DEFINITION.id;
-const groupId = PICKLE_DEFINITION.groups.farm.id;
-const network = Network.ETHEREUM_MAINNET;
-
-export type PickleVaultDetails = {
-  jarAddress: string;
-  gaugeAddress: string;
-  network: string;
-};
-
-export type PickleFarmContractPositionDataProps = {
-  totalValueLocked: number;
-};
-
-@Register.ContractPositionFetcher({ appId, groupId, network })
-export class EthereumPickleFarmContractPositionFetcher
-  implements PositionFetcher<ContractPosition>
-{
-  constructor(
-    @Inject(APP_TOOLKIT) private readonly appToolkit: IAppToolkit,
-    @Inject(PickleContractFactory)
-    private readonly pickleContractFactory: PickleContractFactory
-  ) {}
-
-  async getPositions() {
-    const endpoint = "https://api.pickle.finance/prod/protocol/pools";
-    const data = await Axios.get<PickleVaultDetails[]>(endpoint).then(
-      (v) => v.data
-    );
-    const ethData = data.filter(({ network }) => network === "eth");
-    const farmDefinitions = ethData
-      .filter(({ gaugeAddress }) => !!gaugeAddress)
-      .map(({ jarAddress, gaugeAddress }) => ({
-        address: gaugeAddress.toLowerCase(),
-        stakedTokenAddress: jarAddress.toLowerCase(),
-        rewardTokenAddress: "0x429881672b9ae42b8eba0e26cd9c73711b891ca5", // PICKLE
-      }));
-
-    const baseTokens = await this.appToolkit.getBaseTokenPrices(network);
-    const appTokens = await this.appToolkit.getAppTokenPositions({
-      appId: "pickle",
-      groupIds: ["jar"],
-      network,
-    });
-    const allTokens = [...appTokens, ...baseTokens];
-    const multicall = this.appToolkit.getMulticall(network);
-
-    const tokens = await Promise.all(
-      farmDefinitions.map(
-        async ({ address, stakedTokenAddress, rewardTokenAddress }) => {
-          const stakedToken = allTokens.find(
-            (v) => v.address === stakedTokenAddress
-          );
-          const rewardToken = allTokens.find(
-            (v) => v.address === rewardTokenAddress
-          );
-          if (!stakedToken || !rewardToken) return null;
-
-          const tokens = [supplied(stakedToken), claimable(rewardToken)];
-          const contract = this.pickleContractFactory.pickleJar({
-            address: stakedToken.address,
-            network,
-          });
-          const [balanceRaw] = await Promise.all([
-            multicall.wrap(contract).balanceOf(address),
-          ]);
-          const totalValueLocked =
-            Number(balanceRaw) / 10 ** stakedToken.decimals;
-
-          // As a label, we'll use the underlying label, and prefix it with 'Staked'
-          const label = `Staked ${getLabelFromToken(stakedToken)}`;
-          // For images, we'll use the underlying token images as well
-          const images = getImagesFromToken(stakedToken);
-          // For the secondary label, we'll use the price of the jar token
-          const secondaryLabel = buildDollarDisplayItem(stakedToken.price);
-
-          // Create the contract position object
-          const position: ContractPosition<PickleFarmContractPositionDataProps> =
-            {
-              type: ContractType.POSITION,
-              appId,
-              groupId,
-              address,
-              network,
-              tokens,
-              dataProps: {
-                totalValueLocked,
-              },
-              displayProps: {
-                label,
-                secondaryLabel,
-                images,
-              },
-            };
-
-          return position;
-        }
-      )
-    );
-
-    return compact(tokens);
+  getTokenBalancesPerPosition({
+    address,
+    contractPosition,
+  }: GetTokenBalancesParams<PickleJar>) {
+    return [await contract.balanceOf(address), await contract.earned(address)];
   }
+
+  //...
 }
 ```
 
-Visit
+We're done! Visit
 `http://localhost:5001/apps/pickle/positions?groupIds[]=farm&network=ethereum`
-again in your browser and you can admire your completed work. Here's an example
-of one of the positions in this list:
+again in your browser and you can admire your completed work.
 
-```json
-[
-  {
-    "type": "contract-position",
-    "appId": "pickle",
-    "groupId": "farm",
-    "address": "0xf5bd1a4894a6ac1d786c7820bc1f36b1535147f6",
-    "network": "ethereum",
-    "tokens": [
-      {
-        "metaType": "supplied",
-        "type": "app-token",
-        "appId": "pickle",
-        "groupId": "jar",
-        "address": "0x1bb74b5ddc1f4fc91d6f9e7906cf68bc93538e33",
-        "network": "ethereum",
-        "symbol": "p3Crv",
-        "decimals": 18,
-        "supply": 76114.08809389763,
-        "tokens": [
-          {
-            "type": "app-token",
-            "address": "0x6c3f90f043a72fa612cbac8115ee7e52bde6e490",
-            "network": "ethereum",
-            "appId": "curve",
-            "groupId": "pool",
-            "symbol": "3Crv",
-            "decimals": 18,
-            "supply": 3532681958.7655787,
-            "price": 1.019001101919686,
-            "pricePerShare": [
-              0.403263252552053, 0.3780319150210071, 0.23942714208122942
-            ],
-            "tokens": [
-              {
-                "type": "base-token",
-                "network": "ethereum",
-                "address": "0x6b175474e89094c44da98b954eedeac495271d0f",
-                "decimals": 18,
-                "symbol": "DAI",
-                "price": 0.999004
-              },
-              {
-                "type": "base-token",
-                "network": "ethereum",
-                "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
-                "decimals": 6,
-                "symbol": "USDC",
-                "price": 0.998319
-              },
-              {
-                "type": "base-token",
-                "network": "ethereum",
-                "address": "0xdac17f958d2ee523a2206206994597c13d831ec7",
-                "decimals": 6,
-                "symbol": "USDT",
-                "price": 1
-              }
-            ],
-            "dataProps": {
-              "swapAddress": "0xbebc44782c7db0a1a60cb6fe97d0b483032ff1c7",
-              "liquidity": 3602223466.5813246,
-              "volume": 9977330.093130862,
-              "fee": 0.0003
-            },
-            "displayProps": {
-              "label": "3Pool Curve",
-              "secondaryLabel": "39% / 37% / 23%",
-              "images": [
-                "https://storage.googleapis.com/zapper-fi-assets/tokens/ethereum/0x6b175474e89094c44da98b954eedeac495271d0f.png",
-                "https://storage.googleapis.com/zapper-fi-assets/tokens/ethereum/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png",
-                "https://storage.googleapis.com/zapper-fi-assets/tokens/ethereum/0xdac17f958d2ee523a2206206994597c13d831ec7.png"
-              ],
-              "statsItems": [
-                {
-                  "label": "Liquidity",
-                  "value": {
-                    "type": "dollar",
-                    "value": 3602223466.5813246
-                  }
-                },
-                {
-                  "label": "Supply",
-                  "value": {
-                    "type": "number",
-                    "value": 3532681958.7655787
-                  }
-                },
-                {
-                  "label": "Volume",
-                  "value": {
-                    "type": "dollar",
-                    "value": 9977330.093130862
-                  }
-                },
-                {
-                  "label": "Fee",
-                  "value": {
-                    "type": "pct",
-                    "value": 0.0003
-                  }
-                }
-              ]
-            }
-          }
-        ],
-        "price": 1.1362554816491606,
-        "pricePerShare": 1.1150679616622396,
-        "dataProps": {
-          "apy": 0.07925704665611275
-        },
-        "displayProps": {
-          "label": "3Pool Curve Jar",
-          "images": [
-            "https://storage.googleapis.com/zapper-fi-assets/tokens/ethereum/0x6b175474e89094c44da98b954eedeac495271d0f.png",
-            "https://storage.googleapis.com/zapper-fi-assets/tokens/ethereum/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png",
-            "https://storage.googleapis.com/zapper-fi-assets/tokens/ethereum/0xdac17f958d2ee523a2206206994597c13d831ec7.png"
-          ],
-          "secondaryLabel": {
-            "type": "dollar",
-            "value": 1.1362554816491606
-          },
-          "tertiaryLabel": "7.926% APY"
-        }
-      },
-      {
-        "metaType": "claimable",
-        "type": "base-token",
-        "network": "ethereum",
-        "address": "0x429881672b9ae42b8eba0e26cd9c73711b891ca5",
-        "decimals": 18,
-        "symbol": "PICKLE",
-        "price": 4.91
-      }
-    ],
-    "dataProps": {
-      "totalValueLocked": 38701.34643112021
-    },
-    "displayProps": {
-      "label": "Staked 3Pool Curve Jar",
-      "secondaryLabel": {
-        "type": "dollar",
-        "value": 1.1362554816491606
-      },
-      "images": [
-        "https://storage.googleapis.com/zapper-fi-assets/tokens/ethereum/0x6b175474e89094c44da98b954eedeac495271d0f.png",
-        "https://storage.googleapis.com/zapper-fi-assets/tokens/ethereum/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png",
-        "https://storage.googleapis.com/zapper-fi-assets/tokens/ethereum/0xdac17f958d2ee523a2206206994597c13d831ec7.png"
-      ]
-    }
-  }
-]
-```
+You can also now compute balances for a user by accessing
+`http://localhost:5001/apps/pickle/balances?addresses=<ADDR>&network=ethereum`
 
-This implementation works well, but it is a little naive. We have helper classes
-to simplify building single staking farm positions. Helpers make implementations
-easier and more consistent. You can see how a helper could be used for a farm in
-[Recipes](../recipes/intro.md).
-
-In the last two sections, we've built our _user-agnostic_ data for tokens and
-contract positions. In the next section, we'll use these sets of data to build
-_user-centric_ balance data for any given address.
+This implementation works well, but it is a little naive. We have common
+template classes to simplify building single staking farm positions. Abstract
+templates make implementations easier and more consistent. You can see how a
+helper could be used for a farm in [Recipes](../recipes/intro.md).
