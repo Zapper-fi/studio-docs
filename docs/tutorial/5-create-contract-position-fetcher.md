@@ -256,7 +256,7 @@ We're done! Visit
 again in your browser and you can admire your completed work.
 
 You can also now compute balances for a user by accessing
-`http://localhost:5001/apps/pickle/balances?addresses=<ADDR>&network=ethereum`
+`http://localhost:5001/apps/pickle/balances?addresses[]=<ADDR>&network=ethereum`
 
 This implementation works well, but it is a little naive. We have common
 template classes to simplify building single staking farm positions. Abstract
