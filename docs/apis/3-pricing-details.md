@@ -19,15 +19,15 @@ It is also against [Zapper's API terms of use](https://zapper.xyz/docs/api-terms
 ## Cost of Queries
 
 The points breakdown is as follows:
-| Endpoint                     	| Points cost for query 	|
-|------------------------------	|-----------------------	|
-| GET [`v2/balances`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balances) (deprecated) 	| 7 points              	|
-| POST [`v2/balances/apps`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancesapps)        	| 4 points              	|
-| POST [`v2/balances/tokens`](https://docs.zapper.xyz/docs/apis/api-syntax#v2nftusertokens)      	| 1 point               	|
-| GET [`v2/balances/apps`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancesapps)         	| 0.25 points           	|
-| GET [`v2/balances/tokens`](https://docs.zapper.xyz/docs/apis/api-syntax#v2nftusertokens)      	| 0.25 points           	|
-| GET [`v2/balances/job-status`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancesjob-status)   	| 0 points              	|
-| All other endpoints          	| 1 point               	|
+| Endpoint                                                                                                          | Points cost for query |
+|-------------------------------------------------------------------------------------------------------------------|-----------------------|
+| GET [<br>`v2/balances`<br>](<br>https://docs.zapper.xyz/docs/apis/api-syntax#v2balances<br>) (deprecated)         |        7 points       |
+| POST [<br>`v2/balances/apps`<br>](<br>https://docs.zapper.xyz/docs/apis/api-syntax#v2balancesapps<br>)            |        4 points       |
+| POST [<br>`v2/balances/tokens`<br>](<br>https://docs.zapper.xyz/docs/apis/api-syntax#v2nftusertokens<br>)         |        1 point        |
+| GET [<br>`v2/balances/apps`<br>](<br>https://docs.zapper.xyz/docs/apis/api-syntax#v2balancesapps<br>)             |      0.25 points      |
+| GET [<br>`v2/balances/tokens`<br>](<br>https://docs.zapper.xyz/docs/apis/api-syntax#v2nftusertokens<br>)          |      0.25 points      |
+| GET [<br>`v2/balances/job-status`<br>](<br>https://docs.zapper.xyz/docs/apis/api-syntax#v2balancesjob-status<br>) |        0 points       |
+| All other endpoints                                                                                               |        1 point        |
 
 :::note
 When querying, each wallet counts as 1 query, even if multiple addresses are bundled into 1 call. By way of example only, if you pass 10 Wallets into 1 API call of v2/balances endpoint, that will count as 10 queries of that endpoint, for a total of 70 points.
