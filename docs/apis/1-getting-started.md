@@ -4,15 +4,15 @@ sidebar_position: 1
 
 # Getting Started
 
-![](../../static/img/assets/zapper_api_logo.png)
+![Zapper API](../../static/img/assets/zapper_api_logo.png)
 
 The Zapper API provides some of the most robust Web3-related data, 
 from complex DeFi app balances to NFT valuations and  pool liquidity and prices on different AMMs, all in
 one convenient place. 
 
 :::info 
-We ask that builders using the API include our **"Powered by Zapper"**
-logo with a backlink to [https://zapper.fi](https://zapper.fi) in their project.
+We ask that builders who are using our API for free include our **"Powered by Zapper"**
+logo with a back-link to [https://zapper.fi](https://zapper.fi) in their project.
 **"Powered by Zapper"** brand asset can be downloaded
 [here](../docs/brand-assets.md)
 :::
@@ -28,9 +28,9 @@ To see all endpoints that are available for public use, Check out [API schema do
 [Swagger UI](https://api.zapper.fi/api/static/index.html#) to see how to query
 wallet balances, token prices, gas prices, and more.
 
-![](../../static/img/assets/data_api.png)
+![DeFi](../../static/img/assets/data_api.png)
 
-:::tip 
+:::tip
 To learn and see all of Zapper's public API endpoints, check out the
 [Swagger UI](https://api.zapper.fi/api/static/index.html#/) page.
 

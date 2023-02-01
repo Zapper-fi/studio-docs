@@ -2,11 +2,9 @@
 sidebar_position: 2
 ---
 
-# API Keys
+# Getting an API Key & Testing The Endpoints
 
-The Zapper API uses
-[API keys](https://swagger.io/docs/specification/authentication/api-keys/) to
-authenticate requests. 
+The Zapper API uses [API keys](https://swagger.io/docs/specification/authentication/api-keys/) to authenticate requests.
 
 We authenticate your private API key using **HTTP authorization request headers**. To learn more about how authorization headers work, check out [this documentation on the topic from Mozilla foundation](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization#basic_authentication).
 
@@ -26,8 +24,8 @@ to see the responses for various endpoints based on parameters you specify.
 
 ![Enter API key into the authorize section](../../static/img/assets/swagger-auth.png)
 
-:::info 
+:::info
 For any API related inquiries, please reach out in the
 [#api-buildooorrs channel](https://discord.com/channels/647279669388771329/650654989202489354)
-in the [Zapper Discord](https://zapper.fi/discord). 
+in the [Zapper Discord](https://zapper.xyz/discord).
 :::

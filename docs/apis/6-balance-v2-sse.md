@@ -1,8 +1,12 @@
 ---
-sidebar_position: 5
+sidebar_position: 6
 ---
 
 # Balance aggregation and SSE
+
+:::danger
+As of January 2023, the `v2/balances` endpoint has been marked for deprecation, and will be sunset in May 2023. Please migrate to the new endpoints replacing it, `v2/balances/apps` and `v2/balances/tokens`
+:::
 
 When fetching _all_ the balances for a given address, we recommend using the
 balance streamer endpoint

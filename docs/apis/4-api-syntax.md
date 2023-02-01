@@ -5,73 +5,810 @@ sidebar_position: 4
 # API Schema
 
 See below for details on each of Zapper's API endpoints.
-[Swagger docs to test these endpoints can be found here.](https://api.zapper.fi/api/static/index.html#)
+[Swagger docs to test these endpoints can be found here.](https://api.zapper.xyz/api/static/index.html#)
 
-# Balances endpoints
+## Wallet-specific App and ERC20 Token Balances endpoints
 
-## `v2/balances`
+### `v2/balances/apps` (launched in January 2023, replaces historical `v2/balances` endpoint)
 
-The `v2/balances` endpoint is the most powerful of those offered by Zapper. You
-input wallet addresses and get all the following:
+You input wallet addresses and get all the following:
 
-<ul>
-  <li>All tokens the wallet owns, by network, valued in USD</li>
-  <li>Detailed breakdown of all app investment positions represented as app tokens owned by the wallet, such as Aave lending positions or Uniswap pools, valued in USD</li>
-  <li>Detailed breakdown of all app investment positions represented as contract positions that are not held on the wallet, such ve-locked or farming positions, valued in USD</li>
-</ul>
+- Detailed breakdown of all app investment positions represented as app tokens owned by the wallet, such as Aave lending positions or Uniswap pools, valued in USD
+- Detailed breakdown of all app investment positions represented as contract positions that are not held on the wallet, such ve-locked or farming positions, valued in USD
 
-Notes on use of the API and limits:
+On Zapper's frontend, all tokens that show up in the *Wallet* section of a portfoilo are returned in the `v2/balances/tokens` endpoint. All values showing up in the *Apps* section of a portfolio are returned in the `v2/balances/apps` endpoint.
 
-<ul>
-  <li>Maximum of 30 RPM (requests per minute)</li>
-  <li>Maximum of 15 wallets can be passed into 1 call, though it's recommended you query wallets one at a time for best performance</li>
-  <li>Any balance less than $0.01 USD value is not included in the output</li>
-</ul>
+For a list of all supported apps, see [this link](https://zapper.xyz/protocols).
 
-### Path
+By doing a GET command on this endpoint, you will be returned the cached values Zapper has in its database for the wallets provided. Many wallets already had their balances recently computed by Zapper, and so are sitting in the cache. However, if there is no cached value, the GET response will not contain anything. Cached values for apps are never purged, so could be months or years old. Keep this in mind!
 
-`v2/balances`
+If there is no cached value, or you want Zapper to re-compute the balance so it as fresh as possible, you will need to do a POST command to this endpoint. Once the POST command is received, Zapper will return you a `jobId` value and Zapper will then re-compute the wallet's app balances. You can monitor the status of the re-computation job via [`v2/balances/job-status`](TODO) by passing in the `jobId` value. Alternatively, you can just wait 10 seconds for the job to finish if you do not want to poll for the job status.
 
-### Response format
+Once the re-calculation job is completed, you can retrieve the newly computed app balances by calling GET `v2/balances/apps`.
 
-The response is in JSON, but is streamed from our endpoint. You will need to
-understand how to handle streamed responses.
-[See our documentation on SSE handling here](https://studio.zapper.fi/docs/apis/balance-v2-sse).
+Points Cost For `v2/balances/apps` Related Queries:
 
-### Parameters
+- 0.25 points per GET `v2/balances/apps` call per wallet included in the call, as this is simply retrieving the value in Zapper's database
+- 4 points per POST `v2/balances/apps` call per wallet included in the call. This call triggers Zapper recomputing the wallet's balances, generating a large volume of downstream API calls. A `jobId` will be included in the response
+- 0 points per call GET `/v2/balances/job-status`, used to monitor the status of the `jobId`. These calls are free, allowing you to poll the status of the computation job
 
-<ul>
-  <li><code>addresses[]</code>: *(required)* Addresses for which to retrieve balances, inputted as an array. Can handle up to 15 addresses</li>
-  <li><code>networks[]</code>: Networks for which to retrieve balances, inputted an array. Available values : ethereum, polygon, optimism, gnosis, binance-smart-chain, fantom, avalanche, arbitrum, celo, moonriver, bitcoin, cronos, aurora</li>
-  <li><code>bundled</code>: Set to false to receive balance individually for each addresses, instead of bundled together</li>
-</ul>
+:::info
+Note that this endpoint differs from `v2/balances` as it does NOT contain base token balances, but only contains balances related to a particular app.
 
-### Return
+- To get token balances, call GET `v2/balances/tokens`
+- To get NFT values, call GET `v2/nft/balances/net-worth`
+:::
 
-<ul>
-  <li><code>appId</code>: ID of the app</li>
-  <li><code>network</code>: network the app is on</li>
-  <li><code>addresses</code>: addresses queried for</li>
-  <li><code>balance</code>: details on the balance structure, and what kind of balance it is</li>
-  <li><code>type</code>: type of position the investment is. <code>contract-position</code> is if the investment is held on a 3rd party contract</li>
-  <li><code>app-token</code>: is if the wallet holds tokens in the wallet representing the investment</li>
-  <li><code>displayProps</code>: details on how to display the asset on Zapper's frontend</li>
-</ul>
+Tips On Using This Endpoint Cost-Effectively:
 
-### Curl
+- If you are querying a wallet for the first time, and it is a potentially popular wallet, there is a chance that a cached value already exists, and you can retry it for only 0.25 points cost. Upon getting the results, you can check how stale the balances are based on the value returned of `updatedAt`
+- If you are certain you will want the most up-to-date balances for the wallet, you should call the POST `v2/balances/apps` endpoint first, wait for the job to run after 10s, and then call GET `v2/balances/apps`
+- If you are surfacing balances to users in real-time using this call, you can emulate what Zapper's frontend does by first calling GET `v2/balances/apps` to get any cached balances, use these to create a skeleton to display to the user, and then call POST `v2/balances/apps` to then refresh any stale values
 
-```
-curl -X 'GET' \
-  'https://api.zapper.fi/v2/balances?addresses%5B%5D=0x3d280fde2ddb59323c891cf30995e1862510342f&bundled=false' \
+Other things to know about this endpoint
+
+- Maximum of 30 RPM (requests per minute)
+- Maximum of 15 wallets can be passed into 1 call as parameters. Any more beyond 15 wallets, and the query will fail. And, though we support multiple wallets bundled into 1 call, it's recommended you **query wallets one at a time** for best performance
+- Any balance less than $0.01 USD value is not included in the output
+
+Path
+
+`v2/balances/apps`
+
+Parameters
+
+- `addresses[]`: **Required** | Addresses for which to retrieve balances, inputted as an array. Can handle up to 15 addresses
+- `network[]`: networks for which to retrieve balances, inputted an array. Available values : ethereum, polygon, optimism, gnosis, binance-smart-chain, fantom, avalanche, arbitrum, celo, moonriver, bitcoin, aurora
+
+Response
+
+- `key`: a unique identifier on the token object that is used to aggregate token balances across multiple addresses. [More details found here](https://docs.zapper.xyz/docs/concepts/app-tokens#what-is-key-why-is-it-useful)
+- `addresses`: address the position queried is for
+- `appId`: ID of the app
+- `AppName`: Display name of app
+- `AppImage`: Icon of the app
+- `network`: network the app is on
+- `updatedAt`: timestamp at which time this wallet's balance for this app was calculated
+- `balanceUSD`: value of all positions associated with this app on this network for this wallet, in USD
+- `products`: object containing details on all products owned by this wallet
+  - `label`: human-readable label of asset group, such as "pools" or "farms"
+  - `assets`: object containing all metadata about this group of assets and the positions within the group
+    - `tokens`: object containing details about the underlying tokens that comprise this investment positions, such as symbol, wallet, network, balance. A pool token of USDC / DAI would have its underlying tokens reported as USDC and DAI
+    - `symbol`: symbol for investment position
+    - `decimals`: decimals for position; usually 18 for ERC-20 tokens
+    - `supply`: total amount of supply of this position
+    - `pricePerShare`: the ratio between the token price and the prices of the underlying tokens. This property is useful for using the balance of the token to determine the exposure to the underlying tokens. [More details and examples found here.](https://docs.zapper.xyz/docs/concepts/app-tokens#what-is-pricepershare-why-is-it-useful)
+    - `price`: The price of one unit of this token. In the case of aDAI, the tokens are minted 1:1, so the price is the same as the underlying DAI token.
+    - `dataProps`: object containing data used for augmenting the token object with additional data properties. These properties can be used in other places in the application. This would include APY, liquidity in the positions, etc. [More details found here](https://docs.zapper.xyz/docs/concepts/app-tokens#what-are-data-props)
+    - `displayProps`: object is used by Zapper Web and Zapper Mobile to render meaningful information to Zapper users about this token. This generally would include labels and decorators. [More details can be found here](https://docs.zapper.xyz/docs/concepts/app-tokens#what-are-display-props)
+    - `balance`: balance of investment positioned owned by this wallet. Normalized for decimals
+    - `balanceRaw`: raw balance of investment in this postiion owned by this wallet. This has not been normalized with decimals yet; to get balanceRaw, you'd multiply this value by 10 ^ (decimals) value
+    - `balanceUSD`: value of `balance` position, converted to USD
+  - `meta`: Information about balances that is not specifically balances. This value is developer defined, but examples are health factors and collateralization ratios (c-ratios)
+
+  
+cURL for POST
+
+```js
+cURL -X 'POST' \
+  'https://api.zapper.xyz/v2/balances/apps?addresses%5B%5D=0xe321bD63CDE8Ea046b382f82964575f2A5586474' \
   -H 'accept: */*' \
   -H 'Authorization: Basic sadkfljsdafksal24uh2jk34=='
 ```
 
-### Response
+cURL for GET
 
+```js
+cURL -X 'GET' \
+  'https://api.zapper.xyz/v2/balances/apps?addresses%5B%5D=0xe321bD63CDE8Ea046b382f82964575f2A5586474' \
+  -H 'accept: */*' \
+  -H 'Authorization: Basic sadkfljsdafksal24uh2jk34=='
 ```
+
+Response for POST
+
+```JSON
+{
+   "jobId": "f7a84c5d-8605-4ad5-8c5e-ae65e07cfafd"
+}
+```
+
+Response for GET
+
+```JSON
+[
+    {
+        "key": "597563987",
+        "address": "0xe321bd63cde8ea046b382f82964575f2a5586474",
+        "appId": "sushiswap",
+        "appName": "SushiSwap",
+        "appImage": "https://storage.googleapis.com/zapper-fi-assets/apps/sushiswap.png",
+        "network": "ethereum",
+        "updatedAt": "2023-01-26T22:51:36.215Z",
+        "balanceUSD": 84.1847791577147,
+        "products": [
+            {
+                "label": "Pools",
+                "assets": [
+                    {
+                        "key": "2041256716",
+                        "type": "app-token",
+                        "appId": "sushiswap",
+                        "groupId": "pool",
+                        "network": "ethereum",
+                        "address": "0xceff51756c56ceffca006cd410b03ffc46dd3a58",
+                        "tokens": [
+                            {
+                                "type": "base-token",
+                                "network": "ethereum",
+                                "address": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
+                                "symbol": "WBTC",
+                                "decimals": 8,
+                                "price": 23042,
+                                "balance": 0.00035964,
+                                "balanceRaw": "35964",
+                                "balanceUSD": 8.28682488
+                            },
+                            {
+                                "type": "base-token",
+                                "network": "ethereum",
+                                "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+                                "symbol": "WETH",
+                                "decimals": 18,
+                                "price": 1604.44,
+                                "balance": 0.005167346483200388,
+                                "balanceRaw": "5167346483200388",
+                                "balanceUSD": 8.290697391506031
+                            }
+                        ],
+                        "symbol": "SLP",
+                        "decimals": 18,
+                        "supply": 0.000624160526773982,
+                        "pricePerShare": [
+                            661196.580794739,
+                            9500203.420152755
+                        ],
+                        "price": 30477797990.102264,
+                        "dataProps": {
+                            "liquidity": 19023038.448413238,
+                            "reserves": [
+                                412.69280617,
+                                5929.651971182529
+                            ],
+                            "apy": 0.9984024219112746,
+                            "fee": 0.3,
+                            "volume": 173448.83706855774
+                        },
+                        "displayProps": {
+                            "label": "WBTC / WETH",
+                            "secondaryLabel": "50% / 50%",
+                            "tertiaryLabel": "0.998% APY",
+                            "images": [
+                                "https://storage.googleapis.com/zapper-fi-assets/tokens/ethereum/0x2260fac5e5542a773aa44fbcfedf7c193bc2c599.png",
+                                "https://storage.googleapis.com/zapper-fi-assets/tokens/ethereum/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"
+                            ],
+                            "statsItems": [
+                                {
+                                    "label": "Fee",
+                                    "value": {
+                                        "type": "pct",
+                                        "value": 0.3
+                                    }
+                                },
+                                {
+                                    "label": "Liquidity",
+                                    "value": {
+                                        "type": "dollar",
+                                        "value": 19023038.448413238
+                                    }
+                                },
+                                {
+                                    "label": "Reserves",
+                                    "value": "412.69 / 5929.65"
+                                },
+                                {
+                                    "label": "Ratio",
+                                    "value": "50% / 50%"
+                                },
+                                {
+                                    "label": "Volume",
+                                    "value": {
+                                        "type": "dollar",
+                                        "value": 173448.83706855774
+                                    }
+                                },
+                                {
+                                    "label": "APY",
+                                    "value": {
+                                        "type": "pct",
+                                        "value": 0.9984024219112746
+                                    }
+                                },
+                                {
+                                    "label": "Share",
+                                    "value": {
+                                        "type": "pct",
+                                        "value": 0.00008714417824710687
+                                    }
+                                }
+                            ]
+                        },
+                        "balance": 5.43919562e-10,
+                        "balanceRaw": "543919562",
+                        "balanceUSD": 16.577470533500904
+                    },
+                    {
+                        "key": "1102926257",
+                        "type": "app-token",
+                        "appId": "sushiswap",
+                        "groupId": "pool",
+                        "network": "ethereum",
+                        "address": "0x5ba61c0a8c4dcccc200cd0ccc40a5725a426d002",
+                        "tokens": [
+                            {
+                                "type": "base-token",
+                                "network": "ethereum",
+                                "address": "0x41d5d79431a913c4ae7d69a668ecdfe5ff9dfb68",
+                                "symbol": "INV",
+                                "decimals": 18,
+                                "price": 73.5,
+                                "balance": 0.34627294833442135,
+                                "balanceRaw": "346272948334421344",
+                                "balanceUSD": 25.45106170257997
+                            },
+                            {
+                                "type": "base-token",
+                                "network": "ethereum",
+                                "address": "0x865377367054516e17014ccded1e7d814edc9ce4",
+                                "symbol": "DOLA",
+                                "decimals": 18,
+                                "price": 1.002,
+                                "balance": 24.826974193289097,
+                                "balanceRaw": "24826974193289097207",
+                                "balanceUSD": 24.876628141675674
+                            }
+                        ],
+                        "symbol": "SLP",
+                        "decimals": 18,
+                        "supply": 2430.5465150535374,
+                        "pricePerShare": [
+                            0.13345830915638018,
+                            9.568653899309185
+                        ],
+                        "price": 19.396976930101747,
+                        "dataProps": {
+                            "liquidity": 47145.25468003267,
+                            "reserves": [
+                                324.3766282249775,
+                                23257.058388719382
+                            ],
+                            "apy": 0,
+                            "fee": 0.3,
+                            "volume": 0
+                        },
+                        "displayProps": {
+                            "label": "INV / DOLA",
+                            "secondaryLabel": "51% / 49%",
+                            "images": [
+                                "https://storage.googleapis.com/zapper-fi-assets/tokens/ethereum/0x41d5d79431a913c4ae7d69a668ecdfe5ff9dfb68.png",
+                                "https://storage.googleapis.com/zapper-fi-assets/tokens/ethereum/0x865377367054516e17014ccded1e7d814edc9ce4.png"
+                            ],
+                            "statsItems": [
+                                {
+                                    "label": "Fee",
+                                    "value": {
+                                        "type": "pct",
+                                        "value": 0.3
+                                    }
+                                },
+                                {
+                                    "label": "Liquidity",
+                                    "value": {
+                                        "type": "dollar",
+                                        "value": 47145.25468003267
+                                    }
+                                },
+                                {
+                                    "label": "Reserves",
+                                    "value": "324.38 / 23257.06"
+                                },
+                                {
+                                    "label": "Ratio",
+                                    "value": "51% / 49%"
+                                },
+                                {
+                                    "label": "Volume",
+                                    "value": {
+                                        "type": "dollar",
+                                        "value": 0
+                                    }
+                                },
+                                {
+                                    "label": "APY",
+                                    "value": {
+                                        "type": "pct",
+                                        "value": 0
+                                    }
+                                },
+                                {
+                                    "label": "Share",
+                                    "value": {
+                                        "type": "pct",
+                                        "value": 0.10675027674751501
+                                    }
+                                }
+                            ]
+                        },
+                        "balance": 2.594615131296733,
+                        "balanceRaw": "2594615131296732998",
+                        "balanceUSD": 50.32768984425565
+                    },
+                    {
+                        "key": "2487522344",
+                        "type": "app-token",
+                        "appId": "sushiswap",
+                        "groupId": "pool",
+                        "network": "ethereum",
+                        "address": "0x96f5b7c2be10dc7de02fa8858a8f1bd19c2fa72a",
+                        "tokens": [
+                            {
+                                "type": "base-token",
+                                "network": "ethereum",
+                                "address": "0x0f51bb10119727a7e5ea3538074fb341f56b09ad",
+                                "symbol": "DAO",
+                                "decimals": 18,
+                                "price": 0.914175,
+                                "balance": 7.949186191616225,
+                                "balanceRaw": "7949186191616224922",
+                                "balanceUSD": 7.266947286720763
+                            },
+                            {
+                                "type": "base-token",
+                                "network": "ethereum",
+                                "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+                                "symbol": "WETH",
+                                "decimals": 18,
+                                "price": 1604.44,
+                                "balance": 0.004506479893091937,
+                                "balanceRaw": "4506479893091937",
+                                "balanceUSD": 7.230376599672428
+                            }
+                        ],
+                        "symbol": "SLP",
+                        "decimals": 18,
+                        "supply": 391.4512789823146,
+                        "pricePerShare": [
+                            54.40594087149234,
+                            0.03084331813245392
+                        ],
+                        "price": 99.22280434063089,
+                        "dataProps": {
+                            "liquidity": 38840.89366335192,
+                            "reserves": [
+                                21297.27513838186,
+                                12.073656331007502
+                            ],
+                            "apy": 6.190128263439032,
+                            "fee": 0.3,
+                            "volume": 2195.7088003903627
+                        },
+                        "displayProps": {
+                            "label": "DAO / WETH",
+                            "secondaryLabel": "50% / 50%",
+                            "tertiaryLabel": "6.190% APY",
+                            "images": [
+                                "https://storage.googleapis.com/zapper-fi-assets/tokens/ethereum/0x0f51bb10119727a7e5ea3538074fb341f56b09ad.png",
+                                "https://storage.googleapis.com/zapper-fi-assets/tokens/ethereum/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"
+                            ],
+                            "statsItems": [
+                                {
+                                    "label": "Fee",
+                                    "value": {
+                                        "type": "pct",
+                                        "value": 0.3
+                                    }
+                                },
+                                {
+                                    "label": "Liquidity",
+                                    "value": {
+                                        "type": "dollar",
+                                        "value": 38840.89366335192
+                                    }
+                                },
+                                {
+                                    "label": "Reserves",
+                                    "value": "21297.28 / 12.07"
+                                },
+                                {
+                                    "label": "Ratio",
+                                    "value": "50% / 50%"
+                                },
+                                {
+                                    "label": "Volume",
+                                    "value": {
+                                        "type": "dollar",
+                                        "value": 2195.7088003903627
+                                    }
+                                },
+                                {
+                                    "label": "APY",
+                                    "value": {
+                                        "type": "pct",
+                                        "value": 6.190128263439032
+                                    }
+                                },
+                                {
+                                    "label": "Share",
+                                    "value": {
+                                        "type": "pct",
+                                        "value": 0.03732489785648792
+                                    }
+                                }
+                            ]
+                        },
+                        "balance": 0.14610879003806448,
+                        "balanceRaw": "146108790038064476",
+                        "balanceUSD": 14.497323886393191
+                    },
+                    {
+                        "key": "572360583",
+                        "type": "app-token",
+                        "appId": "sushiswap",
+                        "groupId": "pool",
+                        "network": "ethereum",
+                        "address": "0x5399a36f54ca91a5db5c148eeb2b909bba81b82c",
+                        "tokens": [
+                            {
+                                "type": "base-token",
+                                "network": "ethereum",
+                                "address": "0x630d98424efe0ea27fb1b3ab7741907dffeaad78",
+                                "symbol": "PEAK",
+                                "decimals": 8,
+                                "price": 0.00333081,
+                                "balance": 420.53795766,
+                                "balanceRaw": "42053795766",
+                                "balanceUSD": 1.4007320347535046
+                            },
+                            {
+                                "type": "base-token",
+                                "network": "ethereum",
+                                "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+                                "symbol": "WETH",
+                                "decimals": 18,
+                                "price": 1604.44,
+                                "balance": 0.000861087269578818,
+                                "balanceRaw": "861087269578818",
+                                "balanceUSD": 1.3815628588030389
+                            }
+                        ],
+                        "symbol": "SLP",
+                        "decimals": 18,
+                        "supply": 0.03435689610847085,
+                        "pricePerShare": [
+                            77481769.44202168,
+                            158.6505191155818
+                        ],
+                        "price": 512622.29136498435,
+                        "dataProps": {
+                            "liquidity": 17612.11080731304,
+                            "reserves": [
+                                2662033.10302003,
+                                5.450739402809012
+                            ],
+                            "apy": 1.202818269501406,
+                            "fee": 0.3,
+                            "volume": 193.46272733807564
+                        },
+                        "displayProps": {
+                            "label": "PEAK / WETH",
+                            "secondaryLabel": "50% / 50%",
+                            "tertiaryLabel": "1.203% APY",
+                            "images": [
+                                "https://storage.googleapis.com/zapper-fi-assets/tokens/ethereum/0x630d98424efe0ea27fb1b3ab7741907dffeaad78.png",
+                                "https://storage.googleapis.com/zapper-fi-assets/tokens/ethereum/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"
+                            ],
+                            "statsItems": [
+                                {
+                                    "label": "Fee",
+                                    "value": {
+                                        "type": "pct",
+                                        "value": 0.3
+                                    }
+                                },
+                                {
+                                    "label": "Liquidity",
+                                    "value": {
+                                        "type": "dollar",
+                                        "value": 17612.11080731304
+                                    }
+                                },
+                                {
+                                    "label": "Reserves",
+                                    "value": "2662033.10 / 5.45"
+                                },
+                                {
+                                    "label": "Ratio",
+                                    "value": "50% / 50%"
+                                },
+                                {
+                                    "label": "Volume",
+                                    "value": {
+                                        "type": "dollar",
+                                        "value": 193.46272733807564
+                                    }
+                                },
+                                {
+                                    "label": "APY",
+                                    "value": {
+                                        "type": "pct",
+                                        "value": 1.202818269501406
+                                    }
+                                },
+                                {
+                                    "label": "Share",
+                                    "value": {
+                                        "type": "pct",
+                                        "value": 0.01579762314696352
+                                    }
+                                }
+                            ]
+                        },
+                        "balance": 0.00000542757297221,
+                        "balanceRaw": "5427572972210",
+                        "balanceUSD": 2.7822948935649485
+                    }
+                ],
+                "meta": []
+            }
+        ]
+    },
+    ...
+```
+
+### `v2/balances/tokens` (launched in January 2023, replaces historical `v2/balances` endpoint)
+
+You input wallet addresses and get all "base tokens" in the wallet. "Base tokens" are ERC20 tokens that are not invested by the user in an app, but instead sit in the wallet natively. Base tokens are often  liquid and tradable, whereas app tokens are those invested in apps are illiquid and cannot be natively traded, like a Uniswap pool token.
+
+On Zapper's frontend, all tokens that show up in the *Wallet* section of a portfoilo are returned in the `v2/balances/tokens` endpoint. All values showing up in the *Apps* section of a portfolio are returned in the `v2/balances/apps` endpoint.
+
+Zapper supports over 15,000 base tokens (and counting).
+
+By doing a GET command on this endpoint, you will be returned the cached token balances Zapper has in its database for the wallets provided. Many wallets already had their token balances recently computed by Zapper, and so are sitting in the cache. However, if there is no cached value, the GET response will not contain anything. Cached values are purged after 30 days, as Zapper then considers those balances stale.
+
+If there is no cached value, or you want Zapper to re-compute the token balance so it as fresh as possible, you will need to do a POST command to this endpoint. Once the POST command is received, Zapper will return you a `jobId` value and Zapper will then re-compute the wallet's app balances. You can monitor the status of the re-computation job via [`v2/balances/job-status`](TODO) by passing in the `jobId` value. Alternatively, you can just wait 10 seconds for the job to finish if you do not want to poll for the job status.
+
+Once the re-calculation job is completed, you can retrieve the newly computed app balances by calling GET `v2/balances/tokens`.
+
+Points Cost For `v2/balances/tokens` Related Queries:
+
+- 0.25 points per GET `v2/balances/tokens` call per wallet included in the call, as this is simply retrieving the value in Zapper's database
+- 1 points per POST `v2/balances/tokens` call per wallet included in the call. This call triggers Zapper recomputing the wallet's balances, generating a large volume of downstream API calls. A `jobId` will be included in the response
+- 0 points per call GET `/v2/balances/job-status?jobId=:jobId`, used to monitor the status of the `jobId`. These calls are free, allowing you to poll the status of the computation job
+
+:::info
+Note that this endpoint differs from `v2/balances` as it does NOT contain app-related balances (like uniswap pools or AAVE lending poisitions), but only contains balances related to "base tokens", or ERC20 tokens that are not invested in a given app. To get the full value of a wallet's assets, you should also call GET `v2/balances/apps` app balances and call `v2/nft/balances/net-worth` to get NFT related balances
+:::
+
+Tips On Using This Endpoint Cost-Effectively:
+
+- If you are querying a wallet for the first time, and it is a potentially popular wallet, there is a chance that a cached value already exists, and you can retrie it for only 0.25 points cost. Upon getting the results, you can check how stale the balances are based on the value retuend of `updatedAt`
+- If you are certain you will want the most up-to-date balances for the wallet, you should call the POST `v2/balances/apps` endpoint first, wait for the job to run after 10s, and then call GET `v2/balances/apps`
+- If you are surfacing balances to users in real-time using this call, you can emulate what Zapper's frontend does by first calling GET `v2/balances/apps` to get any cached balances, use these to create a skeleton to display to the user, and then call POST `v2/balances/apps` to then refresh any stale values
+
+Other things to know about this endpoint:
+
+- Maximum of 30 RPM (requests per minute)
+- Maximum of 15 wallets can be passed into 1 call as parameters. Any more beyond 15 wallets, and the query will fail. And, though we support multiple wallets bundled into 1 call, it's recommended you query wallets one at a time for best performance
+- Any balance less than $0.01 USD value is not included in the output
+
+Path
+
+`v2/balances/tokens`
+
+Parameters
+
+- `addresses[]`: **Required** | addresses for which to retrieve balances, inputted as an array. Can handle up to 15 addresses
+- `network[]`: networks for which to retrieve balances, inputted an array. Available values : ethereum, polygon, optimism, gnosis, binance-smart-chain, fantom, avalanche, arbitrum, celo, moonriver, bitcoin, aurora
+
+Response
+
+- `key`: a unique identifier on the token object that is used to aggregate token balances across multiple addresses. [More details found here](https://docs.zapper.xyz/docs/concepts/app-tokens#what-is-key-why-is-it-useful)
+- `address`: address the position queried is for
+- `network`: network the app is on
+- `updatedAt`: time at which this token balance was calculated. This value should be used to determine if this cached balance is considered too "stale" for your purposes, and thus should be re-calculated via a `POST` command on this endpoint
+- `token`:  object containing details about the token, such as metadata, price and balance
+  - `id`: internal token id
+  - `networkId`: internal network id
+  - `address`: token's address on the network
+  - `name`: label for token
+  - `symbol`: symbol for token
+  - `decimals`: decimals for token
+  - `coingeckoId`: coingecko API id for token
+  - `status`: internal designation if token has been initially reviewed when ingested
+  - `hide`: internal designation if token is approved for displaying
+  - `canExchange`: flag if this token is exchangeable on Zapper's front end
+  - `verified`: if token is on a verified token list or manually verified, and has a blue-checkmark on Zapper's frontend when swapping or bridging
+  - `externallyVerified`: flag indicating if the token is verified because it was on an external tokenlist
+  - `priceUpdatedAt`: last time the price for this token was updated from CoinGecko
+  - `updatedAt`: last date token was updated from CoinGecko
+  - `createdAt`: date token was first ingested into Zapper
+  - `price`: current price of token in USD
+  - `dailyVolume`: trading volume of token from coingecko
+  - `totalSupply`: total supply of token available
+  - `holdersEnabled`: internal designation as to whether Zapper index's the holders of this token
+  - `marketCap`: estimated value of all the tradeable tokens
+  - `balance`: balance of investment positioned owned by this wallet. Normalized for decimals
+  - `balanceRaw`: raw balance of investment in this postiion owned by this wallet. This has not been normalized with decimals yet; to get balanceRaw, you'd multiply this value by 10 ^ (decimals) value
+  - `balanceUSD`: value of `balance` position, converted to USD
+
+cURL for POST
+
+```js
+cURL -X 'POST' \
+  'https://api.zapper.xyz/v2/balances/tokens?addresses%5B%5D=0xe321bD63CDE8Ea046b382f82964575f2A5586474' \
+  -H 'accept: */*' \
+  -H 'Authorization: Basic sadkfljsdafksal24uh2jk34=='
+```
+
+cURL for GET
+
+```js
+cURL -X 'GET' \
+  'https://api.zapper.xyz/v2/balances/tokens?addresses%5B%5D=0xe321bD63CDE8Ea046b382f82964575f2A5586474' \
+  -H 'accept: */*' \
+  -H 'Authorization: Basic sadkfljsdafksal24uh2jk34=='
+```
+
+Response for POST
+
+```JSON
+{
+   "jobId": "f7a84c5d-8605-4ad5-8c5e-ae65e07cfafd"
+}
+```
+
+Response for GET
+
+```JSON
+{
+    "0xe321bd63cde8ea046b382f82964575f2a5586474": [
+        {
+            "key": "766222898",
+            "address": "0xe321bd63cde8ea046b382f82964575f2a5586474",
+            "network": "ethereum",
+            "token": {
+                "id": "1697",
+                "networkId": 1,
+                "address": "0xc944e90c64b2c07662a292be6244bdf05cda44a7",
+                "name": "Graph Token",
+                "symbol": "GRT",
+                "decimals": 18,
+                "coingeckoId": "the-graph",
+                "status": "approved",
+                "hide": false,
+                "canExchange": true,
+                "verified": false,
+                "externallyVerified": true,
+                "priceUpdatedAt": "2023-01-27T01:07:33.608Z",
+                "updatedAt": "2023-01-27T01:07:33.608Z",
+                "createdAt": "2022-05-18T12:54:47.695Z",
+                "price": 0.091389,
+                "dailyVolume": 62326378.164690085,
+                "totalSupply": "10570595387.699024621145719417",
+                "holdersEnabled": true,
+                "marketCap": 806898760.8415607,
+                "balance": 188.92803409735453,
+                "balanceUSD": 17.265944108123133,
+                "balanceRaw": "188928034097354517811"
+            }
+        },
+        ...
+```
+
+### `v2/balances/job-status` (launched in January 2023, functionality helps replace `v2/balances` endpoint)
+
+Use this endpoint to poll for the status of a job that is calculating app-related balances or base token balances, via `v2/balances/apps` and `v2/balances/tokens` respectively.
+
+When you call POST `v2/balances/apps` or `v2/balances/tokens`, a re-calculation of the balances in that wallet is triggered, and the response to those calls will be a value `jobId`. You can then monitor the status of the re-computation job by passing `jobId` as a parameter into this endpoint, `v2/balances/job-status`.
+
+:::info
+You are not required to poll for the status of the job via `v2/balances/job-status`; it is just a nice-to-have. Most POST `v2/balances/apps` finish computing wihtin 10 seconds and POST `v2/balances/tokens` finish within 2 seconds, so you could just insert a delay between your POST and GET commands of that time interval.
+:::
+
+Other things to know about this endpoint
+
+- There is no points cost associated with this endpoint, so you may poll as much and as often as you wish, up to a global maximum of 1000 requests per minute
+
+Path
+
+`v2/balances/tokens`
+
+Parameters
+
+- `jobId`: **(required)** | the `jobId` associated with the computation job. The `jobId` is provided as the response of the POST `v2/balances/apps` call or POST `v2/balances/tokens` call
+
+Response
+
+- `jobId`: the `jobId` that was passed into the call
+- `status`: current status of the computation job
+  - `active` = Zapper is currently computing the balance. The results are not ready
+  - `completed` = This computation job is complete. You can now call GET `v2/balances/*` to get the result
+  - `unknown` = `jobId` that was passed is not in Zapper's system. Could be stale
+
+cURL
+
+```js
+cURL -X 'GET' \
+  'https://api.zapper.xyz/v2/balances/job-status?jobId=f7a84c5d-8605-4ad5-8c5e-ae65e07cfafd' \
+  -H 'accept: */*' \
+  -H 'Authorization: Basic sadkfljsdafksal24uh2jk34=='
+```
+
+Response
+
+```JSON
+{
+    "jobId": "f7a84c5d-8605-4ad5-8c5e-ae65e07cfafd",
+    "status": "active"
+}
+```
+
+### `v2/balances`
+
+The `v2/balances` endpoint is the most powerful of those offered by Zapper. You input wallet addresses and get all the following:
+
+- All tokens the wallet owns, by network, valued in USD
+- Detailed breakdown of all app investment positions represented as app tokens owned by the wallet, such as Aave lending positions or Uniswap pools, valued in USD
+- Detailed breakdown of all app investment positions represented as contract positions that are not held on the wallet, such ve-locked or farming positions, valued in USD
+
+:::danger
+`v2/balances` endpoint was deprecated by Zapper in January 2023,, and will be turned down in May 2023. This endpoint will be phased out for `v2/balances/apps` and `v2/balances/tokens` endpoints, which are more performant, cost less, and return a typcial JSON structure. Please do not build further on this endpoint, but instead migrate your queries to the other endpoints.
+
+Notes on use of the API and limits:
+
+- Maximum of 30 RPM (requests per minute)
+- Maximum of 15 wallets can be passed into 1 call, though it's recommended you query wallets one at a time for best performance
+- Any balance less than $0.01 USD value is not included in the output
+
+Path
+
+`v2/balances`
+
+Response format
+
+The response is in JSON, but is streamed from our endpoint. You will need to understand how to handle streamed responses.
+[See our documentation on SSE handling here](https://studio.zapper.xyz/docs/apis/balance-v2-sse).
+
+Parameters
+
+- `addresses[]`: **(required)** | Addresses for which to retrieve balances, inputted as an array. Can handle up to 15 addresses
+- `networks[]`: Networks for which to retrieve balances, inputted an array. Available values : ethereum, polygon, optimism, gnosis, binance-smart-chain, fantom, avalanche, arbitrum, celo, moonriver, bitcoin, cronos, aurora
+- `bundled`: Set to false to receive balance individually for each addresses, instead of bundled together
+
+Returns
+
+- `appId`: ID of the app
+- `network`: network the app is on
+- `addresses`: addresses queried for
+- `balance`: details on the balance structure, and what kind of balance it is
+- `type`: type of position the investment is. `contract-position` is if the investment is held on a 3rd party contract
+- `app-token`: is if the wallet holds tokens in the wallet representing the investment
+- `displayProps`: details on how to display the asset on Zapper's frontend
+
+cURL
+
+```js
+cURL -X 'GET' \
+  'https://api.zapper.xyz/v2/balances?addresses%5B%5D=0x3d280fde2ddb59323c891cf30995e1862510342f&bundled=false' \
+  -H 'accept: */*' \
+  -H 'Authorization: Basic sadkfljsdafksal24uh2jk34=='
+```
+
+Response
+
+```JSON
 event: balance
-data: {"appId":"sudoswap","network":"ethereum","addresses":["0x3d280fde2ddb59323c891cf30995e1862510342f"],"balance":{"deposits":{},"debt":{},"vesting":{},"wallet":{},"claimable":{},"locked":{},"nft":{}},"totals":[{"key":"2987028053","type":"contract-position","network":"ethereum","balanceUSD":7256.5594200000005}],"errors":[],"app":{"appId":"sudoswap","network":"ethereum","data":[{"key":"2987028053","type":"position","appId":"sudoswap","address":"0xea504f1857707c6c875cba618a33bd09fc4aefac","metaType":null,"balanceUSD":7256.5594200000005,"contractType":"contract-position","network":"ethereum","displayProps":{"label":"Chain Runners ↔ ETH - Price: 0.22Ξ","secondaryLabel":null,"tertiaryLabel":null,"images":["https://lh3.googleusercontent.com/3vScLGUcTB7yhItRYXuAFcPGFNJ3kgO0mXeUSUfEMBjGkGPKz__smtXyUlRxzZjr1Y5x8hz1QXoBQSEb8wm4oBByeQC_8WOCaDON4Go=s120","https://storage.googleapis.com/zapper-fi-assets/tokens/ethereum/0x0000000000000000000000000000000000000000.png"],"stats":[],"info":[{"label":{"type":"string","value":"App"},"value":{"type":"string","value":"Sudoswap"}}],"balanceDisplayMode":"default"},"breakdown":[{"key":"917389808","appId":"nft","address":"0x97597002980134bea46250aa0510c9b90d87a587","network":"ethereum","balanceUSD":7256.5594200000005,"metaType":"supplied","type":"nft","contractType":"non-fungible-token","breakdown":[],"assets":[{"tokenId":"1976","assetImg":"https://web.zapper.fi/images/?url=https%3A%2F%2Fimg.chainrunners.xyz%2Fapi%2Fv1%2Ftokens%2Fpng%2F1976&width=250&checksum=6f122","assetName":"Chain Runners #1976","balance":1,"balanceUSD":219.89574000000002},{"tokenId":"2835","assetImg":"https://web.zapper.fi/images/?url=https%3A%2F%2Fimg.chainrunners.xyz%2Fapi%2Fv1%2Ftokens%2Fpng%2F2835&width=250&checksum=f4896","assetName":"Chain Runners #2835","balance":1,"balanceUSD":219.89574000000002},{"tokenId":"3067","assetImg":"https://web.zapper.fi/images/?url=https%3A%2F%2Fimg.chainrunners.xyz%2Fapi%2Fv1%2Ftokens%2Fpng%2F3067&width=250&checksum=d3ddb","assetName":"Chain Runners #3067","balance":1,"balanceUSD":219.89574000000002},{"tokenId":"3094","assetImg":"https://web.zapper.fi/images/?url=https%3A%2F%2Fimg.chainrunners.xyz%2Fapi%2Fv1%2Ftokens%2Fpng%2F3094&width=250&checksum=83db0","assetName":"Chain Runners #3094","balance":1,"balanceUSD":219.89574000000002},{"tokenId":"4605","assetImg":"https://web.zapper.fi/images/?url=https%3A%2F%2Fimg.chainrunners.xyz%2Fapi%2Fv1%2Ftokens%2Fpng%2F4605&width=250&checksum=93684","assetName":"Chain Runners #4605","balance":1,"balanceUSD":219.89574000000002}],"context":{"incomplete":true,"openseaId":"18242","holdersCount":3341,"floorPrice":0.171,"amountHeld":33,"volume24h":0,"volume7d":0,"volume1m":0},"displayProps":{"label":"RUN","secondaryLabel":{"type":"linkVersion","value":2},"tertiaryLabel":null,"profileImage":"https://lh3.googleusercontent.com/3vScLGUcTB7yhItRYXuAFcPGFNJ3kgO0mXeUSUfEMBjGkGPKz__smtXyUlRxzZjr1Y5x8hz1QXoBQSEb8wm4oBByeQC_8WOCaDON4Go=s120","profileBanner":"https://lh3.googleusercontent.com/8MKiOEUA3COVcXKzhj54Q5eP0GP9NDOFsumbkiQ2KokimqYGlfTxLKei60ZUG_ipq-VZ5_D2rGZAjxmOVEIVSJaezvrwZe2IywOyEQ=s2500","featuredImg":"","featuredImage":"","images":[],"balanceDisplayMode":"default","stats":[],"info":[]}}]}],"displayProps":{"appName":"Sudoswap","images":["https://storage.googleapis.com/zapper-fi-assets/apps/sudoswap.png"]},"meta":{"total":7256.5594200000005}}}
+data: {"appId":"sudoswap","network":"ethereum","addresses":["0x3d280fde2ddb59323c891cf30995e1862510342f"],"balance":{"deposits":{},"debt":{},"vesting":{},"wallet":{},"claimable":{},"locked":{},"nft":{}},"totals":[{"key":"2987028053","type":"contract-position","network":"ethereum","balanceUSD":7256.5594200000005}],"errors":[],"app":{"appId":"sudoswap","network":"ethereum","data":[{"key":"2987028053","type":"position","appId":"sudoswap","address":"0xea504f1857707c6c875cba618a33bd09fc4aefac","metaType":null,"balanceUSD":7256.5594200000005,"contractType":"contract-position","network":"ethereum","displayProps":{"label":"Chain Runners ↔ ETH - Price: 0.22Ξ","secondaryLabel":null,"tertiaryLabel":null,"images":["https://lh3.googleusercontent.com/3vScLGUcTB7yhItRYXuAFcPGFNJ3kgO0mXeUSUfEMBjGkGPKz__smtXyUlRxzZjr1Y5x8hz1QXoBQSEb8wm4oBByeQC_8WOCaDON4Go=s120","https://storage.googleapis.com/zapper-fi-assets/tokens/ethereum/0x0000000000000000000000000000000000000000.png"],"stats":[],"info":[{"label":{"type":"string","value":"App"},"value":{"type":"string","value":"Sudoswap"}}],"balanceDisplayMode":"default"},"breakdown":[{"key":"917389808","appId":"nft","address":"0x97597002980134bea46250aa0510c9b90d87a587","network":"ethereum","balanceUSD":7256.5594200000005,"metaType":"supplied","type":"nft","contractType":"non-fungible-token","breakdown":[],"assets":[{"tokenId":"1976","assetImg":"https://web.zapper.xyz/images/?url=https%3A%2F%2Fimg.chainrunners.xyz%2Fapi%2Fv1%2Ftokens%2Fpng%2F1976&width=250&checksum=6f122","assetName":"Chain Runners #1976","balance":1,"balanceUSD":219.89574000000002},{"tokenId":"2835","assetImg":"https://web.zapper.xyz/images/?url=https%3A%2F%2Fimg.chainrunners.xyz%2Fapi%2Fv1%2Ftokens%2Fpng%2F2835&width=250&checksum=f4896","assetName":"Chain Runners #2835","balance":1,"balanceUSD":219.89574000000002},{"tokenId":"3067","assetImg":"https://web.zapper.xyz/images/?url=https%3A%2F%2Fimg.chainrunners.xyz%2Fapi%2Fv1%2Ftokens%2Fpng%2F3067&width=250&checksum=d3ddb","assetName":"Chain Runners #3067","balance":1,"balanceUSD":219.89574000000002},{"tokenId":"3094","assetImg":"https://web.zapper.xyz/images/?url=https%3A%2F%2Fimg.chainrunners.xyz%2Fapi%2Fv1%2Ftokens%2Fpng%2F3094&width=250&checksum=83db0","assetName":"Chain Runners #3094","balance":1,"balanceUSD":219.89574000000002},{"tokenId":"4605","assetImg":"https://web.zapper.xyz/images/?url=https%3A%2F%2Fimg.chainrunners.xyz%2Fapi%2Fv1%2Ftokens%2Fpng%2F4605&width=250&checksum=93684","assetName":"Chain Runners #4605","balance":1,"balanceUSD":219.89574000000002}],"context":{"incomplete":true,"openseaId":"18242","holdersCount":3341,"floorPrice":0.171,"amountHeld":33,"volume24h":0,"volume7d":0,"volume1m":0},"displayProps":{"label":"RUN","secondaryLabel":{"type":"linkVersion","value":2},"tertiaryLabel":null,"profileImage":"https://lh3.googleusercontent.com/3vScLGUcTB7yhItRYXuAFcPGFNJ3kgO0mXeUSUfEMBjGkGPKz__smtXyUlRxzZjr1Y5x8hz1QXoBQSEb8wm4oBByeQC_8WOCaDON4Go=s120","profileBanner":"https://lh3.googleusercontent.com/8MKiOEUA3COVcXKzhj54Q5eP0GP9NDOFsumbkiQ2KokimqYGlfTxLKei60ZUG_ipq-VZ5_D2rGZAjxmOVEIVSJaezvrwZe2IywOyEQ=s2500","featuredImg":"","featuredImage":"","images":[],"balanceDisplayMode":"default","stats":[],"info":[]}}]}],"displayProps":{"appName":"Sudoswap","images":["https://storage.googleapis.com/zapper-fi-assets/apps/sudoswap.png"]},"meta":{"total":7256.5594200000005}}}
 
 event: balance
 data: {"appId":"tokens","network":"ethereum","addresses":["0x3d280fde2ddb59323c891cf30995e1862510342f"],"balance":{"deposits":{},"debt":{},"vesting":{},"wallet":{"2242939522":{"key":"2242939522","appId":"tokens","address":"0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2","network":"ethereum","balanceUSD":164.645982,"metaType":"supplied","displayProps":{"label":"WETH","secondaryLabel":null,"tertiaryLabel":null,"images":["https://storage.googleapis.com/zapper-fi-assets/tokens/ethereum/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"],"stats":[],"info":[{"label":{"type":"string","value":"App"},"value":{"type":"string","value":"Tokens"}}],"balanceDisplayMode":"default"},"type":"token","contractType":"app-token","context":{"symbol":"WETH","balance":0.1280375,"decimals":18,"balanceRaw":"128037500000000000","price":1285.92},"breakdown":[]},"2616394601":{"key":"2616394601","appId":"tokens","address":"0x0000000000000000000000000000000000000000","network":"ethereum","balanceUSD":38016.69226492142,"metaType":"supplied","displayProps":{"label":"ETH","secondaryLabel":null,"tertiaryLabel":null,"images":["https://storage.googleapis.com/zapper-fi-assets/tokens/ethereum/0x0000000000000000000000000000000000000000.png"],"stats":[],"info":[{"label":{"type":"string","value":"App"},"value":{"type":"string","value":"Tokens"}}],"balanceDisplayMode":"default"},"type":"token","contractType":"app-token","context":{"symbol":"ETH","balance":29.563808218957178,"decimals":18,"balanceRaw":"29563808218957175106","price":1285.92},"breakdown":[]}},"claimable":{},"locked":{},"nft":{}},"totals":[{"key":"2616394601","type":"app-token","network":"ethereum","balanceUSD":38016.69226492142},{"key":"2242939522","type":"app-token","network":"ethereum","balanceUSD":164.645982}],"errors":[]}
@@ -91,74 +828,64 @@ event: end
 data: {}
 ```
 
-## `v2/apps/{appId}/balances`
+### `v2/apps/{appSlug}/balances`
 
-The `v2/apps/{appId}/balances` endpoint is similar to the `v2/balances` query,
-but returns data only for a specific app, instead of ALL apps, tokens and NFTsin
-a wallet . You input wallet addresses and get all the following:
+The `v2/apps/{appSlug}/balances` endpoint is similar to the `v2/balances` query,
+but returns data only for a specific app, instead of ALL apps, tokens and NFTs in
+a wallet. 
 
-<ul>
-  <li>Detailed breakdown of all app investment positions represented as app tokens owned by the wallet, such as Aave lending positions or Uniswap pools, valued in USD</li>
-  <li>Detailed breakdown of all app investment positions represented as contract positions that are not held on the wallet, such ve-locked or farming positions, valued in USD</li>
-</ul>
+You input wallet addresses and get all the following:
 
-If you query for `appId` = `tokens`, you will get all tokens held in the wallet
+- Detailed breakdown of all app investment positions represented as app tokens owned by the wallet, such as Aave lending positions or Uniswap pools, valued in USD
+- Detailed breakdown of all app investment positions represented as contract positions that are not held on the wallet, such ve-locked or farming positions, valued in USD
+
+If you query for `appSlug` = `tokens`, you will get all tokens held in the wallet
 that are not associated with an App.
 
 Notes on use of the API and limits
 
-<ul>
-  <li>Maximum of 15 wallets can be passed into 1 call, though it's recommended you query wallets one at a time for best performance</li>
-  <li>Any balance less than $0.01 USD value is not included in the output</li>
-</ul>
+- Maximum of 15 wallets can be passed into 1 call, though it's recommended you query wallets one at a time for best performance
+- Any balance less than $0.01 USD value is not included in the output
 
-### Path
+Path
 
-`v2/apps/{appId}/balances`
+`v2/apps/{appSlug}/balances`
 
-### Format
+Parameters
 
-JSON response
+- `appSlug`: **(required)** | appSlug of the desired app. This is interchangeable with `appId`, a value used in other queries
+- `addresses[]`: **(required)** | addresses for which to retrieve balances, inputted as an array. Can handle up to 15 addresses
+- `networks[]`: Networks for which to retrieve balances, inputted an array
 
-### Parameters
+Returns
 
-<ul>
-  <li><code>appId</code>: appId of the desired app</li>
-  <li><code>addresses[]</code>: *(required)* Addresses for which to retrieve balances, inputted as an array. Can handle up to 15 addresses</li>
-  <li><code>networks[]</code>: Networks for which to retrieve balances, inputted an array</li>
-</ul>
+- `appId`: ID of the app. Same as `appSlug`
+- `network`: network the app is on
+- `groupId`: group this particular investment belongs to within in the app, such as `pool` or `farms`
+- `balance`: details on the balance structure, and what kind of balance it is
+- `type`: type of position the investment is. `contract-position` is if the investment is held on a 3rd party contract. `app-token` is if the wallet holds tokens in the wallet representing the investment
+- `address`: address of token
+- `symbol`: symbol of token
+- `decimals`: decimals of token
+- `supply`: supply of token
+- `pricePerShare`: ratio of price to supply of assets
+- `tokens`: details on underlying tokens in the investment, such as their address, price, symbol, daily volume, balance, etc
+- `displayProps`: details on how to display the asset on Zapper's frontend
+- `statsItems`: ancillary stats associated with the investment, such as APY, APR, liquidity, volume, fee, ratio of underlying assets, etc
+- `meta`: total value of all positions in the app (example below has 3 different uniswap v2 positions)
 
-### Returns
+cURL
 
-<ul>
-  <li><code>appId</code>: ID of the app</li>
-  <li><code>network</code>: network the app is on</li>
-  <li><code>groupId</code>: group this particular investment belongs to within in the app, such as <code>pool</code> or <code>farms</code></li>
-  <li><code>balance</code>: details on the balance structure, and what kind of balance it is</li>
-  <li><code>type</code>: type of position the investment is. <code>contract-position</code> is if the investment is held on a 3rd party contract. <code>app-token</code> is if the wallet holds tokens in the wallet representing the investment</li>
-  <li><code>address</code>: address of token</li>
-  <li><code>symbol</code>: symbol of token</li>
-  <li><code>decimals</code>: decimals of token</li>
-  <li><code>supply</code>: supply of token</li>
-  <li><code>pricePerShare</code>: ratio of price to supply of assets</li>
-  <li><code>tokens</code>: details on underlying tokens in the investment, such as their address, price, symbol, daily volume, balance, etc</li>
-  <li><code>displayProps</code>: details on how to display the asset on Zapper's frontend</li>
-  <li><code>statsItems</code>: ancillary stats associated with the investment, such as APY, APR, liquidity, volume, fee, ratio of underlying assets, etc</li>
-  <li><code>meta</code>: total value of all positions in the app (example below has 3 different uniswap v2 positions)</li>
-</ul>
-
-### Curl
-
-```
-curl -X 'GET' \
-  'https://api.zapper.fi/v2/apps/uniswap-v2/balances?addresses%5B%5D=0xd8da6bf26964af9d7eed9e03e53415d37aa96045' \
+```js
+cURL -X 'GET' \
+  'https://api.zapper.xyz/v2/apps/uniswap-v2/balances?addresses%5B%5D=0xd8da6bf26964af9d7eed9e03e53415d37aa96045' \
   -H 'accept: */*' \
   -H 'Authorization: Basic sadkfljsdafksal24uh2jk34=='
 ```
 
-### Response
+Response
 
-```
+```JSON
 {
   "balances": {
     "0xd8da6bf26964af9d7eed9e03e53415d37aa96045": {
@@ -173,7 +900,7 @@ curl -X 'GET' \
               "decimals": 18,
               "supply": 0.000415355547741061,
               "network": "ethereum",
-              "appId": "uniswap-v2",
+              "appSlug": "uniswap-v2",
               "groupId": "pool",
               "pricePerShare": [
                 5470934.419387214,
@@ -277,7 +1004,7 @@ curl -X 'GET' \
               "decimals": 18,
               "supply": 110,
               "network": "ethereum",
-              "appId": "uniswap-v2",
+              "appSlug": "uniswap-v2",
               "groupId": "pool",
               "pricePerShare": [
                 1.6242098737743684,
@@ -504,53 +1231,43 @@ curl -X 'GET' \
 }
 ```
 
-## `v2/apps/balances/supported`
+### `v2/apps/balances/supported`
 
 Endpoint provides insight into what apps the wallet has investments in, and
 metadata about those apps
 
-Notes on use of the API and limits
+Notes on use of the API and limits:
 
-<ul>
-  <li>Maximum of 15 wallets can be passed into 1 call, though it's recommended you query wallets one at a time for best performance</li>
-  <li>Any balance less than $0.01 USD value is not included in the output</li>
-</ul>
+- Maximum of 15 wallets can be passed into 1 call, though it's recommended you query wallets one at a time for best performance
+- Any balance less than $0.01 USD value is not included in the output
 
-### Path
+Path
 
-`v2/apps/{appId}/balances`
+`v2/apps/{appId}/supported`
 
-### Format
+Parameters
 
-JSON response
+- `addresses[]`: **(required)** | addresses for which to retrieve balances, inputted as an array. Can handle up to 15 addresses
 
-### Parameters
+Returns
 
-<ul>
-  <li><code>addresses[]</code>: *(required)* Addresses for which to retrieve balances, inputted as an array. Can handle up to 15 addresses</li>
-</ul>
+- `appId`: ID of the app
+- `label`: App display name
+- `img`: image used for the app's icon
+- `tags`: tags associated with this app
 
-### Returns
+cURL
 
-<ul>
-  <li><code>appId</code>: ID of the app</li>
-  <li><code>label</code>: App display name</li>
-  <li><code>img</code>: image used for the app's icon</li>
-  <li><code>tags</code>: tags associated with this app</li>
-</ul>
-
-### Curl
-
-```
-curl -X 'GET' \
-  'https://api.zapper.fi/v2/apps/balances/supported?addresses%5B%5D=0xd8da6bf26964af9d7eed9e03e53415d37aa96045' \
+```js
+cURL -X 'GET' \
+  'https://api.zapper.xyz/v2/apps/balances/supported?addresses%5B%5D=0xd8da6bf26964af9d7eed9e03e53415d37aa96045' \
   -H 'accept: */*' \
   -H 'Authorization: Basic sadkfljsdafksal24uh2jk34=='
 ```
 
-### Response
+Response
 
-```
+```JSON
 [
   {
     "network": "ethereum",
@@ -847,53 +1564,45 @@ curl -X 'GET' \
 ]
 ```
 
-# Apps queries
+## Apps queries
 
-## `v2/apps/{appId}`
+### `v2/apps/{appSlug}`
 
 Provides metadata about a particular app, such as the networks it is available
 on and what investment groupings (`groupIds`) are included within it
 
-### Path
+Path
 
-`v2/apps/{appId}`
+`v2/apps/{appSlug}`
 
-### Format
+Parameters
 
-JSON output
+- `appId`: **(required)** | app to get data for
 
-### Parameters
+Returns
 
-<ul>
-  <li><code>appId</code>: *(required)* AppId to get data for</li>
-</ul>
+- `Id`: ID of the app
+- `name`: display name for app
+- `description`: description of the app
+- `groups`: groupings of different asset types, represented by groupIds, within the app
+- `presentationConfig`: details on how to display the app's assets on the App's details page for Zapper's frontend
+- `supportedNetworks`: Networks the app is available on
+- `token`: Token associated with the app, if any
+- `tags`: tags associated with this app
+- `links`: relevant social links for the app and website
 
-### Returns
+cURL
 
-<ul>
-  <li><code>Id</code>: ID of the app</li>
-  <li><code>name</code>: display name for app</li>
-  <li><code>description</code>: description of the app</li>
-  <li><code>groups</code>: groupings of different asset types, represented by groupIds, within the app</li>
-  <li><code>presentationConfig</code>: details on how to display the app's assets on the App's details page for Zapper's frontend</li>
-  <li><code>supportedNetworks</code>: Networks the app is available on</li>
-  <li><code>token</code>: Token associated with the app, if any</li>
-  <li><code>tags</code>: tags associated with this app</li>
-  <li><code>links</code>: relevant social links for the app and website</li>
-</ul>
-
-### Curl
-
-```
-curl -X 'GET' \
-  'https://api.zapper.fi/v2/apps/aave-v3' \
+```js
+cURL -X 'GET' \
+  'https://api.zapper.xyz/v2/apps/aave-v3' \
   -H 'accept: */*' \
   -H 'Authorization: Basic sadkfljsdafksal24uh2jk34=='
 ```
 
-### Response
+Response
 
-```
+```json
 {
   "id": "aave-v3",
   "tags": [
@@ -1016,49 +1725,43 @@ curl -X 'GET' \
 }
 ```
 
-## `v2/apps`
+### `v2/apps`
 
 Provides details on ALL apps listed on Zapper, including metadata. This will
 return 100s of apps
 
-### Path
+Path
 
 `v2/apps`
 
-### Format
-
-JSON response
-
-### Parameters
+Parameters
 
 None
 
-### Returns
+Returns
 
-<ul>
-  <li><code>Id</code>: ID of the app</li>
-  <li><code>name</code>: display name for app</li>
-  <li><code>description</code>: description of the app</li>
-  <li><code>groups</code>: groupings of different asset types, represented by groupIds, within the app</li>
-  <li><code>presentationConfig</code>: details on how to display the app's assets on the App's details page for Zapper's frontend</li>
-  <li><code>supportedNetworks</code>: Networks the app is available on</li>
-  <li><code>token</code>: Token associated with the app, if any</li>
-  <li><code>tags</code>: tags associated with this app</li>
-  <li><code>links</code>: relevant social links for the app and website</li>
-</ul>
+- `Id`: ID of the app
+- `name`: display name for app
+- `description`: description of the app
+- `groups`: groupings of different asset types, represented by groupIds, within the app
+- `presentationConfig`: details on how to display the app's assets on the App's details page for Zapper's frontend
+- `supportedNetworks`: Networks the app is available on
+- `token`: Token associated with the app, if any
+- `tags`: tags associated with this app
+- `links`: relevant social links for the app and website
 
-### Curl
+cURL
 
-```
-curl -X 'GET' \
-  'https://api.zapper.fi/v2/apps' \
+```js
+cURL -X 'GET' \
+  'https://api.zapper.xyz/v2/apps' \
   -H 'accept: */*' \
   -H 'Authorization: Basic sadkfljsdafksal24uh2jk34=='
 ```
 
-### Response
+Response
 
-```
+```json
 [
   {
     "id": "aave-amm",
@@ -1178,70 +1881,63 @@ curl -X 'GET' \
       "ethereum": "evm"
     }
   },
-  .... you get the idea
+  //.... you get the idea
 ```
 
-## `v2/apps/{appId}/tokens`
+### `v2/apps/{appId}/tokens`
 
 Provides details on _app tokens_ held within a given app for a given `groupId`,
 and the relevant data on them, such as supply, underlying tokens, APYs. This is
 more detailed than the breakdown provided in `v2/apps` and `v2/apps/{appId}`, as
 it includes data about the investments held within the app
 
-> Note that this query will only return data if the `groupId` is represented by
-> app tokens. If you are not getting results, try the following query on
-> `v2/apps/{appId}/positions`
+:::info
+Note that this query will only return data if the `groupId` is represented by app tokens. If you are not getting results, try the following query on `v2/apps/{appId}/positions`
+:::
 
-### Path
+Path
 
 `v2/apps/{appId}/tokens`
 
-### Format
+:::info
+he shape of this response is a little different from `v2/apps/{appId}/positions`
+:::
 
-JSON response
+Parameters
 
-> Note: the shape of this response is a little different from
-> `v2/apps/{appId}/positions`
+- `appId`: **(required)** | id of the app
+- `network`: **(required)** | network to query the app on
+- `groupId`: **(required)** | investment within the app data that is desired for
 
-### Parameters
+Returns
 
-<ul>
-  <li><code>appId</code>: *(required)* id of the app</li>
-  <li><code>network</code>: *(required)* network to query the app on</li>
-  <li><code>groupId</code>: *(required)* investment within the app data that is desired for</li>
-</ul>
+- `appId`: ID of the app
+- `network`: network the app is on
+- `groupId`: group this particular investment belongs to within in the app, such as `pool` or `farms`
+- `balance`: details on the balance structure, and what kind of balance it is
+- `type`: type of position the investment is. `contract-position` is if the investment is held on a 3rd party contract. `app-token` is if the wallet holds tokens in the wallet representing the investment
+- `address`: address of token
+- `symbol`: symbol of token
+- `decimals`: decimals of token
+- `supply`: supply of token
+- `price`: price of token
+- `pricePerShare`: ratio of price to supply of assets
+- `tokens`: details on underlying tokens in the investment, such as their address, price, symbol, daily volume, balance, etc
+- `displayProps`: details on how to display the asset on Zapper's frontend
+- `statsItems`: ancillary stats associated with the investment, such as APY, APR, liquidity, volume, fee, ratio of underlying assets, etc
 
-### Returns
+cURL
 
-<ul>
-  <li><code>appId</code>: ID of the app</li>
-  <li><code>network</code>: network the app is on</li>
-  <li><code>groupId</code>: group this particular investment belongs to within in the app, such as `pool` or `farms`</li>
-  <li><code>balance</code>: details on the balance structure, and what kind of balance it is</li>
-  <li><code>type</code>: type of position the investment is. <code>contract-position</code> is if the investment is held on a 3rd party contract. <code>app-token</code> is if the wallet holds tokens in the wallet representing the investment</li>
-  <li><code>address</code>: address of token</li>
-  <li><code>symbol</code>: symbol of token</li>
-  <li><code>decimals</code>: decimals of token</li>
-  <li><code>supply</code>: supply of token</li>
-  <li><code>price</code>: price of token</li>
-  <li><code>pricePerShare</code>: ratio of price to supply of assets</li>
-  <li><code>tokens</code>: details on underlying tokens in the investment, such as their address, price, symbol, daily volume, balance, etc</li>
-  <li><code>displayProps</code>: details on how to display the asset on Zapper's frontend</li>
-  <li><code>statsItems</code>: ancillary stats associated with the investment, such as APY, APR, liquidity, volume, fee, ratio of underlying assets, etc</li>
-</ul>
-
-### Curl
-
-```
-curl -X 'GET' \
-  'https://api.zapper.fi/v2/apps/aave-v3/tokens?network=avalanche&groupId=variable-debt' \
+```js
+cURL -X 'GET' \
+  'https://api.zapper.xyz/v2/apps/aave-v3/tokens?network=avalanche&groupId=variable-debt' \
   -H 'accept: */*' \
   -H 'Authorization: Basic sadkfljsdafksal24uh2jk34=='
 ```
 
-### Response
+Response
 
-```
+```json
 [
   {
     "type": "app-token",
@@ -1447,10 +2143,10 @@ curl -X 'GET' \
       ]
     }
   },
-...continued
+//...continued
 ```
 
-## `v2/apps/{appId}/positions`
+### `v2/apps/{appId}/positions`
 
 Provides details on _contract positions_ held within a given app for a given
 `groupId`, and the relevant data on them, such as supply, underlying tokens,
@@ -1458,60 +2154,53 @@ APYs. This is more detailed than the breakdown provided in `v2/apps` and
 `v2/apps/{appId}`, as it includes data about the investments held within the app
 in a given `groupId`
 
-> Note that this query will only return data if the `groupId` is represented by
-> contract positions. If you are not getting results, try the following query on
-> `v2/apps/{appId}/tokens`
+:::info
+Note that this query will only return data if the `groupId` is represented by contract positions. If you are not getting results, try the following query on `v2/apps/{appId}/tokens`
+:::
 
-### Path
+Path
 
 `v2/apps/{appId}/positions`
 
-### Format
+:::info
+The shape of this response is a little different from `v2/apps/{appId}/tokens`
+:::
 
-JSON response
+Parameters
 
-> Note: the shape of this response is a little different from
-> `v2/apps/{appId}/tokens`
+- `appId`: **(required)** | id of the app
+- `network`: **(required)** | network to query the app on
+- `groupId`: **(required)** | investment within the app data that is desired for
 
-### Parameters
+Returns
 
-<ul>
-  <li><code>appId</code>: *(required)* id of the app</li>
-  <li><code>network</code>: *(required)* network to query the app on</li>
-  <li><code>groupId</code>: *(required)* investment within the app data that is desired for</li>
-</ul>
+- `appId`: ID of the app
+- `network`: network the app is on
+- `groupId`: group this particular investment belongs to within in the app, such as `pool` or `farms`
+- `balance`: details on the balance structure, and what kind of balance it is
+- `type`: type of position the investment is. `contract-position` is if the investment is held on a 3rd party contract. `app-token` is if the wallet holds tokens in the wallet representing the investment
+- `address`: address of token
+- `symbol`: symbol of token
+- `decimals`: decimals of token
+- `supply`: supply of token
+- `price`: price of token
+- `pricePerShare`: ratio of price to supply of assets
+- `tokens`: details on underlying tokens in the investment, such as their address, price, symbol, daily volume, balance, etc
+- `displayProps`: details on how to display the asset on Zapper's frontend
+- `statsItems`: ancillary stats associated with the investment, such as APY, APR, liquidity, volume, fee, ratio of underlying assets, etc
 
-### Returns
+cURL
 
-<ul>
-  <li><code>appId</code>: ID of the app</li>
-  <li><code>network</code>: network the app is on</li>
-  <li><code>groupId</code>: group this particular investment belongs to within in the app, such as `pool` or `farms`</li>
-  <li><code>balance</code>: details on the balance structure, and what kind of balance it is</li>
-  <li><code>type</code>: type of position the investment is. <code>contract-position</code> is if the investment is held on a 3rd party contract. <code>app-token</code> is if the wallet holds tokens in the wallet representing the investment</li>
-  <li><code>address</code>: address of token</li>
-  <li><code>symbol</code>: symbol of token</li>
-  <li><code>decimals</code>: decimals of token</li>
-  <li><code>supply</code>: supply of token</li>
-  <li><code>price</code>: price of token</li>
-  <li><code>pricePerShare</code>: ratio of price to supply of assets</li>
-  <li><code>tokens</code>: details on underlying tokens in the investment, such as their address, price, symbol, daily volume, balance, etc</li>
-  <li><code>displayProps</code>: details on how to display the asset on Zapper's frontend</li>
-  <li><code>statsItems</code>: ancillary stats associated with the investment, such as APY, APR, liquidity, volume, fee, ratio of underlying assets, etc</li>
-</ul>
-
-### Curl
-
-```
-curl -X 'GET' \
-  'https://api.zapper.fi/v2/apps/gmx/positions?network=arbitrum&groupId=farm' \
+```js
+cURL -X 'GET' \
+  'https://api.zapper.xyz/v2/apps/gmx/positions?network=arbitrum&groupId=farm' \
   -H 'accept: */*' \
   -H 'Authorization: Basic sadkfljsdafksal24uh2jk34=='
 ```
 
-### Response
+Response
 
-```
+```json
 [
   {
     "type": "contract-position",
@@ -1810,112 +2499,303 @@ curl -X 'GET' \
       ]
     }
   },
-... continued
+//... continued
 ```
 
-# NFT queries
+## NFT queries
 
-## `/v2/nft/balances/net-worth`
+### `/v2/nft/balances/net-worth`
 
 Provides the value of a wallet, or set of wallets, NFT portfolio, according to
 Zapper's price estimation.
 
-### Path
+Path
 
 `/v2/nft/balances/net-worth`
 
-### Format
+Parameters
 
-JSON response
+- `addresses`: **(required)** | input addresses to get net worth for (maximum of 15)
 
-### Parameters
+Returns
 
-<ul>
-  <li><code>addresses</code>: *(required)* Input addresses to get net worth for (maximum of 15)</li>
-</ul>
+Estimated net worth in USD of all the wallet's NFTs
 
-### Returns
+cURL
 
-Net Worth in USD of the wallets NFTs
-
-### Curl
-
-```
-curl -X 'GET' \
-  'https://api.zapper.fi/v2/nft/balances/net-worth?addresses%5B%5D=0xd8da6bf26964af9d7eed9e03e53415d37aa96045' \
+```js
+cURL -X 'GET' \
+  'https://api.zapper.xyz/v2/nft/balances/net-worth?addresses%5B%5D=0xd8da6bf26964af9d7eed9e03e53415d37aa96045' \
   -H 'accept: */*' \
   -H 'Authorization: Basic sadkfljsdafksal24uh2jk34=='
 ```
 
-### Response
+Response
 
-```
+```json
 {
   "0xd8da6bf26964af9d7eed9e03e53415d37aa96045": "65415.9656178"
 }
 ```
 
-## `/v2/nft/balances/collections`
+### `/v2/nft/user/tokens`
 
-Provides detailed breakdown of all collections owned in a given wallet,
-including collection metadata, estimated price for all NFTs owned in that
-collection, and trading volume for that collection in a given time period
+Provides detailed breakdown of all _individual NFTs_ owned in a given wallet, including NFT metadata, collection metadata, estimated value for the NFT, last sale price, rarity, etc.
 
-### Path
+This endpoint is the right one to query if you want to get **ALL** NFTs in a given wallet. Each page returns 100 NFTs as its maximum number, which is generally enough to capture all NFTs in ~90% of all wallets. If you need to get all NFTs in a wallet that has greater than 100 NFTs, you will need to use the `cursor` to paginate through the list.
 
-`/v2/nft/balances/collections`
+This endpoint differs from `v2/nft/balances/tokens` in that it does not return an ordered list of NFTs by USD value, and it allows 100 per page versus 25 per page in `v2/nft/balances/tokens`, and this NFT endpoint is much more performant.
 
-### Format
+Path
 
-JSON response
+`/v2/nft/user/tokens`
 
-> NOTE: the response is paginated, with a maximum number of 25 per response. You
-> will need to parse through different pages, using `cursor` to get values
-> beyond the initial 25
+Parameters
 
-### Parameters
+- `userAddress`: **(required)** | Input a single address. This endpoint does not allow an input of an array, unlike other endpoints form Zapper, due to how we index our data for this query.
+- `network`: Returns only NFTs from network provided. If not provided, NFTs across all supported chains for NFTs will be returned
+- `limit`: Maximum items to return. Limited to 100 maximum. Note that the default value is limit=50
+- `cursor`: Cursor used to paginate the results, if more than 100 NFTs are returned in the response
 
-<ul>
-  <li><code>addresses</code>: *(required)* Input addresses to get net worth for (maximum of 15)</li>
-  <li><code>minCollectionValueUsd</code>: Returns only collections with an estimated value above the amount inputted</li>
-  <li><code>search</code>: Returns only collections with name starting with inputted string</li>
-  <li><code>collectionAddresses[]</code>: Returns only collections provided</li>
-  <li><code>network</code>: Returns only NFTs from network provided</li>
-  <li><code>limit</code>: Maximum items to return. Limited to 25 maximum</li>
-  <li><code>cursor</code>: Cursor used to paginate the results</li>
-</ul>
+Returns
 
-### Returns
+- `balance`: number of NFTs owned of a given type. If it's ERC_721, it will always be 1. If NFT is is ERC_1155, will be a count of how many NFTs are owned by this wallet
+- `token`: contains details relating to this NFT, such as price and metadata
+  - `id`: internal Zapper ID number for token
+  - `name`: name of NFT
+  - `tokenId`: ID of token within collection
+  - `lastSaleEth`: price of last sale of this NFT
+  - `rarityRank`: rank of this NFTs rarity, based on traits, within its collection
+  - `estimatedValueEth`: estimated value of this NFT, based on various signals using Zapper's internal model
+  - `medias`: link to image for NFT
+- `collection`: object containing details about the collection the NFT is in
+  - `address`: collection address
+  - `network`: network collection is on
+  - `name`: name of collection
+  - `nftStandard`: standard of the NFT (ERC-1155 or ERC-721)
+  - `type`: categorization of the collection
+    - `GENERAL`: general NFT collection
+    - `BRIDGED`: bridged NFTs from a different chain
+    - `BADGE`: badge, POAPs and similar collections
+    - `TICKET`: for event ticket or similar collections
+    - `ACCOUNT_BOUND`: also known as "soul bound NFTs"; these NFTs are not tradable
+    - `WRITING`: writing collections (Mirror, Medium...)
+    - `GAMING`: gaming related NFTs
+    - `ART_BLOCKS`: Art blocks projects. Multiple collections in one contract
+  - `floorPriceEth`: floor price of collection in eth
+  - `logoImageURL`: URL for logo of collection
+  - `openseaId`: ID of collection on OpenSea
 
-<ul>
-  <li><code>balance</code>: number of NFTs owned in the collection</li>
-  <li><code>balanceUSD</code>: estimated value of all the NFTs owned in the collection</li>
-  <li><code>name</code>: name of collection</li>
-  <li><code>network</code>: network of the collection</li>
-  <li><code>description</code>: description of the collection </li>
-  <li><code>logoImageUrl</code>: URL for logo image</li>
-  <li><code>cardImageUrl</code>: URL for card image</li>
-  <li><code>bannerImageUrl</code>: URL for banner image</li>
-  <li><code>nftStandard</code>: standard of the NFT (1155 or 721)</li>
-  <li><code>floorPriceEth</code>: floor price of collection in eth. Floor price is pulled from multiple platforms via Reservoir and the displayed floor price is the lowest aggregated value. [https://docs.reservoir.tools/docs/aggregated-orderbook] (https://docs.reservoir.tools/docs/aggregated-orderbook)</li>
-  <li><code>marketCap</code>: market cap of the collection in eth</li>
-  <li><code>openseaId</code>: ID of collection on OpenSea</li>
-  <li><code>socialLinks</code>: links to various socials</li>
-  <li><code>stats</code>: stats on hourly/daily/weekly/total volume in eth for the collection</li>
-</ul>
+cURL
 
-### Curl
-
-```
-curl -X 'GET' \
-  'https://api.zapper.fi/v2/nft/balances/collections?addresses%5B%5D=0xd8da6bf26964af9d7eed9e03e53415d37aa96045&limit=25' \
+```js
+cURL -X 'GET' \
+  'https://api.zapper.xyz/v2/nft/user/tokens?userAddress=0xd387a6e4e84a6c86bd90c158c6028a58cc8ac459&limit=100' \
   -H 'accept: */*' \
   -H 'Authorization: Basic sadkfljsdafksal24uh2jk34=='
 ```
 
-### Response
+Response
 
+```JSON
+{
+ {
+    "items": [
+        {
+            "balance": "1",
+            "token": {
+                "id": "49788045",
+                "name": "Sedan",
+                "tokenId": "33",
+                "lastSaleEth": "0.25",
+                "rarityRank": 119,
+                "estimatedValueEth": "0.4364643958709034",
+                "medias": [
+                    {
+                        "type": "image",
+                        "originalUrl": "https://cryptomotors.io/images/full_vehicle_body/sedan_00_7_1_1.png"
+                    }
+                ],
+                "collection": {
+                    "address": "0x30a2fa3c93fb9f93d1efeffd350c6a6bb62ba000",
+                    "network": "ethereum",
+                    "name": "CryptoMotors",
+                    "nftStandard": "erc721",
+                    "type": "general",
+                    "floorPriceEth": "0.48",
+                    "logoImageUrl": "https://storage.googleapis.com/zapper-fi-assets/nft/0x30a2fa3c93fb9f93d1efeffd350c6a6bb62ba000/unnamed25.png",
+                    "openseaId": "cryptomotors"
+                }
+            }
+        },
+  ...
+  "cursor": "MC4xNzUtMS02Njg2NzAzMA=="
+}
 ```
+
+### `/v2/nft/balances/tokens`
+
+Provides detailed breakdown of all _individual NFTs_ owned in a given wallet, including NFT metadata, collection metadata, estimated value for the NFT, last sale price, rarity, etc. The values returned in this endpoint are **ORDERED** by descending estimatedUSD value. So, the 25 NFTs returned on the first page will be the 25 highest value NFTs in the wallet's portfolio.
+
+If you are looking to ingest ALL NFTs held in a given wallet, you should use the endpoint `v2/nft/users/tokens` instead.
+
+:::info
+The response is paginated, with a maximum number of 25 per response. You will need to parse through different pages, using `cursor` to get values beyond the initial 25 NFT response.
+:::
+
+Path
+
+`/v2/nft/balances/tokens`
+
+Parameters
+
+- `addresses`: **(required)** | input addresses to get net worth for (maximum of 15)
+- `minCollectionValueUsd`: Returns only collections with an estimated value above the amount inputted
+- `search`: Returns only collections with name starting with inputted string
+- `collectionAddresses[]`: Returns only collections provided
+- `network`: Returns only NFTs from network provided
+- `limit`: Maximum items to return. Limited to 25 maximum
+- `cursor`: Cursor used to paginate the results
+
+Returns
+
+- `token`: object containing details about the individual NFT
+  - `balance`: number of NFTs owned of a given type. If it's ERC_721, it will always be 1. If NFT is is ERC_1155, will be a count of how many NFTs are owned by this wallet
+  - `name`: name of NFT
+  - `tokenId`: ID of token within collection
+  - `lastSaleEth`: price of last sale of this NFT
+  - `rarityRank`: rank of this NFTs rarity, based on traits, within its collection
+  - `estimatedValueEth`: estimated value of this NFT, based on various signals using Zapper's internal model
+  - `medias`: link to image for NFT
+- `collection`: object containing details about the collection the NFT is a part of
+  - `address`: collection address
+  - `network`: network collection is on
+  - `name`: name of collection
+  - `nftStandard`: standard of the NFT (1155 or 721)
+  - `floorPriceEth`: floor price of collection in eth
+  - `logoImageURL`: URL for logo of collection
+  - `openseaId`: ID of collection on OpenSea
+
+cURL
+
+```js
+cURL -X 'GET' \
+  'https://api.zapper.xyz/v2/nft/balances/tokens?addresses%5B%5D=0xd8da6bf26964af9d7eed9e03e53415d37aa96045&collectionAddresses%5B%5D=0x47b648edd37aeae4f16d153451fd1784c1dd19a5&limit=25' \
+  -H 'accept: */*' \
+  -H 'Authorization: Basic sadkfljsdafksal24uh2jk34=='
+```
+
+Response
+
+```json
+{
+  "items": [
+    {
+      "balance": "1000",
+      "token": {
+        "name": "McHooty's Backdoor",
+        "tokenId": "1",
+        "lastSaleEth": "0.03",
+        "rarityRank": null,
+        "estimatedValueEth": "0.02",
+        "medias": [
+          {
+            "type": "image",
+            "originalUrl": "https://arweave.net/lRqoxOz0P1fBTyxpkjYaL78q6AHoz5X7iGiA14oO6wQ"
+          }
+        ],
+        "collection": {
+          "address": "0x47b648edd37aeae4f16d153451fd1784c1dd19a5",
+          "network": "ethereum",
+          "name": "Mchooty's",
+          "nftStandard": "erc1155",
+          "floorPriceEth": "0.04",
+          "logoImageUrl": "https://openseauserdata.com/files/fc1b139d066893c6a9390fb8c9612668.png",
+          "openseaId": "mchootys-dao"
+        }
+      }
+    },
+    {
+      "balance": "1",
+      "token": {
+        "name": "Primordial",
+        "tokenId": "189",
+        "lastSaleEth": "5.3",
+        "rarityRank": null,
+        "estimatedValueEth": "5.3",
+        "medias": [
+          {
+            "type": "image",
+            "originalUrl": "https://edda-cdn.fra1.cdn.digitaloceanspaces.com/collection1/189.mp4"
+          }
+        ],
+        "collection": {
+          "address": "0x97c548ac36d5a218bef504b5d5389b724355c5af",
+          "network": "ethereum",
+          "name": "EDDA NFT",
+          "nftStandard": "erc1155",
+          "floorPriceEth": "0.098",
+          "logoImageUrl": null,
+          "openseaId": "eddaswap"
+        }
+      }
+    }
+    ...
+  "cursor": "MC4xNzUtMS02Njg2NzAzMA=="
+}
+```
+
+### `/v2/nft/balances/collections`
+
+Provides detailed breakdown of all collections owned in a given wallet, including collection metadata, estimated price for all NFTs owned in that collection, and trading volume for that collection in a given time period
+
+:::info
+The response is paginated, with a maximum number of 25 per response. You will need to parse through different pages, using `cursor` to get values beyond the initial 25
+:::
+
+Path
+
+`/v2/nft/balances/collections`
+
+Parameters
+
+- `addresses`: **(required)** | input addresses to get net worth for (maximum of 15)
+- `minCollectionValueUsd`: Returns only collections with an estimated value above the amount inputted
+- `search`: Returns only collections with name starting with inputted string
+- `collectionAddresses[]`: Returns only collections provided
+- `network`: Returns only NFTs from network provided
+- `limit`: Maximum items to return. Limited to 25 maximum
+- `cursor`: Cursor used to paginate the results
+
+Returns
+
+- `balance`: number of NFTs owned in the collection
+- `balanceUSD`: estimated value of all the NFTs owned in the collection
+- `name`: name of collection
+- `network`: network of the collection
+- `description`: description of the collection
+- `logoImageUrl`: URL for logo image
+- `cardImageUrl`: URL for card image
+- `bannerImageUrl`: URL for banner image
+- `nftStandard`: standard of the NFT (1155 or 721)
+- `floorPriceEth`: floor price of collection in eth. Floor price is pulled from multiple platforms via Reservoir and the displayed floor price is the lowest aggregated value. [https://docs.reservoir.tools/docs/aggregated-orderbook](https://docs.reservoir.tools/docs/aggregated-orderbook)
+- `marketCap`: market cap of the collection in eth
+- `openseaId`: ID of collection on OpenSea
+- `socialLinks`: links to various socials
+- `stats`: stats on hourly/daily/weekly/total volume in eth for the collection
+
+cURL
+
+```ks
+cURL -X 'GET' \
+  'https://api.zapper.xyz/v2/nft/balances/collections?addresses%5B%5D=0xd8da6bf26964af9d7eed9e03e53415d37aa96045&limit=25' \
+  -H 'accept: */*' \
+  -H 'Authorization: Basic sadkfljsdafksal24uh2jk34=='
+```
+
+Response
+
+```json
 {
   "items": [
     {
@@ -2005,178 +2885,48 @@ curl -X 'GET' \
 }
 ```
 
-## `/v2/nft/balances/collections-totals`
+### `/v2/nft/balances/collections-totals`
 
-Provides a simple value returned for the total count of collections in the
-wallet, the estimated value of them.
+Provides a simple value returned for the total count of collections in the wallet, the estimated value of them.
 
-Differs from `v2/nft/balances/net-worth` as you can scope down the NFTs you want
-the value for in the wallet
+Differs from `v2/nft/balances/net-worth` as you can scope down the NFTs you want the value for in the wallet
 
-### Path
+Path
 
 `/v2/nft/balances/collections-totals`
 
-### Format
+Parameters
 
-JSON response
+- `addresses`: **(required)** | input addresses to get net worth for (maximum of 15)
+- `minCollectionValueUsd`: Returns only collections with an estimated value above the amount inputted
+- `search`: Returns only collections with name starting with inputted string
+- `collectionAddresses[]`: Returns only collections provided
+- `network`: Returns only NFTs from network provided
 
-### Parameters
+Returns
 
-<ul>
-  <li><code>addresses</code>: *(required)* Input addresses to get net worth for (maximum of 15)</li>
-  <li><code>minCollectionValueUsd</code>: Returns only collections with an estimated value above the amount inputted</li>
-  <li><code>search</code>: Returns only collections with name starting with inputted string</li>
-  <li><code>collectionAddresses[]</code>: Returns only collections provided</li>
-  <li><code>network</code>: Returns only NFTs from network provided</li>
-</ul>
+- `count`: number of collections owned by the wallet
+- `balanceUSD`: estimated value of all the NFTs owned in the wallet
 
-### Returns
+cURL
 
-<ul>
-  <li><code>count</code>: number of collections owned by the wallet</li>
-  <li><code>balanceUSD</code>: estimated value of all the NFTs owned in the wallet</li>
-</ul>
-
-### Curl
-
-```
-curl -X 'GET' \
-  'https://api.zapper.fi/v2/nft/balances/collections-totals?addresses%5B%5D=0xd8da6bf26964af9d7eed9e03e53415d37aa96045' \
+```js
+cURL -X 'GET' \
+  'https://api.zapper.xyz/v2/nft/balances/collections-totals?addresses%5B%5D=0xd8da6bf26964af9d7eed9e03e53415d37aa96045' \
   -H 'accept: */*' \
   -H 'Authorization: Basic sadkfljsdafksal24uh2jk34=='
 ```
 
-### Response
+Response
 
-```
+```json
 {
   "count": "153",
   "balanceUSD": "65360.3215647"
 }
 ```
 
-## `/v2/nft/balances/tokens`
-
-Provides detailed breakdown of all _individual NFTs_ owned in a given wallet,
-including NFT metadata, collection metadata, estimated value for the NFT, last
-sale price, rarity, etc.
-
-### Path
-
-`/v2/nft/balances/tokens`
-
-### Format
-
-JSON response
-
-### Parameters
-
-<ul>
-  <li><code>addresses</code>: *(required)* Input addresses to get net worth for (maximum of 15)</li>
-  <li><code>minCollectionValueUsd</code>: Returns only collections with an estimated value above the amount inputted</li>
-  <li><code>search</code>: Returns only collections with name starting with inputted string</li>
-  <li><code>collectionAddresses[]</code>: Returns only collections provided</li>
-  <li><code>network</code>: Returns only NFTs from network provided</li>
-  <li><code>limit</code>: Maximum items to return. Limited to 25 maximum</li>
-  <li><code>cursor</code>: Cursor used to paginate the results</li>
-</ul>
-
-### Returns
-
-<ul>
-  <li><code>token</code></li>
-    <ul>
-      <li><code>balance</code>: number of NFTs owned of a given type. If it's ERC_721, it will always be 1. If NFT is is ERC_1155, will be a count of how many NFTs are owned by this wallet</li>
-      <li><code>name</code>: name of NFT</li>
-      <li><code>tokenId</code>: ID of token within collection</li>
-      <li><code>lastSaleEth</code>: price of last sale of this NFT</li>
-      <li><code>rarityRank</code>: rank of this NFTs rarity, based on traits, within its collection</li>
-      <li><code>estimatedValueEth</code>: estimated value of this NFT, based on various signals using Zapper's internal model</li>
-      <li><code>medias</code>: link to image for NFT</li>
-    </ul>
-  <li><code>collection</code></li>
-    <ul>
-      <li><code>address</code>: collection address</li>
-      <li><code>network</code>: network collection is on</li>
-      <li><code>name</code>: name of collection</li>
-      <li><code>nftStandard</code>: standard of the NFT (1155 or 721)</li>
-      <li><code>floorPriceEth</code>: floor price of collection in eth</li>
-      <li><code>logoImageURL</code>: URL for logo of collection</li>
-      <li><code>openseaId</code>: ID of collection on OpenSea</li>
-    </ul>
-</ul>
-
-### Curl
-
-```
-curl -X 'GET' \
-  'https://api.zapper.fi/v2/nft/balances/tokens?addresses%5B%5D=0xd8da6bf26964af9d7eed9e03e53415d37aa96045&collectionAddresses%5B%5D=0x47b648edd37aeae4f16d153451fd1784c1dd19a5&limit=25' \
-  -H 'accept: */*' \
-  -H 'Authorization: Basic sadkfljsdafksal24uh2jk34=='
-```
-
-### Response
-
-```
-{
-  "items": [
-    {
-      "balance": "1000",
-      "token": {
-        "name": "McHooty's Backdoor",
-        "tokenId": "1",
-        "lastSaleEth": "0.03",
-        "rarityRank": null,
-        "estimatedValueEth": "0.02",
-        "medias": [
-          {
-            "type": "image",
-            "originalUrl": "https://arweave.net/lRqoxOz0P1fBTyxpkjYaL78q6AHoz5X7iGiA14oO6wQ"
-          }
-        ],
-        "collection": {
-          "address": "0x47b648edd37aeae4f16d153451fd1784c1dd19a5",
-          "network": "ethereum",
-          "name": "Mchooty's",
-          "nftStandard": "erc1155",
-          "floorPriceEth": "0.04",
-          "logoImageUrl": "https://openseauserdata.com/files/fc1b139d066893c6a9390fb8c9612668.png",
-          "openseaId": "mchootys-dao"
-        }
-      }
-    },
-    {
-      "balance": "1",
-      "token": {
-        "name": "Primordial",
-        "tokenId": "189",
-        "lastSaleEth": "5.3",
-        "rarityRank": null,
-        "estimatedValueEth": "5.3",
-        "medias": [
-          {
-            "type": "image",
-            "originalUrl": "https://edda-cdn.fra1.cdn.digitaloceanspaces.com/collection1/189.mp4"
-          }
-        ],
-        "collection": {
-          "address": "0x97c548ac36d5a218bef504b5d5389b724355c5af",
-          "network": "ethereum",
-          "name": "EDDA NFT",
-          "nftStandard": "erc1155",
-          "floorPriceEth": "0.098",
-          "logoImageUrl": null,
-          "openseaId": "eddaswap"
-        }
-      }
-    }
-    ...
-  "cursor": "MC4xNzUtMS02Njg2NzAzMA=="
-}
-```
-
-## `/v2/nft/balances/tokens-totals`
+### `/v2/nft/balances/tokens-totals`
 
 Provides a simple value returned for the total count of NFTs in the wallet, the
 estimated value of them.
@@ -2184,44 +2934,36 @@ estimated value of them.
 Differs from `v2/nft/balances/collections-total` as it is at the NFT level for
 the counts.
 
-### Path
+Path
 
 `/v2/nft/balances/tokens-totals`
 
-### Format
+Parameters
 
-JSON response
+- `addresses`: **(required)** | input addresses to get net worth for (maximum of 15)
+- `minCollectionValueUsd`: Returns only collections with an estimated value above the amount inputted
+- `search`: Returns only collections with name starting with inputted string
+- `collectionAddresses[]`: Returns only collections provided
+- `network`: Returns only NFTs from network provided
 
-### Parameters
+Returns
 
-<ul>
-  <li><code>addresses</code>: *(required)* Input addresses to get net worth for (maximum of 15)</li>
-  <li><code>minCollectionValueUsd</code>: Returns only collections with an estimated value above the amount inputted</li>
-  <li><code>search</code>: Returns only collections with name starting with inputted string</li>
-  <li><code>collectionAddresses[]</code>: Returns only collections provided</li>
-  <li><code>network</code>: Returns only NFTs from network provided</li>
-</ul>
+- `count`: number of NFTs owned, where ERC_1155 NFTs count as 1 per collection
+- `totalCount`: number of NFTs owned, where ERC_1155 NFTs count as 1 per NFT held
+- `balanceUSD`: estimated value of all the NFTs owned in the wallet
 
-### Returns
+cURL
 
-<ul>
-  <li><code>count</code>: number of NFTs owned, where ERC_1155 NFTs count as 1 per collection</li>
-  <li><code>totalCount</code>: number of NFTs owned, where ERC_1155 NFTs count as 1 per NFT held</li>
-  <li><code>balanceUSD</code>: estimated value of all the NFTs owned in the wallet</li>
-</ul>
-
-### Curl
-
-```
-curl -X 'GET' \
-  'https://api.zapper.fi/v2/nft/balances/tokens-totals?addresses%5B%5D=0xd8da6bf26964af9d7eed9e03e53415d37aa96045' \
+```js
+cURL -X 'GET' \
+  'https://api.zapper.xyz/v2/nft/balances/tokens-totals?addresses%5B%5D=0xd8da6bf26964af9d7eed9e03e53415d37aa96045' \
   -H 'accept: */*' \
   -H 'Authorization: Basic sadkfljsdafksal24uh2jk34=='
 ```
 
-### Response
+Response
 
-```
+```json
 {
   "count": "917",
   "totalCount": "1956",
@@ -2229,75 +2971,63 @@ curl -X 'GET' \
 }
 ```
 
-# Exchange queries
+## Exchange queries
 
-## `/v2/exchange/price`
+### `/v2/exchange/price`
 
-Returns data about the amount received if a trade would be made. Should be
-called whenever a price needs to be calculated.
+Returns data about the amount received if a trade would be made. Should be called whenever a price needs to be calculated.
 
-### Path
+Path
 
 `/v2/exchange/price`
 
-### Format
+Parameters
 
-JSON response
+- `gasPrice`: Gas price (wei)
+- `maxFeePerGas`: Max gas fee (wei)
+- `maxPriorityFeePerGas`: Max priority gas fee (wei)
+- `sellTokenAddress`: Address of the token that is being sold
+- `buyTokenAddress`: Address of the token that is being bought
+- `sellAmount`: Amount to sell
+- `buyAmount`: Amount to buy
+- `ownerAddress`: Address of the owner
+- `slippagePercentage`: Slippage percentage as a decimal value
+- `network`: Network where the swap would be made
 
-### Parameters
+Returns
 
-<ul>
-  <li><code>gasPrice</code>: Gas price (wei)</li>
-  <li><code>maxFeePerGas</code>: Max gas fee (wei)</li>
-  <li><code>maxPriorityFeePerGas</code>: Max priority gas fee (wei)</li>
-  <li><code>sellTokenAddress</code>: Address of the token that is being sold</li>
-  <li><code>buyTokenAddress</code>: Address of the token that is being bought</li>
-  <li><code>sellAmount</code>: Amount to sell</li>
-  <li><code>buyAmount</code>: Amount to buy</li>
-  <li><code>ownerAddress</code>: Address of the owner</li>
-  <li><code>slippagePercentage</code>: Slippage percentage as a decimal value</li>
-  <li><code>network</code>: Network where the swap would be made</li>
-</ul>
+- `price`: Price of the sell token
+- `value`: Token value assouciated with price
+- `gas`: Gas limit of the transaction
+- `estimatedGas`: Gas required for the transaction
+- `gasPrice`: Gas price at the time of transaction
+- `maxPriorityFeePerGas`: Maximum priority fee for gas in this speed tier
+- `maxFeePerGas`: Max fee for gas in this gas speed tier
+- `buyTokenAddress`: Token address for the token wanting to buy
+- `sellTokenAddress`: Token address for the token wanting to sell
+- `buyAmount`: Total quantity of buy token
+- `sellAmount`: Total quantity of sell token
+- `allowanceTarget`: Token address of token that is approved to sell
+- `sources`: liquidity sources
+  - `name`: Source of swap route
+  - `proportion`: Proportion of tokens swapped by this source
+  - `displayName`: Display name of source
+  - `symbol`: Symbol of source
+  - `hops`: Number of hops needed for swap
+- `zapperFee`: Percentage of fees from swap
 
-### Returns
+cURL
 
-<ul>
-   updating-api-schema-3
-   <li><code>price</code>: Price of the sell token</li>
-   <li><code>value</code>: Token value assouciated with price</li>
-   <li><code>gas</code>: Gas limit of the transaction</li>
-   <li><code>estimatedGas</code>: Gas required for the transaction</li>
-   <li><code>gasPrice</code>: Gas price at the time of transaction</li>
-   <li><code>maxPriorityFeePerGas</code>: Maximum priority fee for gas in this speed tier</li>
-   <li><code>maxFeePerGas</code>: Max fee for gas in this gas speed tier</li>
-   <li><code>buyTokenAddress</code>: Token address for the token wanting to buy</li>
-   <li><code>sellTokenAddress</code>: Token address for the token wanting to sell</li>
-   <li><code>buyAmount</code>: Total quantity of buy token</li>
-   <li><code>sellAmount</code>: Total quantity of sell token</li>
-   <li><code>allowanceTarget</code>: Token address of token that is approved to sell</li>
-   <li><code>sources</code>:</li>
-   <ul>
-      <li><code>name</code>: Source of swap route</li>
-      <li><code>proportion</code>: Proportion of tokens swapped by this source</li>
-      <li><code>displayName</code>: Display name of source</li>
-      <li><code>symbol</code>: Symbol of source</li>
-      <li><code>hops</code>: Number of hops needed for swap</li>
-   </ul>
-   <li><code>zapperFee</code>: Percentage of fees from swap</li>
-</ul>
-
-### Curl
-
-```
-curl -X 'GET' \
-  'https://api.zapper.fi/v2/exchange/price?sellTokenAddress=0x0000000000000000000000000000000000000000&buyTokenAddress=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48&sellAmount=1000000000000000000&ownerAddress=0xd8da6bf26964af9d7eed9e03e53415d37aa96045&slippagePercentage=0.03&network=ethereum' \
+```js
+cURL -X 'GET' \
+  'https://api.zapper.xyz/v2/exchange/price?sellTokenAddress=0x0000000000000000000000000000000000000000&buyTokenAddress=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48&sellAmount=1000000000000000000&ownerAddress=0xd8da6bf26964af9d7eed9e03e53415d37aa96045&slippagePercentage=0.03&network=ethereum' \
   -H 'accept: */*' \
   -H 'Authorization: Basic sadkfljsdafksal24uh2jk34=='
 ```
 
-### Response
+Response
 
-```
+```json
 {
   "price": "1626.154659",
   "value": "1000000000000000000",
@@ -2324,73 +3054,63 @@ curl -X 'GET' \
 }
 ```
 
-## `/v2/exchange/quote`
+### `/v2/exchange/quote`
 
 Returns both the relative price for a trade as well as the call data used to
 submit a transaction for a trade. Should only be called when a trade is ready to
 be submitted.
 
-### Path
+Path
 
 `/v2/exchange/quote`
 
-### Format
+Parameters
 
-JSON response
+- `gasPrice`: Gas price (wei)
+- `maxFeePerGas`: Max gas fee (wei)
+- `maxPriorityFeePerGas`: Max priority gas fee (wei)
+- `sellTokenAddress`: Address of the token that is being sold
+- `buyTokenAddress`: Address of the token that is being bought
+- `sellAmount`: Amount to sell
+- `buyAmount`: Amount to buy
+- `ownerAddress`: Address of the owner
+- `slippagePercentage`: Slippage percentage as a decimal value
+- `network`: Network where the swap would be made
 
-### Parameters
+Returns
 
-<ul>
-  <li><code>gasPrice</code>: Gas price (wei)</li>
-  <li><code>maxFeePerGas</code>: Max gas fee (wei)</li>
-  <li><code>maxPriorityFeePerGas</code>: Max priority gas fee (wei)</li>
-  <li><code>sellTokenAddress</code>: Address of the token that is being sold</li>
-  <li><code>buyTokenAddress</code>: Address of the token that is being bought</li>
-  <li><code>sellAmount</code>: Amount to sell</li>
-  <li><code>buyAmount</code>: Amount to buy</li>
-  <li><code>ownerAddress</code>: Address of the owner</li>
-  <li><code>slippagePercentage</code>: Slippage percentage as a decimal value</li>
-  <li><code>network</code>: Network where the swap would be made</li>
-</ul>
+- `price`: Sell token price divided by buy token price
+- `data`: Transactional data for swap
+- `to`: Address that tokens are transferred to
+- `value`: Quantity of native network token being transferred
+- `estimatedGas`: Address of the token that is being bought
+- `maxPriorityFeePerGas`: Maximum priority fee for gas in this speed tier
+- `maxFeePerGas`: Max fee for gas in this gas speed tier
+- `buyTokenAddress`: Token address for the token wanting to buy
+- `sellTokenAddress`: Token address for the token wanting to sell
+- `buyAmount`: Total quantity of buy token
+- `sellAmount`: Total quantity of sell token
+- `allowanceTarget`: Token address of token that is approved to sell
+- `sources`: sources of liqudiity
+  - `name`: source of swap route
+  - `proportion`: proportion of tokens swapped by this source
+  - `displayName`: display name of source
+  - `symbol`: symbol of source
+  - `hops`: number of hops needed for swap
+- `zapperFee`: percentage of fees from swap
 
-### Returns
+cURL
 
-<ul>
-  <li><code>price</code>: Sell token price divided by buy token price</li>
-  <li><code>data</code>: Transactional data for swap</li>
-  <li><code>to</code>: Address that tokens are transferred to</li>
-  <li><code>value</code>: Quantity of native network token being transferred</li>
-  <li><code>estimatedGas</code>: Address of the token that is being bought</li>
-  <li><code>maxPriorityFeePerGas</code>: Maximum priority fee for gas in this speed tier</li>
-  <li><code>maxFeePerGas</code>: Max fee for gas in this gas speed tier</li>
-  <li><code>buyTokenAddress</code>: Token address for the token wanting to buy</li>
-  <li><code>sellTokenAddress</code>: Token address for the token wanting to sell</li>
-  <li><code>buyAmount</code>: Total quantity of buy token</li>
-  <li><code>sellAmount</code>: Total quantity of sell token</li>
-  <li><code>allowanceTarget</code>: Token address of token that is approved to sell</li>
-  <li><code>sources</code>:</li>
-    <ul>
-      <li><code>name</code>: source of swap route</li>
-      <li><code>proportion</code>: proportion of tokens swapped by this source</li>
-      <li><code>displayName</code>: display name of source</li>
-      <li><code>symbol</code>: symbol of source</li>
-      <li><code>hops</code>: number of hops needed for swap</li>
-    </ul>
-  <li><code>zapperFee</code>: percentage of fees from swap</li>
-</ul>
-
-### Curl
-
-```
-curl -X 'GET' \
-  'https://api.zapper.fi/v2/exchange/quote?gasPrice=35000000000&maxFeePerGas=40000000000&maxPriorityFeePerGas=1000000000&sellTokenAddress=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48&buyTokenAddress=0x0000000000000000000000000000000000000000&sellAmount=1000000&ownerAddress=0xe321bd63cde8ea046b382f82964575f2a5586474&slippagePercentage=0.03&network=ethereum' \
+```js
+cURL -X 'GET' \
+  'https://api.zapper.xyz/v2/exchange/quote?gasPrice=35000000000&maxFeePerGas=40000000000&maxPriorityFeePerGas=1000000000&sellTokenAddress=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48&buyTokenAddress=0x0000000000000000000000000000000000000000&sellAmount=1000000&ownerAddress=0xe321bd63cde8ea046b382f82964575f2a5586474&slippagePercentage=0.03&network=ethereum' \
   -H 'accept: */*' \
   -H 'Authorization: Basic sadkfljsdafksal24uh2jk34=='
 ```
 
-### Response
+Response
 
-```
+```json
 {
   "price": "0.000824318884007021",
   "data": "0x415565b0000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee00000000000000000000000000000000000000000000000000000000000f42400000000000000000000000000000000000000000000000000002d7217cd6e6d700000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000042000000000000000000000000000000000000000000000000000000000000004c000000000000000000000000000000000000000000000000000000000000005c0000000000000000000000000000000000000000000000000000000000000001a0000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000034000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc200000000000000000000000000000000000000000000000000000000000001400000000000000000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000002c000000000000000000000000000000000000000000000000000000000000f42400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000025375736869537761700000000000000000000000000000000000000000000000000000000000000000000000000f42400000000000000000000000000000000000000000000000000002dac437104bd5000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000d9e1ce17f2641f24ae83637ab66a2cca9c378b9f00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000002000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000040000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000001b000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000001000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee000000000000000000000000000000000000000000000000000003a2ba3964fe00000000000000000000000043a2a720cd0911690c248075f4a29a5e7716f758000000000000000000000000000000000000000000000000000000000000001c000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000001000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000000000000000000000000000000000000000000869584cd0000000000000000000000003ce37278de6388532c3949ce4e886f365b14fb5600000000000000000000000000000000000000000000005c32bfbad3637698a8",
@@ -2419,42 +3139,36 @@ curl -X 'GET' \
 }
 ```
 
-## `/v2/exchange/supported`
+### `/v2/exchange/supported`
 
 Returns the exchanges supported by Zapper API.
 
-### Path
+Path
 
 `/v2/exchange/supported`
 
-### Format
-
-JSON response
-
-### Parameters
+Parameters
 
 None
 
-### Returns
+Returns
 
-<ul>
-  <li><code>network</code>: network name available for swaps</li>
-  <li><code>label</code>: label of network</li>
-  <li><code>numTokens</code>: number of tokens available to be swapped on that network</li>
-</ul>
+- `network`: network name available for swaps
+- `label`: label of network
+- `numTokens`: number of tokens available to be swapped on that network
 
-### Curl
+cURL
 
-```
-curl -X 'GET' \
-  'https://api.zapper.fi/v2/exchange/supported' \
+```js
+cURL -X 'GET' \
+  'https://api.zapper.xyz/v2/exchange/supported' \
   -H 'accept: */*' \
   -H 'Authorization: Basic sadkfljsdafksal24uh2jk34=='
 ```
 
-### Response
+Response
 
-```
+```json
 [
   {
     "network": "arbitrum",
@@ -2494,63 +3208,55 @@ curl -X 'GET' \
 ]
 ```
 
-# Miscellaneous Data Endpoints
+## Miscellaneous Data Endpoints
 
-## `/v2/prices`
+### `/v2/prices`
 
 Retrieve supported tokens and their prices. Generally populated by data from
 CoinGecko
 
-### Path
+Path
 
 `/v2/prices`
 
-### Format
+Parameters
 
-JSON response
+- `network`: retrieve tokens for this specified network
 
-### Parameters
+Returns
 
-<ul>
-  <li><code>network</code>: retrieve tokens for this specified network</li>
-</ul>
+- `id`: internal token id
+- `networkId`: internal network id
+- `address`: token's address
+- `name`: label for token
+- `symbol`: symbol for token
+- `decimals`: decimals for token
+- `coingeckoId`: coingecko API id for token
+- `status`: internal designation if token has been initially reviewed when ingested
+- `hide`: internal designation if token is approved for displaying
+- `canExchange`: flag if this token is exchangeable on Zapper's front end
+- `verified`: if token is on a verified token list, and has a blue-checkmark on Zapper's frontend
+- `updatedAt`: last date token was updated from CoinGecko
+- `createdAt`: date token was first ingested
+- `price`: current price of token in USD
+- `dailyVolume`: trading volume of token from coingecko
+- `totalSupply`: total supply of token available
+- `networkEnumValue`: network token is on
+- `type`: designation if the token is a base-token or app-token (meaning the token is associated with an app's investment)
+- `network`: label of network token is on
 
-### Returns
+cURL
 
-<ul>
-  <li><code>id</code>: internal token id</li>
-  <li><code>networkId</code>: internal network id</li>
-  <li><code>address</code>: token's address</li>
-  <li><code>name</code>: label for token</li>
-  <li><code>symbol</code>: symbol for token</li>
-  <li><code>decimals</code>: decimals for token</li>
-  <li><code>coingeckoId</code>: coingecko API id for token</li>
-  <li><code>status</code>: internal designation if token has been initially reviewed when ingested</li>
-  <li><code>hide</code>: internal designation if token is approved for displaying</li>
-  <li><code>canExchange</code>: flag if this token is exchangeable on Zapper's front end</li>
-  <li><code>verified</code>: if token is on a verified token list, and has a blue-checkmark on Zapper's frontend</li>
-  <li><code>updatedAt</code>: last date token was updated from CoinGecko</li>
-  <li><code>createdAt</code>: date token was first ingested</li>
-  <li><code>price</code>: current price of token in USD</li>
-  <li><code>dailyVolume</code>: trading volume of token from coingecko</li>
-  <li><code>totalSupply</code>: total supply of token available</li>
-  <li><code>networkEnumValue</code>: network token is on</li>
-  <li><code>type</code>: designation if the token is a base-token or app-token (meaning the token is associated with an app's investment)</li>
-  <li><code>network</code>: label of network token is on</li>
-</ul>
-
-### Curl
-
-```
-curl -X 'GET' \
-  'https://api.zapper.fi/v2/prices?network=optimism' \
+```js
+cURL -X 'GET' \
+  'https://api.zapper.xyz/v2/prices?network=optimism' \
   -H 'accept: */*' \1
   -H 'Authorization: Basic asdadsadada12341=='
 ```
 
-### Response
+Response
 
-```
+```json
 [
   {
     "id": "94",
@@ -2594,50 +3300,42 @@ curl -X 'GET' \
     "type": "base-token",
     "network": "optimism"
   }
-...
+//...
 ]
 ```
 
-## `/v2/gas-prices`
+### `/v2/gas-prices`
 
 Retrieve supported tokens and their prices across many currencies
 
-### Path
+Path
 
 `/v2/gas-prices`
 
-### Format
+Parameters
 
-JSON response
+- `network`: Retrieve gas prices for this network
+- `eip1559`: **(required)** | boolean flag for Retrieve post London gas price details
 
-### Parameters
+Returns
 
-<ul>
-  <li><code>network</code>: Retrieve gas prices for this network</li>
-  <li><code>eip1559</code>: *(required)* boolean flag for Retrieve post London gas price details</li>
-</ul>
+- `eip1559`: coingecko API id for token
+- `baseFeePerGas`: base fee for gas in this gas speed tier
+- `maxPriorityFeePerGas`: maximum priority fee for gas in this speed tier
+- `maxFeePerGas`: max fee for gas in this gas speed tier
 
-### Returns
+cURL
 
-<ul>
-  <li><code>eip1559</code>: coingecko API id for token</li>
-  <li><code>baseFeePerGas</code>: base fee for gas in this gas speed tier</li>
-  <li><code>maxPriorityFeePerGas</code>: maximum priority fee for gas in this speed tier</li>
-  <li><code>maxFeePerGas</code>: max fee for gas in this gas speed tier</li>
-</ul>
-
-### Curl
-
-```
-curl -X 'GET' \
-  'https://api.zapper.fi/v2/gas-prices?network=ethereum&eip1559=true' \
+```js
+cURL -X 'GET' \
+  'https://api.zapper.xyz/v2/gas-prices?network=ethereum&eip1559=true' \
   -H 'accept: application/json' \
   -H 'Authorization: Basic asdadsadada12341=='
 ```
 
-### Response
+Response
 
-```
+```json
 {
   "eip1559": true,
   "standard": {
@@ -2655,5 +3353,43 @@ curl -X 'GET' \
     "maxPriorityFeePerGas": 1,
     "maxFeePerGas": 36
   }
+}
+```
+
+### `v1/api-clients/points`
+
+Endpoint returns how many API points are remaining in your API account. Your balance of API points is funded at the beginning of each month with 10,000 free points or by additional API point purchases.
+
+Notes on how points work
+
+- If you have multiple API keys issued to you, they all pull points from the same pot; API points are not on a per-key basis, but at a business-entity level. So, all your API keys will return the same `pointsRemaining` value, as they share the same pot of points.
+- `pointsRemaining` is calculated and evaluated every ~1 hour. This endpoint is not real-time
+
+Path
+
+`v1/api-clients/points`
+
+Parameters
+
+No parameters; your API key is authorized via your header, so points can only be returned for your API key
+
+Returns
+
+- `pointsRemaining`: how many points your API account has remaining before being turned off due to a negative points balance
+
+cURL
+
+```js
+cURL -X 'GET' \
+  'https://api.zapper.xyz/v1/api-clients/points' \
+  -H 'accept: */*' \
+  -H 'Authorization: Basic sadkfljsdafksal24uh2jk34=='
+```
+
+Response
+
+```JSON
+{
+   "pointsRemaining": "19962"
 }
 ```
