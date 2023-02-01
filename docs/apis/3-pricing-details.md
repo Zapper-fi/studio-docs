@@ -19,15 +19,15 @@ It is also against [Zapper's API terms of use](https://zapper.xyz/docs/api-terms
 ## Cost of Queries
 
 The points breakdown is as follows:
-| Endpoint                   | Points cost for query |
-|----------------------------|-----------------------|
-| GET v2/balances (deprecated)           |        7 points       |
-| POST v2/balances/apps      |        4 points       |
-| POST v2/balances/tokens    |        1 point        |
-| GET v2/balances/apps       |      0.25 points      |
-| GET v2/balances/tokens     |      0.25 points      |
-| GET v2/balances/job-status |        0 points       |
-| All other endpoints        |        1 point        |
+| Endpoint                     	| Points cost for query 	|
+|------------------------------	|-----------------------	|
+| GET v2/balances (deprecated) 	| 7 points              	|
+| POST v2/balances/apps        	| 4 points              	|
+| POST v2/balances/tokens      	| 1 point               	|
+| GET v2/balances/apps         	| 0.25 points           	|
+| GET v2/balances/tokens       	| 0.25 points           	|
+| GET v2/balances/job-status   	| 0 points              	|
+| All other endpoints          	| 1 point               	|
 
 :::note
 When querying, each wallet counts as 1 query, even if multiple addresses are bundled into 1 call. By way of example only, if you pass 10 Wallets into 1 API call of v2/balances endpoint, that will count as 10 queries of that endpoint, for a total of 70 points.

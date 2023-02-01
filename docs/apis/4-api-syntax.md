@@ -9,7 +9,9 @@ See below for details on each of Zapper's API endpoints.
 
 ## Wallet-specific App and ERC20 Token Balances endpoints
 
-### `v2/balances/apps` (launched in January 2023, replaces historical `v2/balances` endpoint)
+### `v2/balances/apps`
+
+*This endpoint was launched in January 2023, replacing the historical `v2/balances` endpoint*
 
 You input wallet addresses and get all the following:
 
@@ -565,7 +567,9 @@ Response for GET
     ...
 ```
 
-### `v2/balances/tokens` (launched in January 2023, replaces historical `v2/balances` endpoint)
+### `v2/balances/tokens`
+
+*This endpoint was launched in January 2023, replacing the historical `v2/balances` endpoint*
 
 You input wallet addresses and get all "base tokens" in the wallet. "Base tokens" are ERC20 tokens that are not invested by the user in an app, but instead sit in the wallet natively. Base tokens are often  liquid and tradable, whereas app tokens are those invested in apps are illiquid and cannot be natively traded, like a Uniswap pool token.
 
@@ -705,7 +709,9 @@ Response for GET
         ...
 ```
 
-### `v2/balances/job-status` (launched in January 2023, functionality helps replace `v2/balances` endpoint)
+### `v2/balances/job-status`
+
+*This endpoint was launched in January 2023, replacing the historical `v2/balances` endpoint*
 
 Use this endpoint to poll for the status of a job that is calculating app-related balances or base token balances, via `v2/balances/apps` and `v2/balances/tokens` respectively.
 
@@ -763,6 +769,7 @@ The `v2/balances` endpoint is the most powerful of those offered by Zapper. You 
 
 :::danger
 `v2/balances` endpoint was deprecated by Zapper in January 2023,, and will be turned down in May 2023. This endpoint will be phased out for `v2/balances/apps` and `v2/balances/tokens` endpoints, which are more performant, cost less, and return a typcial JSON structure. Please do not build further on this endpoint, but instead migrate your queries to the other endpoints.
+:::
 
 Notes on use of the API and limits:
 
@@ -1577,7 +1584,7 @@ Path
 
 Parameters
 
-- `appId`: **(required)** | app to get data for
+- `appSlug`: **(required)** | app to get data for
 
 Returns
 
@@ -1900,7 +1907,7 @@ Path
 `v2/apps/{appId}/tokens`
 
 :::info
-he shape of this response is a little different from `v2/apps/{appId}/positions`
+The shape of this response is a little different from `v2/apps/{appId}/positions`
 :::
 
 Parameters
