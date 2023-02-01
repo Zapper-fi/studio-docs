@@ -6,7 +6,7 @@ sidebar_position: 5
 
 ## Getting Zapper to calculate `v2/balances/apps` value
 
-Example of replacing `v2/balances` with `v2/balances/apps`, by asking Zapper to re-calculate the balance, poll for the job to complete, and then pull the data once its finished calculating. 
+Example of replacing [`v2/balances`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balances) with [`v2/balances/apps`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancesapps), by asking Zapper to re-calculate the balance, poll for the job to complete via [`v2/balances-job-status`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancesjob-status), and then pull the data once its finished calculating. 
 
 ```js
 import Axios from "axios";
@@ -62,9 +62,9 @@ async function getBalances() {
 
 If you want to get the value of all assets in a wallet, you'd want to call 3 different endpoints to get the following values
 
-- `v2/balances/apps`: returns all value of app-related positions in the wallet
-- `v2/balances/tokens`: returns all value of floating ERC20 "base token" positions in the wallet
-- `v2/nft/balances/net-worth`: returns the estimated value of all NFTs in the wallet
+- [`v2/balances/apps`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancesapps): returns all value of app-related positions in the wallet
+- [`v2/balances/tokens`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancestokens): returns all value of floating ERC20 "base token" positions in the wallet
+- [`v2/nft/balances/net-worth`](https://docs.zapper.xyz/docs/apis/api-syntax#v2nftbalancesnet-worth): returns the estimated value of all NFTs in the wallet
 
 And then add them all up. Note that if the balances in `/apps` and `/tokens` are not available in the cache, you will need to do the POST calls to have Zapper calculate the values. There is no need to do a POST command for the NFT endpoints
 
@@ -133,7 +133,7 @@ async function getTotalNetWorth() {
 
 ## How to paginate through NFT endpoint
 
-If you want to get all the NFTs in a given wallet, you can call the endpoint `v2/nft/user/tokens`. However, that endpoint returns a maximum of 100 NFTs per page; if a wallet has more than 100 NFTs in it, you will need to paginate through them to get all the NFTs.
+If you want to get all the NFTs in a given wallet, you can call the endpoint [`v2/nft/user/tokens`](https://docs.zapper.xyz/docs/apis/api-syntax#v2nftusertokens). However, that endpoint returns a maximum of 100 NFTs per page; if a wallet has more than 100 NFTs in it, you will need to paginate through them to get all the NFTs.
 
 Below is a javascript code snippet on how to paginate through results:
 

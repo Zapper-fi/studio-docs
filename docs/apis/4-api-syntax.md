@@ -11,20 +11,20 @@ See below for details on each of Zapper's API endpoints.
 
 ### `v2/balances/apps`
 
-*This endpoint was launched in January 2023, replacing the historical `v2/balances` endpoint*
+*This endpoint was launched in January 2023, replacing the historical [`v2/balances`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balances) endpoint*
 
 You input wallet addresses and get all the following:
 
 - Detailed breakdown of all app investment positions represented as app tokens owned by the wallet, such as Aave lending positions or Uniswap pools, valued in USD
 - Detailed breakdown of all app investment positions represented as contract positions that are not held on the wallet, such ve-locked or farming positions, valued in USD
 
-On Zapper's frontend, all tokens that show up in the *Wallet* section of a portfoilo are returned in the `v2/balances/tokens` endpoint. All values showing up in the *Apps* section of a portfolio are returned in the `v2/balances/apps` endpoint.
+On Zapper's frontend, all tokens that show up in the *Wallet* section of a portfoilo are returned in the [`v2/balances/tokens`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancestokens) endpoint. All values showing up in the *Apps* section of a portfolio are returned in the `v2/balances/apps` endpoint.
 
 For a list of all supported apps, see [this link](https://zapper.xyz/protocols).
 
 By doing a GET command on this endpoint, you will be returned the cached values Zapper has in its database for the wallets provided. Many wallets already had their balances recently computed by Zapper, and so are sitting in the cache. However, if there is no cached value, the GET response will not contain anything. Cached values for apps are never purged, so could be months or years old. Keep this in mind!
 
-If there is no cached value, or you want Zapper to re-compute the balance so it as fresh as possible, you will need to do a POST command to this endpoint. Once the POST command is received, Zapper will return you a `jobId` value and Zapper will then re-compute the wallet's app balances. You can monitor the status of the re-computation job via [`v2/balances/job-status`](TODO) by passing in the `jobId` value. Alternatively, you can just wait 10 seconds for the job to finish if you do not want to poll for the job status.
+If there is no cached value, or you want Zapper to re-compute the balance so it as fresh as possible, you will need to do a POST command to this endpoint. Once the POST command is received, Zapper will return you a `jobId` value and Zapper will then re-compute the wallet's app balances. You can monitor the status of the re-computation job via [`v2/balances/job-status`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancesjob-status) by passing in the `jobId` value. Alternatively, you can just wait 10 seconds for the job to finish if you do not want to poll for the job status.
 
 Once the re-calculation job is completed, you can retrieve the newly computed app balances by calling GET `v2/balances/apps`.
 
@@ -32,13 +32,13 @@ Points Cost For `v2/balances/apps` Related Queries:
 
 - 0.25 points per GET `v2/balances/apps` call per wallet included in the call, as this is simply retrieving the value in Zapper's database
 - 4 points per POST `v2/balances/apps` call per wallet included in the call. This call triggers Zapper recomputing the wallet's balances, generating a large volume of downstream API calls. A `jobId` will be included in the response
-- 0 points per call GET `/v2/balances/job-status`, used to monitor the status of the `jobId`. These calls are free, allowing you to poll the status of the computation job
+- 0 points per call GET [`v2/balances/job-status`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancesjob-status), used to monitor the status of the `jobId`. These calls are free, allowing you to poll the status of the computation job
 
 :::info
-Note that this endpoint differs from `v2/balances` as it does NOT contain base token balances, but only contains balances related to a particular app.
+Note that this endpoint differs from [`v2/balances`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balances) as it does NOT contain base token balances, but only contains balances related to a particular app.
 
-- To get token balances, call GET `v2/balances/tokens`
-- To get NFT values, call GET `v2/nft/balances/net-worth`
+- To get token balances, call GET [`v2/balances/tokens`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancestokens)
+- To get NFT values, call GET [`v2/nft/balances/net-worth`](https://docs.zapper.xyz/docs/apis/api-syntax#v2nftbalancesnet-worth)
 :::
 
 Tips On Using This Endpoint Cost-Effectively:
@@ -569,17 +569,17 @@ Response for GET
 
 ### `v2/balances/tokens`
 
-*This endpoint was launched in January 2023, replacing the historical `v2/balances` endpoint*
+*This endpoint was launched in January 2023, replacing the historical [`v2/balances`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balances) endpoint*
 
 You input wallet addresses and get all "base tokens" in the wallet. "Base tokens" are ERC20 tokens that are not invested by the user in an app, but instead sit in the wallet natively. Base tokens are often  liquid and tradable, whereas app tokens are those invested in apps are illiquid and cannot be natively traded, like a Uniswap pool token.
 
-On Zapper's frontend, all tokens that show up in the *Wallet* section of a portfoilo are returned in the `v2/balances/tokens` endpoint. All values showing up in the *Apps* section of a portfolio are returned in the `v2/balances/apps` endpoint.
+On Zapper's frontend, all tokens that show up in the *Wallet* section of a portfoilo are returned in the `v2/balances/tokens` endpoint. All values showing up in the *Apps* section of a portfolio are returned in the [`v2/balances/apps`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancesapps) endpoint.
 
 Zapper supports over 15,000 base tokens (and counting).
 
 By doing a GET command on this endpoint, you will be returned the cached token balances Zapper has in its database for the wallets provided. Many wallets already had their token balances recently computed by Zapper, and so are sitting in the cache. However, if there is no cached value, the GET response will not contain anything. Cached values are purged after 30 days, as Zapper then considers those balances stale.
 
-If there is no cached value, or you want Zapper to re-compute the token balance so it as fresh as possible, you will need to do a POST command to this endpoint. Once the POST command is received, Zapper will return you a `jobId` value and Zapper will then re-compute the wallet's app balances. You can monitor the status of the re-computation job via [`v2/balances/job-status`](TODO) by passing in the `jobId` value. Alternatively, you can just wait 10 seconds for the job to finish if you do not want to poll for the job status.
+If there is no cached value, or you want Zapper to re-compute the token balance so it as fresh as possible, you will need to do a POST command to this endpoint. Once the POST command is received, Zapper will return you a `jobId` value and Zapper will then re-compute the wallet's app balances. You can monitor the status of the re-computation job via [`v2/balances/job-status`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancesjob-status) by passing in the `jobId` value. Alternatively, you can just wait 10 seconds for the job to finish if you do not want to poll for the job status.
 
 Once the re-calculation job is completed, you can retrieve the newly computed app balances by calling GET `v2/balances/tokens`.
 
@@ -587,17 +587,17 @@ Points Cost For `v2/balances/tokens` Related Queries:
 
 - 0.25 points per GET `v2/balances/tokens` call per wallet included in the call, as this is simply retrieving the value in Zapper's database
 - 1 points per POST `v2/balances/tokens` call per wallet included in the call. This call triggers Zapper recomputing the wallet's balances, generating a large volume of downstream API calls. A `jobId` will be included in the response
-- 0 points per call GET `/v2/balances/job-status?jobId=:jobId`, used to monitor the status of the `jobId`. These calls are free, allowing you to poll the status of the computation job
+- 0 points per call GET `v2/balances/job-status?jobId=:jobId`, used to monitor the status of the `jobId`. These calls are free, allowing you to poll the status of the computation job
 
 :::info
-Note that this endpoint differs from `v2/balances` as it does NOT contain app-related balances (like uniswap pools or AAVE lending poisitions), but only contains balances related to "base tokens", or ERC20 tokens that are not invested in a given app. To get the full value of a wallet's assets, you should also call GET `v2/balances/apps` app balances and call `v2/nft/balances/net-worth` to get NFT related balances
+Note that this endpoint differs from [`v2/balances`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balances) as it does NOT contain app-related balances (like uniswap pools or AAVE lending poisitions), but only contains balances related to "base tokens", or ERC20 tokens that are not invested in a given app. To get the full value of a wallet's assets, you should also call GET [`v2/balances/apps`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancesapps) app balances and call [`v2/nft/balances/net-worth`](https://docs.zapper.xyz/docs/apis/api-syntax#v2nftbalancesnet-worth) to get NFT related balances
 :::
 
 Tips On Using This Endpoint Cost-Effectively:
 
 - If you are querying a wallet for the first time, and it is a potentially popular wallet, there is a chance that a cached value already exists, and you can retrie it for only 0.25 points cost. Upon getting the results, you can check how stale the balances are based on the value retuend of `updatedAt`
-- If you are certain you will want the most up-to-date balances for the wallet, you should call the POST `v2/balances/apps` endpoint first, wait for the job to run after 10s, and then call GET `v2/balances/apps`
-- If you are surfacing balances to users in real-time using this call, you can emulate what Zapper's frontend does by first calling GET `v2/balances/apps` to get any cached balances, use these to create a skeleton to display to the user, and then call POST `v2/balances/apps` to then refresh any stale values
+- If you are certain you will want the most up-to-date balances for the wallet, you should call the POST [`v2/balances/apps`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancesapps) endpoint first, wait for the job to run after 10s, and then call GET [`v2/balances/apps`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancesapps)
+- If you are surfacing balances to users in real-time using this call, you can emulate what Zapper's frontend does by first calling GET [`v2/balances/apps`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancesapps) to get any cached balances, use these to create a skeleton to display to the user, and then call POST [`v2/balances/apps`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancesapps) to then refresh any stale values
 
 Other things to know about this endpoint:
 
@@ -711,14 +711,14 @@ Response for GET
 
 ### `v2/balances/job-status`
 
-*This endpoint was launched in January 2023, replacing the historical `v2/balances` endpoint*
+*This endpoint was launched in January 2023, replacing the historical [`v2/balances`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balances) endpoint*
 
-Use this endpoint to poll for the status of a job that is calculating app-related balances or base token balances, via `v2/balances/apps` and `v2/balances/tokens` respectively.
+Use this endpoint to poll for the status of a job that is calculating app-related balances or base token balances, via [`v2/balances/apps`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancesapps) and [`v2/balances/tokens`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancestokens) respectively.
 
-When you call POST `v2/balances/apps` or `v2/balances/tokens`, a re-calculation of the balances in that wallet is triggered, and the response to those calls will be a value `jobId`. You can then monitor the status of the re-computation job by passing `jobId` as a parameter into this endpoint, `v2/balances/job-status`.
+When you call POST [`v2/balances/apps`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancesapps) or [`v2/balances/tokens`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancestokens), a re-calculation of the balances in that wallet is triggered, and the response to those calls will be a value `jobId`. You can then monitor the status of the re-computation job by passing `jobId` as a parameter into this endpoint, `v2/balances/job-status`.
 
 :::info
-You are not required to poll for the status of the job via `v2/balances/job-status`; it is just a nice-to-have. Most POST `v2/balances/apps` finish computing wihtin 10 seconds and POST `v2/balances/tokens` finish within 2 seconds, so you could just insert a delay between your POST and GET commands of that time interval.
+You are not required to poll for the status of the job via `v2/balances/job-status`; it is just a nice-to-have. Most POST [`v2/balances/apps`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancesapps) finish computing wihtin 10 seconds and POST [`v2/balances/tokens`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancestokens) finish within 2 seconds, so you could just insert a delay between your POST and GET commands of that time interval.
 :::
 
 Other things to know about this endpoint
@@ -727,11 +727,11 @@ Other things to know about this endpoint
 
 Path
 
-`v2/balances/tokens`
+`v2/balances/job-status`
 
 Parameters
 
-- `jobId`: **(required)** | the `jobId` associated with the computation job. The `jobId` is provided as the response of the POST `v2/balances/apps` call or POST `v2/balances/tokens` call
+- `jobId`: **(required)** | the `jobId` associated with the computation job. The `jobId` is provided as the response of the POST [`v2/balances/apps`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancesapps) call or POST [`v2/balances/tokens`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancestokens) call
 
 Response
 
@@ -768,7 +768,7 @@ The `v2/balances` endpoint is the most powerful of those offered by Zapper. You 
 - Detailed breakdown of all app investment positions represented as contract positions that are not held on the wallet, such ve-locked or farming positions, valued in USD
 
 :::danger
-`v2/balances` endpoint was deprecated by Zapper in January 2023,, and will be turned down in May 2023. This endpoint will be phased out for `v2/balances/apps` and `v2/balances/tokens` endpoints, which are more performant, cost less, and return a typcial JSON structure. Please do not build further on this endpoint, but instead migrate your queries to the other endpoints.
+`v2/balances` endpoint was deprecated by Zapper in January 2023,, and will be turned down in May 2023. This endpoint will be phased out for [`v2/balances/apps`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancesapps) and [`v2/balances/tokens`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancestokens) endpoints, which are more performant, cost less, and return a typcial JSON structure. Please do not build further on this endpoint, but instead migrate your queries to the other endpoints.
 :::
 
 Notes on use of the API and limits:
@@ -837,7 +837,7 @@ data: {}
 
 ### `v2/apps/{appSlug}/balances`
 
-The `v2/apps/{appSlug}/balances` endpoint is similar to the `v2/balances` query,
+The `v2/apps/{appSlug}/balances` endpoint is similar to the [`v2/balances`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balances) query,
 but returns data only for a specific app, instead of ALL apps, tokens and NFTs in
 a wallet. 
 
@@ -2511,14 +2511,14 @@ Response
 
 ## NFT queries
 
-### `/v2/nft/balances/net-worth`
+### `v2/nft/balances/net-worth`
 
 Provides the value of a wallet, or set of wallets, NFT portfolio, according to
 Zapper's price estimation.
 
 Path
 
-`/v2/nft/balances/net-worth`
+`v2/nft/balances/net-worth`
 
 Parameters
 
@@ -2545,17 +2545,17 @@ Response
 }
 ```
 
-### `/v2/nft/user/tokens`
+### `v2/nft/user/tokens`
 
 Provides detailed breakdown of all _individual NFTs_ owned in a given wallet, including NFT metadata, collection metadata, estimated value for the NFT, last sale price, rarity, etc.
 
 This endpoint is the right one to query if you want to get **ALL** NFTs in a given wallet. Each page returns 100 NFTs as its maximum number, which is generally enough to capture all NFTs in ~90% of all wallets. If you need to get all NFTs in a wallet that has greater than 100 NFTs, you will need to use the `cursor` to paginate through the list.
 
-This endpoint differs from `v2/nft/balances/tokens` in that it does not return an ordered list of NFTs by USD value, and it allows 100 per page versus 25 per page in `v2/nft/balances/tokens`, and this NFT endpoint is much more performant.
+This endpoint differs from [`v2/nft/balances/tokens`](https://docs.zapper.xyz/docs/apis/api-syntax#v2nftbalancestokens) in that it does not return an ordered list of NFTs by USD value, and it allows 100 per page versus 25 per page in `v2/nft/balances/tokens`, and this NFT endpoint is much more performant.
 
 Path
 
-`/v2/nft/user/tokens`
+`v2/nft/user/tokens`
 
 Parameters
 
@@ -2640,11 +2640,11 @@ Response
 }
 ```
 
-### `/v2/nft/balances/tokens`
+### `v2/nft/balances/tokens`
 
 Provides detailed breakdown of all _individual NFTs_ owned in a given wallet, including NFT metadata, collection metadata, estimated value for the NFT, last sale price, rarity, etc. The values returned in this endpoint are **ORDERED** by descending estimatedUSD value. So, the 25 NFTs returned on the first page will be the 25 highest value NFTs in the wallet's portfolio.
 
-If you are looking to ingest ALL NFTs held in a given wallet, you should use the endpoint `v2/nft/users/tokens` instead.
+[If you are looking to ingest ALL NFTs held in a given wallet, you should use the endpoint `v2/nft/user/tokens`](https://docs.zapper.xyz/docs/apis/api-syntax#v2nftusertokens) instead.
 
 :::info
 The response is paginated, with a maximum number of 25 per response. You will need to parse through different pages, using `cursor` to get values beyond the initial 25 NFT response.
@@ -2652,7 +2652,7 @@ The response is paginated, with a maximum number of 25 per response. You will ne
 
 Path
 
-`/v2/nft/balances/tokens`
+`v2/nft/balances/tokens`
 
 Parameters
 
@@ -2752,7 +2752,7 @@ Response
 }
 ```
 
-### `/v2/nft/balances/collections`
+### `v2/nft/balances/collections`
 
 Provides detailed breakdown of all collections owned in a given wallet, including collection metadata, estimated price for all NFTs owned in that collection, and trading volume for that collection in a given time period
 
@@ -2762,7 +2762,7 @@ The response is paginated, with a maximum number of 25 per response. You will ne
 
 Path
 
-`/v2/nft/balances/collections`
+`v2/nft/balances/collections`
 
 Parameters
 
@@ -2892,15 +2892,15 @@ Response
 }
 ```
 
-### `/v2/nft/balances/collections-totals`
+### `v2/nft/balances/collections-totals`
 
 Provides a simple value returned for the total count of collections in the wallet, the estimated value of them.
 
-Differs from `v2/nft/balances/net-worth` as you can scope down the NFTs you want the value for in the wallet
+Differs from [`v2/nft/balances/net-worth`](https://docs.zapper.xyz/docs/apis/api-syntax#v2nftbalancesnet-worth) as you can scope down the NFTs you want the value for in the wallet
 
 Path
 
-`/v2/nft/balances/collections-totals`
+`v2/nft/balances/collections-totals`
 
 Parameters
 
@@ -2933,7 +2933,7 @@ Response
 }
 ```
 
-### `/v2/nft/balances/tokens-totals`
+### `v2/nft/balances/tokens-totals`
 
 Provides a simple value returned for the total count of NFTs in the wallet, the
 estimated value of them.
@@ -2943,7 +2943,7 @@ the counts.
 
 Path
 
-`/v2/nft/balances/tokens-totals`
+`v2/nft/balances/tokens-totals`
 
 Parameters
 
@@ -2980,13 +2980,13 @@ Response
 
 ## Exchange queries
 
-### `/v2/exchange/price`
+### `v2/exchange/price`
 
 Returns data about the amount received if a trade would be made. Should be called whenever a price needs to be calculated.
 
 Path
 
-`/v2/exchange/price`
+`v2/exchange/price`
 
 Parameters
 
@@ -3061,7 +3061,7 @@ Response
 }
 ```
 
-### `/v2/exchange/quote`
+### `v2/exchange/quote`
 
 Returns both the relative price for a trade as well as the call data used to
 submit a transaction for a trade. Should only be called when a trade is ready to
@@ -3069,7 +3069,7 @@ be submitted.
 
 Path
 
-`/v2/exchange/quote`
+`v2/exchange/quote`
 
 Parameters
 
@@ -3146,13 +3146,13 @@ Response
 }
 ```
 
-### `/v2/exchange/supported`
+### `v2/exchange/supported`
 
 Returns the exchanges supported by Zapper API.
 
 Path
 
-`/v2/exchange/supported`
+`v2/exchange/supported`
 
 Parameters
 
@@ -3217,14 +3217,14 @@ Response
 
 ## Miscellaneous Data Endpoints
 
-### `/v2/prices`
+### `v2/prices`
 
 Retrieve supported tokens and their prices. Generally populated by data from
 CoinGecko
 
 Path
 
-`/v2/prices`
+`v2/prices`
 
 Parameters
 
@@ -3311,13 +3311,13 @@ Response
 ]
 ```
 
-### `/v2/gas-prices`
+### `v2/gas-prices`
 
 Retrieve supported tokens and their prices across many currencies
 
 Path
 
-`/v2/gas-prices`
+`v2/gas-prices`
 
 Parameters
 

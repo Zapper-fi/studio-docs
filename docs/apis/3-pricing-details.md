@@ -21,12 +21,12 @@ It is also against [Zapper's API terms of use](https://zapper.xyz/docs/api-terms
 The points breakdown is as follows:
 | Endpoint                     	| Points cost for query 	|
 |------------------------------	|-----------------------	|
-| GET v2/balances (deprecated) 	| 7 points              	|
-| POST v2/balances/apps        	| 4 points              	|
-| POST v2/balances/tokens      	| 1 point               	|
-| GET v2/balances/apps         	| 0.25 points           	|
-| GET v2/balances/tokens       	| 0.25 points           	|
-| GET v2/balances/job-status   	| 0 points              	|
+| GET [`v2/balances`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balances) (deprecated) 	| 7 points              	|
+| POST [`v2/balances/apps`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancesapps)        	| 4 points              	|
+| POST [`v2/balances/tokens`](https://docs.zapper.xyz/docs/apis/api-syntax#v2nftusertokens)      	| 1 point               	|
+| GET [`v2/balances/apps`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancesapps)         	| 0.25 points           	|
+| GET [`v2/balances/tokens`](https://docs.zapper.xyz/docs/apis/api-syntax#v2nftusertokens)      	| 0.25 points           	|
+| GET [`v2/balances/job-status`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancesjob-status)   	| 0 points              	|
 | All other endpoints          	| 1 point               	|
 
 :::note
