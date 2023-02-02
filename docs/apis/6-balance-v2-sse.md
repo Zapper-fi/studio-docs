@@ -10,7 +10,7 @@ As of January 2023, the `v2/balances` endpoint has been marked for deprecation, 
 
 When fetching _all_ the balances for a given address, we recommend using the
 balance streamer endpoint
-[`/v2/balances`](https://api.zapper.fi/api/static/index.html#/Balances/BalanceController_getBalances).
+[`/v2/balances`](https://api.zapper.xyz/api/static/index.html#/Balances/BalanceController_getBalances).
 
 This endpoint allows the client to receive balance events as they are calculated
 on the backend, streaming each protocol balance back to the client for handling.
@@ -386,7 +386,7 @@ Format the query url
 
 ``` javascript
 const generateUrl = (addresses) => {
-  let url = `https://api.zapper.fi/v2/balances?`;
+  let url = `https://api.zapper.xyz/v2/balances?`;
   addresses.forEach((address, _index) => {
     url += `addresses[]=${address}${
       _index === addresses.length - 1 ? "" : "&"
