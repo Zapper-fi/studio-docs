@@ -28,10 +28,11 @@ The points breakdown is as follows:
 | GET [`v2/balances/apps`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancesapps) 	| 0.25 points 	|
 | GET [`v2/balances/tokens`](https://docs.zapper.xyz/docs/apis/api-syntax#v2nftusertokens) 	| 0.25 points 	|
 | GET [`v2/balances/job-status`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancesjob-status) 	| 0 points 	|
+| GET [`v1/api-clients/points`](https://docs.zapper.xyz/docs/apis/api-syntax#v1api-clientspoints) 	| 0 points 	|
 | All other endpoints 	| 1 point 	|
 
 :::note
-When querying, each wallet counts as 1 query, even if multiple addresses are bundled into 1 call. By way of example only, if you pass 10 Wallets into 1 API call of v2/balances endpoint, that will count as 10 queries of that endpoint, for a total of 70 points.
+When querying, each wallet counts as 1 query, even if multiple addresses are bundled into 1 call. By way of example only, if you pass 10 Wallets into 1 API call of `v2/balances` endpoint, that will count as 10 queries of that endpoint, for a total of 70 points.
 :::
 
 ## Paid API plans for larger API users
