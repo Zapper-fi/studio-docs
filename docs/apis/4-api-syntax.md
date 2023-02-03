@@ -60,6 +60,7 @@ Path
 Parameters
 
 - `addresses[]`: **Required** | Addresses for which to retrieve balances, inputted as an array. Can handle up to 15 addresses
+  - Note: to pass multiple addresses in, the right syntax is `https://api.zapper.xyz/v2/balances/apps?addresses%5B%5D=address_1&addresses%5B%5D=address_2`
 - `network[]`: networks for which to retrieve balances, inputted an array. Available values : ethereum, polygon, optimism, gnosis, binance-smart-chain, fantom, avalanche, arbitrum, celo, moonriver, bitcoin, aurora
 
 Response
@@ -612,6 +613,7 @@ Path
 Parameters
 
 - `addresses[]`: **Required** | addresses for which to retrieve balances, inputted as an array. Can handle up to 15 addresses
+  - Note: to pass multiple addresses in, the right syntax is `https://api.zapper.xyz/v2/balances/tokens?addresses%5B%5D=address_1&addresses%5B%5D=address_2`
 - `network[]`: networks for which to retrieve balances, inputted an array. Available values : ethereum, polygon, optimism, gnosis, binance-smart-chain, fantom, avalanche, arbitrum, celo, moonriver, bitcoin, aurora
 
 Response
