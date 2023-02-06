@@ -2,7 +2,7 @@
 sidebar_position: 2
 ---
 
-# Update your app definition
+# Inspect the generated code
 
 In this section, we'll inspect and build upon the generated **App Definition**.
 
@@ -12,59 +12,6 @@ After following the previous section, you should now have a skeleton folder
 structure for our **Pickle Finance** application integration.
 
 ![Create App Folder Structure](../../static/img/tutorial/create-app-folder-structure.png)
-
-The app definition file created in `src/apps/pickle/pickle.definition.ts` will
-be our starting point. Let's have a look, and fill out some missing fields while
-we're there.
-
-```ts
-import { Register } from "~app-toolkit/decorators";
-import { AppDefinition } from "~app/app.definition";
-import { ProtocolAction } from "~app/app.interface";
-import { Network } from "~types/network.interface";
-
-export const PICKLE_DEFINITION = {
-  id: "pickle",
-  name: "Pickle Finance",
-  description:
-    "Pickle Finance helps users to maximize their DeFi yields by auto-compounding their rewards, saving them time and gas.",
-  url: "https://pickle.finance/",
-  tags: [AppTag.YIELD_AGGREGATOR],
-
-  links: {
-    github: 'https://github.com/pickle-finance',
-    twitter: 'https://twitter.com/picklefinance',
-    discord: 'https://t.co/vbEtaWx8j6',
-    telegram: 'https://t.me/picklefinance',
-    medium: 'https://picklefinance.medium.com/',
-  }
-
-  groups: {},
-
-  supportedNetworks: {
-    [Network.ETHEREUM_MAINNET]: [ProtocolAction.VIEW],
-    [Network.POLYGON_MAINNET]: [ProtocolAction.VIEW],
-    [Network.ARBITRUM_MAINNET]: [ProtocolAction.VIEW],
-  },
-};
-
-@Register.AppDefinition(PICKLE_DEFINITION.id)
-export class PickleAppDefinition extends AppDefinition {
-  constructor() {
-    super(PICKLE_DEFINITION);
-  }
-}
-```
-
-The prompts in the previous step have filled in most of the details of our
-application, including the ID, name, description, and URL. We see that the
-networks that we intend to support have also been populated.
-
-You'll notice that a class has been declared called `PickleAppDefinition`, and
-it has been _decorated_ with `@Register.AppDefinition`. This decorator
-_registers_ this the Pickle app definition as a
-[provider](https://docs.nestjs.com/providers) in our NestJS app so it can be
-discovered by the rest of the application.
 
 ## What are groups?
 
@@ -121,33 +68,6 @@ Our CLI allows us to quickly add groups to an existing app. Run
 configure the ID to `jar`, the label to `Jars`, and the type to `token`. For
 farms, we'll configure the ID to `farm`, the label to `Farms`, and the type to
 `contract-position`.
-
-You will see the `groups` entry in our app definition updated to express these
-positions.
-
-```ts
-// Import the GroupType in order to leverage it in our definition
-import { GroupType } from "~app/app.interface";
-
-//...
-export const PICKLE_DEFINITION = {
-  // ...
-  groups: {
-    jar: {
-      id: "jar",
-      type: GroupType.TOKEN,
-      label: "Jars",
-    },
-
-    farm: {
-      id: "farm",
-      type: GroupType.POSITION,
-      label: "Farms",
-    },
-  },
-  // ...
-};
-```
 
 (NB: In reality, Pickle has a few more group types. Don't be alarmed! Apps
 evolve over time and we'll need to update their integrations as they do so)
