@@ -55,13 +55,13 @@ Other things to know about this endpoint
 
 Path
 
-`v2/balances/apps`
+`https://api.zapper.xyz/v2/balances/apps`
 
 Parameters
 
 - `addresses[]`: **Required** | Addresses for which to retrieve balances, inputted as an array. Can handle up to 15 addresses
   - Note: to pass multiple addresses in, the right syntax is `https://api.zapper.xyz/v2/balances/apps?addresses%5B%5D=address_1&addresses%5B%5D=address_2`
-- `network[]`: networks for which to retrieve balances, inputted an array. Available values : ethereum, polygon, optimism, gnosis, binance-smart-chain, fantom, avalanche, arbitrum, celo, moonriver, bitcoin, aurora
+- `networks[]`: networks for which to retrieve balances, inputted an array. Available values : ethereum, polygon, optimism, gnosis, binance-smart-chain, fantom, avalanche, arbitrum, celo, moonriver, bitcoin, aurora
 
 Response
 
@@ -608,13 +608,13 @@ Other things to know about this endpoint:
 
 Path
 
-`v2/balances/tokens`
+`https://api.zapper.xyz/v2/balances/tokens`
 
 Parameters
 
 - `addresses[]`: **Required** | addresses for which to retrieve balances, inputted as an array. Can handle up to 15 addresses
   - Note: to pass multiple addresses in, the right syntax is `https://api.zapper.xyz/v2/balances/tokens?addresses%5B%5D=address_1&addresses%5B%5D=address_2`
-- `network[]`: networks for which to retrieve balances, inputted an array. Available values : ethereum, polygon, optimism, gnosis, binance-smart-chain, fantom, avalanche, arbitrum, celo, moonriver, bitcoin, aurora
+- `networks[]`: networks for which to retrieve balances, inputted an array. Available values : ethereum, polygon, optimism, gnosis, binance-smart-chain, fantom, avalanche, arbitrum, celo, moonriver, bitcoin, aurora
 
 Response
 
@@ -729,7 +729,7 @@ Other things to know about this endpoint
 
 Path
 
-`v2/balances/job-status`
+`https://api.zapper.xyz/v2/balances/job-status`
 
 Parameters
 
@@ -781,7 +781,7 @@ Notes on use of the API and limits:
 
 Path
 
-`v2/balances`
+`https://api.zapper.xyz/v2/balances`
 
 Response format
 
@@ -858,7 +858,7 @@ Notes on use of the API and limits
 
 Path
 
-`v2/apps/{appSlug}/balances`
+`https://api.zapper.xyz/v2/apps/{appSlug}/balances`
 
 Parameters
 
@@ -1252,7 +1252,7 @@ Notes on use of the API and limits:
 
 Path
 
-`v2/apps/{appId}/supported`
+`https://api.zapper.xyz/v2/apps/{appId}/supported`
 
 Parameters
 
@@ -1582,7 +1582,7 @@ on and what investment groupings (`groupIds`) are included within it
 
 Path
 
-`v2/apps/{appSlug}`
+`https://api.zapper.xyz/v2/apps/{appSlug}`
 
 Parameters
 
@@ -1741,7 +1741,7 @@ return 100s of apps
 
 Path
 
-`v2/apps`
+`https://api.zapper.xyz/v2/apps`
 
 Parameters
 
@@ -1906,7 +1906,7 @@ Note that this query will only return data if the `groupId` is represented by ap
 
 Path
 
-`v2/apps/{appId}/tokens`
+`https://api.zapper.xyz/v2/apps/{appId}/tokens`
 
 :::info
 The shape of this response is a little different from `v2/apps/{appId}/positions`
@@ -2169,7 +2169,7 @@ Note that this query will only return data if the `groupId` is represented by co
 
 Path
 
-`v2/apps/{appId}/positions`
+`https://api.zapper.xyz/v2/apps/{appId}/positions`
 
 :::info
 The shape of this response is a little different from `v2/apps/{appId}/tokens`
@@ -2515,12 +2515,11 @@ Response
 
 ### `v2/nft/balances/net-worth`
 
-Provides the value of a wallet, or set of wallets, NFT portfolio, according to
-Zapper's price estimation.
+Provides the value of all NFTs in a wallet (or bundle of wallets) on the chains that Zapper supports NFTs for (currently Ethereum, Optimism, and Arbitrum)
 
 Path
 
-`v2/nft/balances/net-worth`
+`https://api.zapper.xyz/v2/nft/balances/net-worth`
 
 Parameters
 
@@ -2555,9 +2554,11 @@ This endpoint is the right one to query if you want to get **ALL** NFTs in a giv
 
 This endpoint differs from [`v2/nft/balances/tokens`](https://docs.zapper.xyz/docs/apis/api-syntax#v2nftbalancestokens) in that it does not return an ordered list of NFTs by USD value, and it allows 100 per page versus 25 per page in `v2/nft/balances/tokens`, and this NFT endpoint is much more performant.
 
+Note that Zapper supports NFTs on Ethereum, Arbitrum and Optimism, with plans to support NFTs on additional EVM chains in the future.
+
 Path
 
-`v2/nft/user/tokens`
+`https://api.zapper.xyz/v2/nft/user/tokens`
 
 Parameters
 
@@ -2648,13 +2649,15 @@ Provides detailed breakdown of all _individual NFTs_ owned in a given wallet, in
 
 [If you are looking to ingest ALL NFTs held in a given wallet, you should use the endpoint `v2/nft/user/tokens`](https://docs.zapper.xyz/docs/apis/api-syntax#v2nftusertokens) instead.
 
+Note that Zapper supports NFTs on Ethereum, Arbitrum and Optimism, with plans to support NFTs on additional EVM chains in the future.
+
 :::info
 The response is paginated, with a maximum number of 25 per response. You will need to parse through different pages, using `cursor` to get values beyond the initial 25 NFT response.
 :::
 
 Path
 
-`v2/nft/balances/tokens`
+`https://api.zapper.xyz/v2/nft/balances/tokens`
 
 Parameters
 
@@ -2756,7 +2759,9 @@ Response
 
 ### `v2/nft/balances/collections`
 
-Provides detailed breakdown of all collections owned in a given wallet, including collection metadata, estimated price for all NFTs owned in that collection, and trading volume for that collection in a given time period
+Provides detailed breakdown of all collections owned in a given wallet, including collection metadata, estimated price for all NFTs owned in that collection, and trading volume for that collection in a given time period.
+
+Note that Zapper supports NFTs on Ethereum, Arbitrum and Optimism, with plans to support NFTs on additional EVM chains in the future.
 
 :::info
 The response is paginated, with a maximum number of 25 per response. You will need to parse through different pages, using `cursor` to get values beyond the initial 25
@@ -2764,7 +2769,7 @@ The response is paginated, with a maximum number of 25 per response. You will ne
 
 Path
 
-`v2/nft/balances/collections`
+`https://api.zapper.xyz/v2/nft/balances/collections`
 
 Parameters
 
@@ -2898,11 +2903,13 @@ Response
 
 Provides a simple value returned for the total count of collections in the wallet, the estimated value of them.
 
-Differs from [`v2/nft/balances/net-worth`](https://docs.zapper.xyz/docs/apis/api-syntax#v2nftbalancesnet-worth) as you can scope down the NFTs you want the value for in the wallet
+Differs from [`v2/nft/balances/net-worth`](https://docs.zapper.xyz/docs/apis/api-syntax#v2nftbalancesnet-worth) as you can scope down the NFTs you want the value for in the wallet.
+
+Note that Zapper supports NFTs on Ethereum, Arbitrum and Optimism, with plans to support NFTs on additional EVM chains in the future.
 
 Path
 
-`v2/nft/balances/collections-totals`
+`https://api.zapper.xyz/v2/nft/balances/collections-totals`
 
 Parameters
 
@@ -2945,7 +2952,7 @@ the counts.
 
 Path
 
-`v2/nft/balances/tokens-totals`
+`https://api.zapper.xyz/v2/nft/balances/tokens-totals`
 
 Parameters
 
@@ -2988,7 +2995,7 @@ Returns data about the amount received if a trade would be made. Should be calle
 
 Path
 
-`v2/exchange/price`
+`https://api.zapper.xyz/v2/exchange/price`
 
 Parameters
 
@@ -3071,7 +3078,7 @@ be submitted.
 
 Path
 
-`v2/exchange/quote`
+`https://api.zapper.xyz/v2/exchange/quote`
 
 Parameters
 
@@ -3154,7 +3161,7 @@ Returns the exchanges supported by Zapper API.
 
 Path
 
-`v2/exchange/supported`
+`https://api.zapper.xyz/v2/exchange/supported`
 
 Parameters
 
@@ -3226,7 +3233,7 @@ CoinGecko
 
 Path
 
-`v2/prices`
+`https://api.zapper.xyz/v2/prices`
 
 Parameters
 
@@ -3319,11 +3326,11 @@ Retrieve supported tokens and their prices across many currencies
 
 Path
 
-`v2/gas-prices`
+`https://api.zapper.xyz/v2/gas-prices`
 
 Parameters
 
-- `network`: Retrieve gas prices for this network
+- `network`: Retrieve gas prices for this network. If left blank, defaults to Ethereum gas price
 - `eip1559`: **(required)** | boolean flag for Retrieve post London gas price details
 
 Returns
@@ -3371,12 +3378,13 @@ Endpoint returns how many API points are remaining in your API account. Your bal
 
 Notes on how points work
 
+- Your `pointsRemaining` is a simple calculation of: (total points purchased or gifted via free quota that have not expired) - (total points consumed) = points remaining
 - If you have multiple API keys issued to you, they all pull points from the same pot; API points are not on a per-key basis, but at a business-entity level. So, all your API keys will return the same `pointsRemaining` value, as they share the same pot of points.
-- `pointsRemaining` is calculated and evaluated every ~1 hour. This endpoint is not real-time
+- `pointsRemaining` is calculated and evaluated every ~1 hour. This endpoint is not real-time. Refer to `pointsUpdatedAt` value in response for the timestamp that your points balance was snapshot'd at. It is never more than ~1.5 hour old
 
 Path
 
-`v1/api-clients/points`
+`https://api.zapper.xyz/v1/api-clients/points`
 
 Parameters
 
@@ -3384,7 +3392,9 @@ No parameters; your API key is authorized via your header, so points can only be
 
 Returns
 
-- `pointsRemaining`: how many points your API account has remaining before being turned off due to a negative points balance
+- `pointsRemaining`: how many points your API account has remaining before being turned off due to a negative points balance. Calculation for this is 
+- `pointsConsumedYesterday`: how many points your API account consumed yesterday in the full 24 hour period
+- `pointsUpdatedAt`: timestamp of when we last snapshot how many points the API account has remaining
 
 cURL
 
@@ -3399,6 +3409,8 @@ Response
 
 ```JSON
 {
-   "pointsRemaining": "19962"
+    "pointsRemaining": "29778",
+    "pointsConsumedYesterday": "11",
+    "pointsUpdatedAt": "2023-02-28T01:08:01.152Z"
 }
 ```
