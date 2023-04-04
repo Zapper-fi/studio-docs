@@ -17,6 +17,8 @@
   },
   "dependencies": {
     "@algolia/client-search": "^4.9.1",
+    "@docusaurus/core": "2.0.0-beta.18",
+    "@docusaurus/preset-classic": "2.0.0-beta.18",
     "@mdx-js/react": "^1.6.22",
     "clsx": "^1.1.1",
     "core-js": "^3.30.0",
@@ -34,11 +36,8 @@
     "webpack": "^5.0.0"
   },
   "devDependencies": {
-    "@docusaurus/core": "2.4.0",
-    "@docusaurus/module-type-aliases": "2.4.0",
-    "@docusaurus/preset-classic": "2.4.0",
+    "@docusaurus/module-type-aliases": "2.0.0-beta.18",
     "@docusaurus/theme-classic": "^2.4.0",
-    "@docusaurus/types": "^2.4.0",
     "@tsconfig/docusaurus": "^1.0.5",
     "@types/node": "^18.15.11",
     "@types/react": "*",
