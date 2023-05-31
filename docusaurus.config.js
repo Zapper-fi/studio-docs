@@ -81,6 +81,11 @@ const config = {
             activeBaseRegex: "docs/apis/",
           },
           {
+            to: "documentation",
+            position: "left",
+            label: "Documentation",
+          },
+          {
             href: "https://github.com/Zapper-fi/studio",
             label: "GitHub",
             position: "right",
