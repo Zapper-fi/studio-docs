@@ -89,7 +89,6 @@ Response
     - `balanceUSD`: value of `balance` position, converted to USD
   - `meta`: Information about balances that is not specifically balances. This value is developer defined, but examples are health factors and collateralization ratios (c-ratios)
 
-  
 cURL for POST
 
 ```js
