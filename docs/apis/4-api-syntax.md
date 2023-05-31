@@ -11,8 +11,6 @@ See below for details on each of Zapper's API endpoints.
 
 ### `v2/balances/apps`
 
-*This endpoint was launched in January 2023, replacing the historical [`v2/balances`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balances) endpoint*
-
 You input wallet addresses and get all the following:
 
 - Detailed breakdown of all app investment positions represented as app tokens owned by the wallet, such as Aave lending positions or Uniswap pools, valued in USD
@@ -34,13 +32,6 @@ Points Cost For `v2/balances/apps` Related Queries:
 - 4 points per POST `v2/balances/apps` call per wallet included in the call. This call triggers Zapper recomputing the wallet's balances, generating a large volume of downstream API calls. A `jobId` will be included in the response
 - 0 points per call GET [`v2/balances/job-status`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancesjob-status), used to monitor the status of the `jobId`. These calls are free, allowing you to poll the status of the computation job
 
-:::info
-Note that this endpoint differs from [`v2/balances`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balances) as it does NOT contain base token balances, but only contains balances related to a particular app.
-
-- To get token balances, call GET [`v2/balances/tokens`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancestokens)
-- To get NFT values, call GET [`v2/nft/balances/net-worth`](https://docs.zapper.xyz/docs/apis/api-syntax#v2nftbalancesnet-worth)
-:::
-
 Tips On Using This Endpoint Cost-Effectively:
 
 - If you are querying a wallet for the first time, and it is a potentially popular wallet, there is a chance that a cached value already exists, and you can retry it for only 0.25 points cost. Upon getting the results, you can check how stale the balances are based on the value returned of `updatedAt`
@@ -52,6 +43,7 @@ Other things to know about this endpoint
 - Maximum of 30 RPM (requests per minute)
 - Maximum of 15 wallets can be passed into 1 call as parameters. Any more beyond 15 wallets, and the query will fail. And, though we support multiple wallets bundled into 1 call, it's recommended you **query wallets one at a time** for best performance
 - Any balance less than $0.01 USD value is not included in the output
+- TTL on the data in this endpoint, once computed via a POST request, is infinite. The cached value does not expire. It will only be recomputed when a user requests the accounts balance on Zapper's frontend OR when an API user requests a recomputation
 
 Path
 
@@ -569,8 +561,6 @@ Response for GET
 
 ### `v2/balances/tokens`
 
-*This endpoint was launched in January 2023, replacing the historical [`v2/balances`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balances) endpoint*
-
 You input wallet addresses and get all "base tokens" in the wallet. "Base tokens" are ERC20 tokens that are not invested by the user in an app, but instead sit in the wallet natively. Base tokens are often  liquid and tradable, whereas app tokens are those invested in apps are illiquid and cannot be natively traded, like a Uniswap pool token.
 
 On Zapper's frontend, all tokens that show up in the *Wallet* section of a portfoilo are returned in the `v2/balances/tokens` endpoint. All values showing up in the *Apps* section of a portfolio are returned in the [`v2/balances/apps`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancesapps) endpoint.
@@ -588,10 +578,6 @@ Points Cost For `v2/balances/tokens` Related Queries:
 - 0.25 points per GET `v2/balances/tokens` call per wallet included in the call, as this is simply retrieving the value in Zapper's database
 - 1 points per POST `v2/balances/tokens` call per wallet included in the call. This call triggers Zapper recomputing the wallet's balances, generating a large volume of downstream API calls. A `jobId` will be included in the response
 - 0 points per call GET `v2/balances/job-status?jobId=:jobId`, used to monitor the status of the `jobId`. These calls are free, allowing you to poll the status of the computation job
-
-:::info
-Note that this endpoint differs from [`v2/balances`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balances) as it does NOT contain app-related balances (like uniswap pools or AAVE lending poisitions), but only contains balances related to "base tokens", or ERC20 tokens that are not invested in a given app. To get the full value of a wallet's assets, you should also call GET [`v2/balances/apps`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancesapps) app balances and call [`v2/nft/balances/net-worth`](https://docs.zapper.xyz/docs/apis/api-syntax#v2nftbalancesnet-worth) to get NFT related balances
-:::
 
 Tips On Using This Endpoint Cost-Effectively:
 
@@ -712,8 +698,6 @@ Response for GET
 
 ### `v2/balances/job-status`
 
-*This endpoint was launched in January 2023, replacing the historical [`v2/balances`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balances) endpoint*
-
 Use this endpoint to poll for the status of a job that is calculating app-related balances or base token balances, via [`v2/balances/apps`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancesapps) and [`v2/balances/tokens`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancestokens) respectively.
 
 When you call POST [`v2/balances/apps`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancesapps) or [`v2/balances/tokens`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancestokens), a re-calculation of the balances in that wallet is triggered, and the response to those calls will be a value `jobId`. You can then monitor the status of the re-computation job by passing `jobId` as a parameter into this endpoint, `v2/balances/job-status`.
@@ -760,87 +744,7 @@ Response
 }
 ```
 
-### `v2/balances`
-
-The `v2/balances` endpoint is the most powerful of those offered by Zapper. You input wallet addresses and get all the following:
-
-- All tokens the wallet owns, by network, valued in USD
-- Detailed breakdown of all app investment positions represented as app tokens owned by the wallet, such as Aave lending positions or Uniswap pools, valued in USD
-- Detailed breakdown of all app investment positions represented as contract positions that are not held on the wallet, such ve-locked or farming positions, valued in USD
-
-:::danger
-`v2/balances` endpoint was deprecated by Zapper in January 2023,, and will be turned down in May 2023. This endpoint will be phased out for [`v2/balances/apps`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancesapps) and [`v2/balances/tokens`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancestokens) endpoints, which are more performant, cost less, and return a typcial JSON structure. Please do not build further on this endpoint, but instead migrate your queries to the other endpoints.
-:::
-
-Notes on use of the API and limits:
-
-- Maximum of 30 RPM (requests per minute)
-- Maximum of 15 wallets can be passed into 1 call, though it's recommended you query wallets one at a time for best performance
-- Any balance less than $0.01 USD value is not included in the output
-
-Path
-
-`https://api.zapper.xyz/v2/balances`
-
-Response format
-
-The response is in JSON, but is streamed from our endpoint. You will need to understand how to handle streamed responses.
-[See our documentation on SSE handling here](https://studio.zapper.xyz/docs/apis/balance-v2-sse).
-
-Parameters
-
-- `addresses[]`: **(required)** | Addresses for which to retrieve balances, inputted as an array. Can handle up to 15 addresses
-- `networks[]`: Networks for which to retrieve balances, inputted an array. Available values : ethereum, polygon, optimism, gnosis, binance-smart-chain, fantom, avalanche, arbitrum, celo, moonriver, bitcoin, cronos, aurora
-- `bundled`: Set to false to receive balance individually for each addresses, instead of bundled together
-
-Returns
-
-- `appId`: ID of the app
-- `network`: network the app is on
-- `addresses`: addresses queried for
-- `balance`: details on the balance structure, and what kind of balance it is
-- `type`: type of position the investment is. `contract-position` is if the investment is held on a 3rd party contract
-- `app-token`: is if the wallet holds tokens in the wallet representing the investment
-- `displayProps`: details on how to display the asset on Zapper's frontend
-
-cURL
-
-```js
-cURL -X 'GET' \
-  'https://api.zapper.xyz/v2/balances?addresses%5B%5D=0x3d280fde2ddb59323c891cf30995e1862510342f&bundled=false' \
-  -H 'accept: */*' \
-  -H 'Authorization: Basic sadkfljsdafksal24uh2jk34=='
-```
-
-Response
-
-```JSON
-event: balance
-data: {"appId":"sudoswap","network":"ethereum","addresses":["0x3d280fde2ddb59323c891cf30995e1862510342f"],"balance":{"deposits":{},"debt":{},"vesting":{},"wallet":{},"claimable":{},"locked":{},"nft":{}},"totals":[{"key":"2987028053","type":"contract-position","network":"ethereum","balanceUSD":7256.5594200000005}],"errors":[],"app":{"appId":"sudoswap","network":"ethereum","data":[{"key":"2987028053","type":"position","appId":"sudoswap","address":"0xea504f1857707c6c875cba618a33bd09fc4aefac","metaType":null,"balanceUSD":7256.5594200000005,"contractType":"contract-position","network":"ethereum","displayProps":{"label":"Chain Runners ↔ ETH - Price: 0.22Ξ","secondaryLabel":null,"tertiaryLabel":null,"images":["https://lh3.googleusercontent.com/3vScLGUcTB7yhItRYXuAFcPGFNJ3kgO0mXeUSUfEMBjGkGPKz__smtXyUlRxzZjr1Y5x8hz1QXoBQSEb8wm4oBByeQC_8WOCaDON4Go=s120","https://storage.googleapis.com/zapper-fi-assets/tokens/ethereum/0x0000000000000000000000000000000000000000.png"],"stats":[],"info":[{"label":{"type":"string","value":"App"},"value":{"type":"string","value":"Sudoswap"}}],"balanceDisplayMode":"default"},"breakdown":[{"key":"917389808","appId":"nft","address":"0x97597002980134bea46250aa0510c9b90d87a587","network":"ethereum","balanceUSD":7256.5594200000005,"metaType":"supplied","type":"nft","contractType":"non-fungible-token","breakdown":[],"assets":[{"tokenId":"1976","assetImg":"https://web.zapper.xyz/images/?url=https%3A%2F%2Fimg.chainrunners.xyz%2Fapi%2Fv1%2Ftokens%2Fpng%2F1976&width=250&checksum=6f122","assetName":"Chain Runners #1976","balance":1,"balanceUSD":219.89574000000002},{"tokenId":"2835","assetImg":"https://web.zapper.xyz/images/?url=https%3A%2F%2Fimg.chainrunners.xyz%2Fapi%2Fv1%2Ftokens%2Fpng%2F2835&width=250&checksum=f4896","assetName":"Chain Runners #2835","balance":1,"balanceUSD":219.89574000000002},{"tokenId":"3067","assetImg":"https://web.zapper.xyz/images/?url=https%3A%2F%2Fimg.chainrunners.xyz%2Fapi%2Fv1%2Ftokens%2Fpng%2F3067&width=250&checksum=d3ddb","assetName":"Chain Runners #3067","balance":1,"balanceUSD":219.89574000000002},{"tokenId":"3094","assetImg":"https://web.zapper.xyz/images/?url=https%3A%2F%2Fimg.chainrunners.xyz%2Fapi%2Fv1%2Ftokens%2Fpng%2F3094&width=250&checksum=83db0","assetName":"Chain Runners #3094","balance":1,"balanceUSD":219.89574000000002},{"tokenId":"4605","assetImg":"https://web.zapper.xyz/images/?url=https%3A%2F%2Fimg.chainrunners.xyz%2Fapi%2Fv1%2Ftokens%2Fpng%2F4605&width=250&checksum=93684","assetName":"Chain Runners #4605","balance":1,"balanceUSD":219.89574000000002}],"context":{"incomplete":true,"openseaId":"18242","holdersCount":3341,"floorPrice":0.171,"amountHeld":33,"volume24h":0,"volume7d":0,"volume1m":0},"displayProps":{"label":"RUN","secondaryLabel":{"type":"linkVersion","value":2},"tertiaryLabel":null,"profileImage":"https://lh3.googleusercontent.com/3vScLGUcTB7yhItRYXuAFcPGFNJ3kgO0mXeUSUfEMBjGkGPKz__smtXyUlRxzZjr1Y5x8hz1QXoBQSEb8wm4oBByeQC_8WOCaDON4Go=s120","profileBanner":"https://lh3.googleusercontent.com/8MKiOEUA3COVcXKzhj54Q5eP0GP9NDOFsumbkiQ2KokimqYGlfTxLKei60ZUG_ipq-VZ5_D2rGZAjxmOVEIVSJaezvrwZe2IywOyEQ=s2500","featuredImg":"","featuredImage":"","images":[],"balanceDisplayMode":"default","stats":[],"info":[]}}]}],"displayProps":{"appName":"Sudoswap","images":["https://storage.googleapis.com/zapper-fi-assets/apps/sudoswap.png"]},"meta":{"total":7256.5594200000005}}}
-
-event: balance
-data: {"appId":"tokens","network":"ethereum","addresses":["0x3d280fde2ddb59323c891cf30995e1862510342f"],"balance":{"deposits":{},"debt":{},"vesting":{},"wallet":{"2242939522":{"key":"2242939522","appId":"tokens","address":"0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2","network":"ethereum","balanceUSD":164.645982,"metaType":"supplied","displayProps":{"label":"WETH","secondaryLabel":null,"tertiaryLabel":null,"images":["https://storage.googleapis.com/zapper-fi-assets/tokens/ethereum/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"],"stats":[],"info":[{"label":{"type":"string","value":"App"},"value":{"type":"string","value":"Tokens"}}],"balanceDisplayMode":"default"},"type":"token","contractType":"app-token","context":{"symbol":"WETH","balance":0.1280375,"decimals":18,"balanceRaw":"128037500000000000","price":1285.92},"breakdown":[]},"2616394601":{"key":"2616394601","appId":"tokens","address":"0x0000000000000000000000000000000000000000","network":"ethereum","balanceUSD":38016.69226492142,"metaType":"supplied","displayProps":{"label":"ETH","secondaryLabel":null,"tertiaryLabel":null,"images":["https://storage.googleapis.com/zapper-fi-assets/tokens/ethereum/0x0000000000000000000000000000000000000000.png"],"stats":[],"info":[{"label":{"type":"string","value":"App"},"value":{"type":"string","value":"Tokens"}}],"balanceDisplayMode":"default"},"type":"token","contractType":"app-token","context":{"symbol":"ETH","balance":29.563808218957178,"decimals":18,"balanceRaw":"29563808218957175106","price":1285.92},"breakdown":[]}},"claimable":{},"locked":{},"nft":{}},"totals":[{"key":"2616394601","type":"app-token","network":"ethereum","balanceUSD":38016.69226492142},{"key":"2242939522","type":"app-token","network":"ethereum","balanceUSD":164.645982}],"errors":[]}
-
-event: balance
-data: {"appId":"tokens","network":"polygon","addresses":["0x3d280fde2ddb59323c891cf30995e1862510342f"],"balance":{"deposits":{},"debt":{},"vesting":{},"wallet":{"3068350652":{"key":"3068350652","appId":"tokens","address":"0x0000000000000000000000000000000000000000","network":"polygon","balanceUSD":0.81355,"metaType":"supplied","displayProps":{"label":"MATIC","secondaryLabel":null,"tertiaryLabel":null,"images":["https://storage.googleapis.com/zapper-fi-assets/tokens/polygon/0x0000000000000000000000000000000000000000.png"],"stats":[],"info":[{"label":{"type":"string","value":"App"},"value":{"type":"string","value":"Tokens"}}],"balanceDisplayMode":"default"},"type":"token","contractType":"app-token","context":{"symbol":"MATIC","balance":1,"decimals":18,"balanceRaw":"1000000000000000000","price":0.81355},"breakdown":[]},"3291018073":{"key":"3291018073","appId":"tokens","address":"0x1599fe55cda767b1f631ee7d414b41f5d6de393d","network":"polygon","balanceUSD":575.7775786568517,"metaType":"supplied","displayProps":{"label":"MILK","secondaryLabel":null,"tertiaryLabel":null,"images":["https://storage.googleapis.com/zapper-fi-assets/tokens/polygon/0x1599fe55cda767b1f631ee7d414b41f5d6de393d.png"],"stats":[],"info":[{"label":{"type":"string","value":"App"},"value":{"type":"string","value":"Tokens"}}],"balanceDisplayMode":"default"},"type":"token","contractType":"app-token","context":{"symbol":"MILK","balance":1745044.9421332069,"decimals":18,"balanceRaw":"1745044942133206903703483","price":0.00032995},"breakdown":[]}},"claimable":{},"locked":{},"nft":{}},"totals":[{"key":"3068350652","type":"app-token","network":"polygon","balanceUSD":0.81355},{"key":"3291018073","type":"app-token","network":"polygon","balanceUSD":575.7775786568517}],"errors":[]}
-
-event: balance
-data: {"appId":"tokens","network":"optimism","addresses":["0x3d280fde2ddb59323c891cf30995e1862510342f"],"balance":{"deposits":{},"debt":{},"vesting":{},"wallet":{"2177766732":{"key":"2177766732","appId":"tokens","address":"0x0000000000000000000000000000000000000000","network":"optimism","balanceUSD":0.7487512921509502,"metaType":"supplied","displayProps":{"label":"ETH","secondaryLabel":null,"tertiaryLabel":null,"images":["https://storage.googleapis.com/zapper-fi-assets/tokens/optimism/0x0000000000000000000000000000000000000000.png"],"stats":[],"info":[{"label":{"type":"string","value":"App"},"value":{"type":"string","value":"Tokens"}}],"balanceDisplayMode":"default"},"type":"token","contractType":"app-token","context":{"symbol":"ETH","balance":0.000582268953084912,"decimals":18,"balanceRaw":"582268953084912","price":1285.92},"breakdown":[]}},"claimable":{},"locked":{},"nft":{}},"totals":[{"key":"2177766732","type":"app-token","network":"optimism","balanceUSD":0.7487512921509502}],"errors":[]}
-
-event: balance
-data: {"appId":"tokens","network":"gnosis","addresses":["0x3d280fde2ddb59323c891cf30995e1862510342f"],"balance":{"deposits":{},"debt":{},"vesting":{},"wallet":{},"claimable":{},"locked":{},"nft":{}},"totals":[],"errors":[]}
-
-...
-
-event: end
-data: {}
-```
-
 ### `v2/apps/{appSlug}/balances`
-
-The `v2/apps/{appSlug}/balances` endpoint is similar to the [`v2/balances`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balances) query,
-but returns data only for a specific app, instead of ALL apps, tokens and NFTs in
-a wallet. 
 
 You input wallet addresses and get all the following:
 
