@@ -6,7 +6,7 @@ sidebar_position: 6
 
 ## What is an event interpreter?
 
-Event interpretation is the process of translating complex onchain information into a human-readable summary for display on [Zapper's activity feed](www.zapper.xyz/feed)
+Event interpretation is the process of translating complex onchain information into a **human-readable summary** for display on [Zapper's activity feed](www.zapper.xyz/feed).
 
 With approximately 1,000,000 transactions processed daily on the Ethereum network, each transaction represents an onchain event encompassing various activities like mints, swaps, deposits, rugpulls, and more. Despite containing valuable information and context, transactions are often challenging to parse due to factors like logs, methods, internal transactions, and obfuscation caused by business logic and gas optimizations. 
 
@@ -17,7 +17,7 @@ Zapper aims to address this issue by providing scalable tools for event interpre
 First, we assume that you have knowledge of what the transaction was generally about, such as “in this transaction, the user borrowed 500,000 FRAX on Frax Lend”. Equipped with that knowledge, you can then fill out the transaction using the pre-populated drop-down menus and free-form text boxes.
 
 ![Before and after for an event interpretation](../static/img/assets/frax_event_interpretation.png)
-*Example of what interpreting an event looks like before and after. [Link to the above event on Zapper](https://zapper.xyz/event/0xd2e6c6ea657f694bedad89c0f49d9509bfc2cf173a7dfb64e7b02e4242eed326)*
+*Example of what interpreting an event looks like before and after. [Link to the above event on Zapper.](https://zapper.xyz/event/0xd2e6c6ea657f694bedad89c0f49d9509bfc2cf173a7dfb64e7b02e4242eed326)*
 
 Even more so, once a user tells us how to interpret a specific transaction, like borrowing $FRAX on Frax Lend, we can then use this description template to describe ALL events where users are borrowing $FRAX on Frax Lend, not just the one being interpreted. In fact, we see that each event interpretation approved goes on to describe an average of **10,000 transactions** on Ethereum, which are then consumed by all users consuming the activity feed on Zapper.
 
@@ -67,5 +67,5 @@ Note that you can monitor the status of your submissions and see rejection reaso
 
 - Multi-sig transactions - we are working on interpreting these events at-scale
 - Proxy contract transactions, like transactions interacting with Maker’s DSProxy contracts. We’re also working on interpreting these at scale, but they are weird
-- Events that have already been interpreted. Note that if you see something that is wrong, please ping in our Discord and we can get it fixed up!
+- Events that have already been interpreted. Note that if you see something that is wrong, please ping in our [Discord](https://www.zapper.xyz/discord) and we can get it fixed up!
 - Events interacting with smart contracts that do not have their ABIs verified. If you try to interpret one of these, you will get a pop-up informing you of this situation. We are working on indexing the ABIs internally to remove this blocker, so stay tuned!
