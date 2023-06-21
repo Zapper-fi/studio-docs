@@ -48,7 +48,7 @@ Note that you do not need to use all every account or token transfer listed in t
 
 This is a free-form input + drop-down menu, where all apps that Zapper has in our system are listed. You’ll find the big names like OpenSea, Aave, Uniswap, Blur, etc. in the list. If the transaction you are describing is associated with a web3 app, please select it from the list. 
 
-If you do not the right app on the dropdown list, feel free to type it in yourself, and we will add it on our backend!
+If you do not the right app on the suggestion list, feel free to type it in yourself, and we will add it on our backend!
 
 Note that you do not need to associate the transaction with an app if no app was involved; this is an optional field. For example, if the transaction is just a user minting an NFT from a NFT collection, initiated directly from the NFT collection’s smart contract, and didn’t take place through OpenSea or some frontend, then there is no app to associate it with.
 
