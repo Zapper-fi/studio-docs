@@ -27,6 +27,7 @@ async function getBalances() {
   try {
     const { data } = await Axios.post(
       `https://api.zapper.xyz/v2/balances/apps?addresses%5B%5D=${address}`,
+      undefined,
       {
         headers: {
           accept: "*/*",
