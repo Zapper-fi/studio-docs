@@ -5,7 +5,7 @@ sidebar_position: 4
 # API Schema
 
 See below for details on each of Zapper's API endpoints.
-[Swagger docs to test these endpoints can be found here.](https://api.zapper.xyz/api/static/index.html#)
+[Swagger docs to test these endpoints can be found here.](https://api.zapper.xyz/api)
 
 ## Wallet-specific App and ERC20 Token Balances endpoints
 

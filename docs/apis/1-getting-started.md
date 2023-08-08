@@ -25,14 +25,14 @@ DeFi data for an ever increasing number of apps.
 For a full list of supported apps, [see here](https://zapper.xyz/protocols).
 
 To see all endpoints that are available for public use, Check out [API schema docs](https://studio.zapper.xyz/docs/apis/api-syntax) and the
-[Swagger UI](https://api.zapper.xyz/api/static/index.html#) to see how to query
+[Swagger UI](https://api.zapper.xyz/api) to see how to query
 wallet balances, token prices, gas prices, and more.
 
 ![DeFi](../../static/img/assets/data_api.png)
 
 :::tip
 To learn and see all of Zapper's public API endpoints, check out the
-[Swagger UI](https://api.zapper.xyz/api/static/index.html#/) page.
+[Swagger UI](https://api.zapper.xyz/api) page.
 
 For any API-related inquiries, please reach out in the
 [#api-buildooorrs channel](https://discord.com/channels/647279669388771329/650654989202489354)
