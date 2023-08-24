@@ -5,7 +5,7 @@ import { RedocStandalone } from 'redoc';
 const DocumentationPage = () => {
     return (
         <Layout>
-            <RedocStandalone specUrl="https://api.zapper.xyz/api/json" />
+            <RedocStandalone specUrl="https://api.zapper.xyz/api-json" />
         </Layout>
     )
 }
