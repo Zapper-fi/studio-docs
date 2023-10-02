@@ -26,7 +26,7 @@ If you want to integrate your app / protocol, you're in the right place!
 
 ## Contributing
 
-The basic flow of getting your app listed on Zapper is the follow steps:
+The basic flow of getting your app listed on Zapper is as follows:
 
 1. Fork the Studio repo to your personal namespace.
 1. Write your integration, using Zapper's provided SDK and the guides in this
