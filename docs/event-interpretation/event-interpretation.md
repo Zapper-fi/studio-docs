@@ -16,7 +16,7 @@ Zapper aims to address this issue by providing scalable tools for event interpre
 
 First, we assume that you have knowledge of what the transaction was generally about, such as “in this transaction, the user borrowed 500,000 FRAX on Frax Lend”. Equipped with that knowledge, you can then fill out the transaction using the pre-populated drop-down menus and free-form text boxes.
 
-![Before and after for an event interpretation](/static/img/assets/frax_event_interpretation2.png)
+![Before and after for an event interpretation](static/img/assets/frax_event_interpretation2.png)
 
 *Example of what interpreting an event looks like before and after. [Link to the above event on Zapper.](https://zapper.xyz/event/ethereum/0x319b0a720cc0cac120d021a267f1070ed4e5eb03784f39cd8c642ef2664cbdac)*
 
@@ -40,7 +40,7 @@ This is generally going to be the verb describing the action taken by the accoun
 
 This is a drop-down menu where Zapper pre-populates 2 types of information for you to use to describe the transaction:
 
-![The token transfer dropdown](/static/img/assets/token-transfers-out.png)
+![The token transfer dropdown](static/img/assets/token-transfers-out.png)
 
 - Token transactions that flowed into or out of the “from” account in the transaction (i.e. the initiator of the transaction) and the “to” account in the transaction (which is generally the counter-party of the transaction, but not always!)
 - Accounts involved in the transaction, including intermediaries beyond the “to” and “from” accounts. These accounts could be NFT collections, externally owned accounts (e.g. manually-controlled wallets by humans), multi-sigs or any other type of smart contract
@@ -51,7 +51,7 @@ Note that you do not need to use all every account or token transfer listed in t
 
 This is a free-form input + drop-down menu, where all apps that Zapper has in our system are listed. You’ll find the big names like OpenSea, Aave, Uniswap, Blur, etc. in the list. If the transaction you are describing is associated with a web3 app, please select it from the list.
 
-![The app dropdown menu](/static/img/assets/app-drop-down.png)
+![The app dropdown menu](static/img/assets/app-drop-down.png)
 
 If you do not see the correct app on the suggestion list, please to type it in yourself, and we will add it on our backend!
 
@@ -68,10 +68,10 @@ Pointers on how to understand what is happening in a transaction
     - HOWEVER, methods can also be misleading, so do not blindly trust them! Most smart contracts are forks of other contracts, where the devs copy the contract, and tweak it for their needs, but do not update the method names. This can lead to situations where a `withdraw` function is really a `claim` function, or a `deposit` is really `locked funds for 2 years`. Zapper's goal is to accurately and clearly describe the blockchain, so please do be aware of this in your submissions!
 
 - It often helps to look up what app a contract in a transaction is associated with. If you find that the contract relates to Aave, its a good chance the methods relating to supplying and withdrawing funds from a lending protocol. The best way to find out what app an contract belongs to is to Google the TO address
-![Check out the search results and look for a link to an app's docs that includes the contract address](/static/img/assets/google-contract.png)
+![Check out the search results and look for a link to an app's docs that includes the contract address](static/img/assets/google-contract.png)
 
 - If that fails, another good way to investigate what app owns a contract is to search it on Github, and look if it is in an app's Github repository (or of anther app has added it and labelled it in their repo). Example search query: <https://github.com/search?q=0x6774Bcbd5ceCeF1336b5300fb5186a12DDD8b367&type=code>
-![Looks like this contract is in the scroll-tech repo, and is associated with Scroll chain on Defi Llama](/static/img/assets/github-contract-lookup.png)
+![Looks like this contract is in the scroll-tech repo, and is associated with Scroll chain on Defi Llama](static/img/assets/github-contract-lookup.png)
 
 ## Submission process
 
@@ -84,7 +84,7 @@ Once you’ve written your event interpretation, go ahead and submit it! Once yo
 
 Note that you can monitor the status of your submissions and see rejection reasons in your My Submissions page, found at <www.zapper.xyz/my-submissions>.
 
-![Example of what the My Submissions page looks like](/static/img/assets/my-submissions-screenshot.png)
+![Example of what the My Submissions page looks like](static/img/assets/my-submissions-screenshot.png)
 
 ## Events that cannot be interpreted at this time
 
