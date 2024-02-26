@@ -6,9 +6,11 @@ sidebar_position: 2
 
 Announced on February 26th, 2024, Zapper is running "Round 1", where we will be granting 1,550 [OP tokens](https://zapper.xyz/token/optimism/0x4200000000000000000000000000000000000042/OP/details) to top contributors of event interpretations during the contest period!
 
-Checkout the [Round 1 leaderboard](https://zapper-frontend-next-git-leaderboard-with-seasons-zapper-fi.vercel.app/curate/leaderboard?page=1&before=MHg1ZWNjMjVkMWY2NThhZjY5ZDliNTlmY2FlZGIyZDllZTM4MjU0MDM2&tab=1) to see how you compare in the contest! Higher your rank, the more you are likely to receive in OP.
+Checkout the [Round 1 leaderboard](https://zapper-frontend-next-git-leaderboard-with-seasons-zapper-fi.vercel.app/curate/leaderboard?page=1&before=MHg1ZWNjMjVkMWY2NThhZjY5ZDliNTlmY2FlZGIyZDllZTM4MjU0MDM2&tab=1) to see how you compare in the contest! The higher your rank, the more you are likely to receive at the conclusion of Round 1.
 
-Curious what an "event interprretation" is, or how to submit one? [Check out our docs here!](https://docs.zapper.xyz/docs/event-interpretation)
+:::info
+Curious what an "event interpretation" is, or how to submit one? [Check out our docs here!](https://docs.zapper.xyz/docs/event-interpretation)
+:::
 
 ## Round 1 details
 

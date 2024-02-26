@@ -34,7 +34,7 @@ The areas are:
 
 ### The initial verb
 
-This is generally going to be the verb describing the action taken by the account that initiated this transaction. Common verbs for onchain transactions are “deposited”, “minted”, “swapped”, “claimed”, “borrowed”, etc. However, these can get more complex if needed, such as “Bought a Powershart Pack”, “Toggled nesting”, or “Bought a raffle ticket”. The main goal is to accurately describe what action was taken in this transaction by the initiator of it.
+This is generally going to be the verb describing the action taken by the account that initiated this transaction. Common verbs for onchain transactions are `deposited`, `minted`, `swapped`, `claimed`, `borrowed`, etc. However, these can get more complex if needed, such as `Bought a Powershart Pack`, `Toggled nesting`, or `Bought a raffle ticket`. The main goal is to accurately describe what action was taken in this transaction by the initiator of it.
 
 ### Token transfers or accounts involved (optional)
 
@@ -47,7 +47,7 @@ This is a drop-down menu where Zapper pre-populates 2 types of information for y
 
 Note that you do not need to use all every account or token transfer listed in the drop-down menu if it is not needed to describe the transaction. You could actually totally ignore using any of these in the description if it doesn’t add value! The more concise, the better in our minds.
 
-### The app that this transaction took place through (optional)
+### The app that this transaction took place through
 
 This is a free-form input + drop-down menu, where all apps that Zapper has in our system are listed. You’ll find the big names like OpenSea, Aave, Uniswap, Blur, etc. in the list. If the transaction you are describing is associated with a web3 app, please select it from the list.
 
@@ -59,13 +59,11 @@ Note that you do not need to associate the transaction with an app if no app was
 
 ## Tips on how to investigate an event for interpretation
 
-For a lot of transactions, it can be a bit tricky to understand exactly what the purpose of a transaction was if you do not know. The best place is to start by looking at your own activity feed timeline, and interpret any transactions that are rending as "did something". You can see your timeline here: <https://zapper.xyz/dashboard?tab=history>
+For a lot of transactions, it can be a bit tricky to understand exactly what the purpose of a transaction was if you do not know. The best place is to start by looking at your own activity feed timeline, and interpret any transactions that are rending as "did something". You can see your timeline at [https://zapper.xyz/dashboard?tab=history](https://zapper.xyz/dashboard?tab=history)
 
 However, if you're feeling adventurous, you can source popular, uninterpreted transactions from the [Curate page.](https://zapper.xyz/curate/events)
 
-Pointers on how to understand what is happening in a transaction
--The `method` name is usually helpful in pointing you towards what action is taken. If the method name is `deposit`, its likely the user sent tokens away and deposited them in an app.
-    - HOWEVER, methods can also be misleading, so do not blindly trust them! Most smart contracts are forks of other contracts, where the devs copy the contract, and tweak it for their needs, but do not update the method names. This can lead to situations where a `withdraw` function is really a `claim` function, or a `deposit` is really `locked funds for 2 years`. Zapper's goal is to accurately and clearly describe the blockchain, so please do be aware of this in your submissions!
+-The `method` name is usually helpful in pointing you towards what action is taken. If the method name is `deposit`, its likely the user sent tokens away and deposited them in an app. HOWEVER, methods can also be misleading, so do not blindly trust them! Most smart contracts are forks of other contracts, where the devs copy the contract, and tweak it for their needs, but do not update the method names. This can lead to situations where a `withdraw` function is really a `claim` function, or a `deposit` is really `locked funds for 2 years`. Zapper's goal is to accurately and clearly describe the blockchain, so please do be aware of this in your submissions!
 
 - It often helps to look up what app a contract in a transaction is associated with. If you find that the contract relates to Aave, its a good chance the methods relating to supplying and withdrawing funds from a lending protocol. The best way to find out what app an contract belongs to is to Google the TO address
 ![Check out the search results and look for a link to an app's docs that includes the contract address](../../static/img/assets/google-contract.png)
@@ -82,7 +80,7 @@ Once you’ve written your event interpretation, go ahead and submit it! Once yo
 - If the submissions is all good to go, we will approve it, and your event interpreter will be deployed to Zapper’s site for all users to use!
 - If the submission has some issues, we may reject it and include a reason for the rejection. Common rejection reasons are if the submission is a duplicate of another submission that was pending or if the action was too vague to understand
 
-Note that you can monitor the status of your submissions and see rejection reasons in your My Submissions page, found at <www.zapper.xyz/my-submissions>.
+Note that you can monitor the status of your submissions and see rejection reasons in your My Submissions page, found at [www.zapper.xyz/my-submissions.](www.zapper.xyz/my-submissions)
 
 ![Example of what the My Submissions page looks like](../../static/img/assets/my-submissions-screenshot.png)
 
