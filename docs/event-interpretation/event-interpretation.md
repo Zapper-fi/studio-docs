@@ -51,7 +51,7 @@ Note that you do not need to use all every account or token transfer listed in t
 
 This is a free-form input + drop-down menu, where all apps that Zapper has in our system are listed. You’ll find the big names like OpenSea, Aave, Uniswap, Blur, etc. in the list. If the transaction you are describing is associated with a web3 app, please select it from the list.
 
-![The app dropdown menu](./static/img/assets/app-drop-down.png)
+![The app dropdown menu](/static/img/assets/app-drop-down.png)
 
 If you do not see the correct app on the suggestion list, please to type it in yourself, and we will add it on our backend!
 
