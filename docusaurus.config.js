@@ -23,7 +23,7 @@ const config = {
   ],
   tagline:
     " We're opening up integrations to the community. No more waiting on us. Integrate your App with Zapper today.",
-  url: "https://studio.zapper.fi",
+  url: "https://studio.zapper.xyz",
   baseUrl: "/",
   onBrokenLinks: "warn",
   onBrokenMarkdownLinks: "warn",
@@ -120,7 +120,7 @@ const config = {
               },
               {
                 label: "Discord",
-                href: "https://zapper.fi/discord",
+                href: "https://zapper.xyz/discord",
               },
             ],
           },
