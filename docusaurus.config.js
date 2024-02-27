@@ -57,33 +57,21 @@ const config = {
         },
         items: [
           {
-            to: "docs/concepts/app-tokens",
             position: "left",
-            label: "Concepts",
-            activeBaseRegex: "docs/concepts/",
-          },
-          {
-            position: "left",
-            label: "Tutorial",
-            to: "docs/intro",
-            activeBaseRegex: "docs/(intro|tutorial)",
-          },
-          {
-            to: "docs/recipes/vault-token",
-            position: "left",
-            label: "Recipes",
-            activeBaseRegex: "docs/recipes/",
+            label: "Event Interpretation",
+            to: "docs/event-interpretation",
+            activeBaseRegex: "docs/event-interpretation",
           },
           {
             to: "docs/apis/getting-started",
             position: "left",
-            label: "APIs",
+            label: "API Documentation",
             activeBaseRegex: "docs/apis/",
           },
           {
             to: "documentation",
             position: "left",
-            label: "Documentation",
+            label: "API Spec",
           },
           {
             href: "https://github.com/Zapper-fi/studio",
@@ -100,10 +88,6 @@ const config = {
               {
                 label: "API Documentation",
                 to: "/docs/apis/getting-started",
-              },
-              {
-                label: "App Integration Tutorial",
-                to: "/docs/intro",
               },
               {
                 label: "Brand Assets",
