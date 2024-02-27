@@ -17,7 +17,7 @@ Curious what an "event interpretation" is, or how to submit one? [Check out our 
 ## Round 1 details
 
 - Rewarding 1,550 [OP tokens](https://zapper.xyz/token/optimism/0x4200000000000000000000000000000000000042/OP/details) up for grabs by the top contributors (~6,000 USD)
-- Start date of Round 1: Monday, Feb 26 @ 2 PM EST
+- Start date of Round 1: Tuesday, Feb 26 @ 2 PM EST
 - End date of Round 1: Sunday, March 3rd @ Midnight EST
 - Top contributors are calculated on how many points you receive, which vary by the network of the event you interpreted:
   - 2 points are awarded for an event interpretation on the [Arbitrum](https://zapper.xyz/curate/events?trendingNetwork=arbitrum) or [Optimism](https://zapper.xyz/curate/events?trendingNetwork=optimism) networks.
