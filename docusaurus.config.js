@@ -74,6 +74,12 @@ const config = {
             label: "API Spec",
           },
           {
+            to: "docs/support/index",
+            position: "left",
+            label: "Support Docs",
+            activeBaseRegex: "docs/support"
+          },
+          {
             href: "https://github.com/Zapper-fi/studio",
             label: "GitHub",
             position: "right",
