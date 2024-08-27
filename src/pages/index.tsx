@@ -14,7 +14,7 @@ function HomepageHeader() {
         <h1 className={styles.title}>{siteConfig.title}</h1>
         <h3 className={styles.subtitle}>{siteConfig.tagline}</h3>
         <div className={styles.buttons}>
-          <Link className={styles.button} to="/docs/intro">
+          <Link className={styles.button} to="/docs/apis/getting-started">
             Learn More
           </Link>
         </div>
