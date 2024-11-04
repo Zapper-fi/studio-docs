@@ -63,12 +63,12 @@ For a lot of transactions, it can be a bit tricky to understand exactly what the
 
 However, if you're feeling adventurous, you can source popular, uninterpreted transactions from the [Curate page.](https://zapper.xyz/curate/events)
 
--The `method` name is usually helpful in pointing you towards what action is taken. If the method name is `deposit`, its likely the user sent tokens away and deposited them in an app. HOWEVER, methods can also be misleading, so do not blindly trust them! Most smart contracts are forks of other contracts, where the devs copy the contract, and tweak it for their needs, but do not update the method names. This can lead to situations where a `withdraw` function is really a `claim` function, or a `deposit` is really `locked funds for 2 years`. Zapper's goal is to accurately and clearly describe the blockchain, so please do be aware of this in your submissions!
+-The `method` name is usually helpful in pointing you towards what action is taken. If the method name is `deposit`, its likely the user sent tokens away and deposited them in an app. HOWEVER, methods can also be misleading, so do not blindly trust them! Most smart contracts are forks of other contracts, where the devs copy the contract, and tweak it for their needs, but do not update the method names. This can lead to situations where a `withdraw` function is really a `claim` function, or a `deposit` is really `locked funds for 2 years`. Zapper's goal is to accurately and clearly describe the blockchain, so please be aware of this in your submissions!
 
-- It often helps to look up what app a contract in a transaction is associated with. If you find that the contract relates to Aave, its a good chance the methods relating to supplying and withdrawing funds from a lending protocol. The best way to find out what app an contract belongs to is to Google the TO address
+- It often helps to look up what app a contract in a transaction is associated with. If you find that the contract relates to Aave, its a good chance the methods relating to supplying and withdrawing funds from a lending protocol. The best way to find out what app a contract belongs to is to Google the TO address
 ![Check out the search results and look for a link to an app's docs that includes the contract address](../../static/img/assets/google-contract.png)
 
-- If that fails, another good way to investigate what app owns a contract is to search it on Github, and look if it is in an app's Github repository (or of anther app has added it and labelled it in their repo). Example search query: <https://github.com/search?q=0x6774Bcbd5ceCeF1336b5300fb5186a12DDD8b367&type=code>
+- If that fails, another good way to investigate what app owns a contract is to search it on Github, and look if it is in an app's Github repository (or if another app has added it and labeled it in their repo). Example search query: <https://github.com/search?q=0x6774Bcbd5ceCeF1336b5300fb5186a12DDD8b367&type=code>
 ![Looks like this contract is in the scroll-tech repo, and is associated with Scroll chain on Defi Llama](../../static/img/assets/github-contract-lookup.png)
 
 ## Submission process
