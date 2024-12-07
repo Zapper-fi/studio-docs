@@ -21,6 +21,6 @@ Curious what an "event interpretation" is, or how to submit one? [Check out our 
   - 2 points are awarded for an event interpretation on the [Arbitrum](https://zapper.xyz/curate/events?trendingNetwork=arbitrum) or [Optimism](https://zapper.xyz/curate/events?trendingNetwork=optimism) networks.
   - 1 point awarded for event interpretations on [Ethereum](https://zapper.xyz/curate/events) and [Base](https://zapper.xyz/curate/events?trendingNetwork=base) networks.
 - Points will only be awarded for event interpretations *approved* by the Zapper team. When an event interpretation is approved, you will receive a notification. You can check the status of your submissions on your [My Submissions page](https://zapper.xyz/my-submissions).
-- Spam submissions will not be approved; users who spam submissions run the risk fo being disqualified
+- Spam submissions will not be approved; users who spam submissions run the risk of being disqualified
 - Only 1 submission per method per contract can be approved across all users. If we get multiple submissions for the same contract and method, we approve the earliest submission we received, and sadly have to reject the later ones.
 - The team may take a few days to work through the submissions made during the Round 1 time frame; your submission does not need to be approved by the end date of Round 1 to count towards your points total

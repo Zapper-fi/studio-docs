@@ -16,7 +16,7 @@ You input wallet addresses and get all the following:
 - Detailed breakdown of all app investment positions represented as app tokens owned by the wallet, such as Aave lending positions or Uniswap pools, valued in USD
 - Detailed breakdown of all app investment positions represented as contract positions that are not held on the wallet, such ve-locked or farming positions, valued in USD
 
-On Zapper's frontend, all tokens that show up in the *Wallet* section of a portfoilo are returned in the [`v2/balances/tokens`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancestokens) endpoint. All values showing up in the *Apps* section of a portfolio are returned in the `v2/balances/apps` endpoint.
+On Zapper's frontend, all tokens that show up in the *Wallet* section of a portfolio are returned in the [`v2/balances/tokens`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancestokens) endpoint. All values showing up in the *Apps* section of a portfolio are returned in the `v2/balances/apps` endpoint.
 
 For a list of all supported apps, see [this link](https://zapper.xyz/protocols).
 
@@ -53,7 +53,7 @@ Parameters
 
 - `addresses[]`: **Required** | Addresses for which to retrieve balances, inputted as an array. Can handle up to 15 addresses
   - Note: to pass multiple addresses in, the right syntax is `https://api.zapper.xyz/v2/balances/apps?addresses%5B%5D=address_1&addresses%5B%5D=address_2`
-- `networks[]`: networks for which to retrieve balances, inputted an array. Available values : ethereum, polygon, optimism, gnosis, binance-smart-chain, fantom, avalanche, arbitrum, celo, moonriver, bitcoin, aurora
+- `networks[]`: networks for which to retrieve balances, inputted an array. Available values: ethereum, polygon, optimism, gnosis, binance-smart-chain, fantom, avalanche, arbitrum, celo, moonriver, bitcoin, aurora
 
 Response
 
@@ -77,7 +77,7 @@ Response
     - `dataProps`: object containing data used for augmenting the token object with additional data properties. These properties can be used in other places in the application. This would include APY, liquidity in the positions, etc. [More details found here](https://docs.zapper.xyz/docs/concepts/app-tokens#what-are-data-props)
     - `displayProps`: object is used by Zapper Web and Zapper Mobile to render meaningful information to Zapper users about this token. This generally would include labels and decorators. [More details can be found here](https://docs.zapper.xyz/docs/concepts/app-tokens#what-are-display-props)
     - `balance`: balance of investment positioned owned by this wallet. Normalized for decimals
-    - `balanceRaw`: raw balance of investment in this postiion owned by this wallet. This has not been normalized with decimals yet; to get balanceRaw, you'd multiply this value by 10 ^ (decimals) value
+    - `balanceRaw`: raw balance of investment in this position owned by this wallet. This has not been normalized with decimals yet; to get balanceRaw, you'd multiply this value by 10 ^ (decimals) value
     - `balanceUSD`: value of `balance` position, converted to USD
   - `meta`: Information about balances that is not specifically balances. This value is developer defined, but examples are health factors and collateralization ratios (c-ratios)
 
@@ -563,7 +563,7 @@ Response for GET
 
 You input wallet addresses and get all "base tokens" in the wallet. "Base tokens" are ERC20 tokens that are not invested by the user in an app, but instead sit in the wallet natively. Base tokens are often  liquid and tradable, whereas app tokens are those invested in apps are illiquid and cannot be natively traded, like a Uniswap pool token.
 
-On Zapper's frontend, all tokens that show up in the *Wallet* section of a portfoilo are returned in the `v2/balances/tokens` endpoint. All values showing up in the *Apps* section of a portfolio are returned in the [`v2/balances/apps`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancesapps) endpoint.
+On Zapper's frontend, all tokens that show up in the *Wallet* section of a portfolio are returned in the `v2/balances/tokens` endpoint. All values showing up in the *Apps* section of a portfolio are returned in the [`v2/balances/apps`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancesapps) endpoint.
 
 Zapper supports over 15,000 base tokens (and counting).
 
@@ -581,7 +581,7 @@ Points Cost For `v2/balances/tokens` Related Queries:
 
 Tips On Using This Endpoint Cost-Effectively:
 
-- If you are querying a wallet for the first time, and it is a potentially popular wallet, there is a chance that a cached value already exists, and you can retrie it for only 0.25 points cost. Upon getting the results, you can check how stale the balances are based on the value retuend of `updatedAt`
+- If you are querying a wallet for the first time, and it is a potentially popular wallet, there is a chance that a cached value already exists, and you can retrie it for only 0.25 points cost. Upon getting the results, you can check how stale the balances are based on the value returned of `updatedAt`
 - If you are certain you will want the most up-to-date balances for the wallet, you should call the POST [`v2/balances/apps`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancesapps) endpoint first, wait for the job to run after 10s, and then call GET [`v2/balances/apps`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancesapps)
 - If you are surfacing balances to users in real-time using this call, you can emulate what Zapper's frontend does by first calling GET [`v2/balances/apps`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancesapps) to get any cached balances, use these to create a skeleton to display to the user, and then call POST [`v2/balances/apps`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancesapps) to then refresh any stale values
 
@@ -599,7 +599,7 @@ Parameters
 
 - `addresses[]`: **Required** | addresses for which to retrieve balances, inputted as an array. Can handle up to 15 addresses
   - Note: to pass multiple addresses in, the right syntax is `https://api.zapper.xyz/v2/balances/tokens?addresses%5B%5D=address_1&addresses%5B%5D=address_2`
-- `networks[]`: networks for which to retrieve balances, inputted an array. Available values : ethereum, polygon, optimism, gnosis, binance-smart-chain, fantom, avalanche, arbitrum, celo, moonriver, bitcoin, aurora
+- `networks[]`: networks for which to retrieve balances, inputted an array. Available values: ethereum, polygon, optimism, gnosis, binance-smart-chain, fantom, avalanche, arbitrum, celo, moonriver, bitcoin, aurora
 
 Response
 
@@ -629,7 +629,7 @@ Response
   - `holdersEnabled`: internal designation as to whether Zapper index's the holders of this token
   - `marketCap`: estimated value of all the tradeable tokens
   - `balance`: balance of investment positioned owned by this wallet. Normalized for decimals
-  - `balanceRaw`: raw balance of investment in this postiion owned by this wallet. This has not been normalized with decimals yet; to get balanceRaw, you'd multiply this value by 10 ^ (decimals) value
+  - `balanceRaw`: raw balance of investment in this position owned by this wallet. This has not been normalized with decimals yet; to get balanceRaw, you'd multiply this value by 10 ^ (decimals) value
   - `balanceUSD`: value of `balance` position, converted to USD
 
 cURL for POST
@@ -703,7 +703,7 @@ Use this endpoint to poll for the status of a job that is calculating app-relate
 When you call POST [`v2/balances/apps`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancesapps) or [`v2/balances/tokens`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancestokens), a re-calculation of the balances in that wallet is triggered, and the response to those calls will be a value `jobId`. You can then monitor the status of the re-computation job by passing `jobId` as a parameter into this endpoint, `v2/balances/job-status`.
 
 :::info
-You are not required to poll for the status of the job via `v2/balances/job-status`; it is just a nice-to-have. Most POST [`v2/balances/apps`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancesapps) finish computing wihtin 10 seconds and POST [`v2/balances/tokens`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancestokens) finish within 2 seconds, so you could just insert a delay between your POST and GET commands of that time interval.
+You are not required to poll for the status of the job via `v2/balances/job-status`; it is just a nice-to-have. Most POST [`v2/balances/apps`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancesapps) finish computing within 10 seconds and POST [`v2/balances/tokens`](https://docs.zapper.xyz/docs/apis/api-syntax#v2balancestokens) finish within 2 seconds, so you could just insert a delay between your POST and GET commands of that time interval.
 :::
 
 Other things to know about this endpoint
@@ -2472,7 +2472,7 @@ Parameters
 
 Returns
 
-- `balance`: number of NFTs owned of a given type. If it's ERC_721, it will always be 1. If NFT is is ERC_1155, will be a count of how many NFTs are owned by this wallet
+- `balance`: number of NFTs owned of a given type. If it's ERC_721, it will always be 1. If NFT is ERC_1155, will be a count of how many NFTs are owned by this wallet
 - `token`: contains details relating to this NFT, such as price and metadata
   - `id`: internal Zapper ID number for token
   - `name`: name of NFT
@@ -2575,7 +2575,7 @@ Parameters
 Returns
 
 - `token`: object containing details about the individual NFT
-  - `balance`: number of NFTs owned of a given type. If it's ERC_721, it will always be 1. If NFT is is ERC_1155, will be a count of how many NFTs are owned by this wallet
+  - `balance`: number of NFTs owned of a given type. If it's ERC_721, it will always be 1. If NFT is ERC_1155, will be a count of how many NFTs are owned by this wallet
   - `name`: name of NFT
   - `tokenId`: ID of token within collection
   - `lastSaleEth`: price of last sale of this NFT
@@ -2916,7 +2916,7 @@ Parameters
 Returns
 
 - `price`: Price of the sell token
-- `value`: Token value assouciated with price
+- `value`: Token value associated with price
 - `gas`: Gas limit of the transaction
 - `estimatedGas`: Gas required for the transaction
 - `gasPrice`: Gas price at the time of transaction
@@ -3010,7 +3010,7 @@ Returns
 - `buyAmount`: Total quantity of buy token
 - `sellAmount`: Total quantity of sell token
 - `allowanceTarget`: Token address of token that is approved to sell
-- `sources`: sources of liqudiity
+- `sources`: sources of liquidity
   - `name`: source of swap route
   - `proportion`: proportion of tokens swapped by this source
   - `displayName`: display name of source
